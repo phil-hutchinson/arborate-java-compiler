@@ -1,0 +1,9 @@
+
+ENVIRONMENT: NetBeans IDE 8.1 running on Windows
+
+SABLE CAN BE RUN FROM THE COMMANE LINE USING THE FOLLOWING COMMAND, WITHIN THIS FOLDER.
+ THE PATH TO sablecc.jar WILL NEED TO BE UPDATED AS APPROPRIATE.
+
+(delete org.linguate.arboratecompiler.node)
+java -jar \languages\sablecc-3.7\lib\sablecc.jar arborate_specification.txt -d ..\..\..
+

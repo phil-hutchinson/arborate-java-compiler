@@ -1,0 +1,70 @@
+/* This grammar defines the SableCC 2.x input language. */
+
+Package org.linguate.arboratecompiler; // Root Java package for generated files.
+
+Helpers
+
+/* These are character sets and regular expressions used in the definition of tokens. */
+   
+    digit = ['0' .. '9'];
+    non_zero_digit = [digit - '0'];
+
+    tab = 9;
+    cr = 13;
+    lf = 10;
+    eol = cr lf | cr | lf;        // This takes care of different platforms
+
+    blank = (' ' | tab | eol)+;
+
+States
+    normal;
+
+Tokens
+
+    plus = '+';
+    minus = '-';
+    star = '*';
+    slash = '/';
+
+    int_string = non_zero_digit digit*;
+
+    blank = blank;
+
+Ignored Tokens 
+
+    blank;
+
+Productions
+
+/* These are the productions of the grammar. The first production is *
+ * used by the implicit start production:                            *
+ *   start = (first production) EOF;                                 *
+ * ?, * and + have the same meaning as in a regular expression.      *
+ * In case a token and a production share the same name, the use of  *
+ * P. (for production) or T. (for token) is required.                *
+ * Each alternative can be explicitely named by preceding it with a  *
+ * name enclosed in braces.                                          *
+ * Each alternative element can be explicitely named by preceding it *
+ * with a name enclosed in brackets and followed by a colon.         */
+
+
+    grammar =
+        [op1]:int_lit [operand]:operator [op2]:int_lit;
+
+    int_lit = int_string;
+
+    operator = 
+        {add} plus 
+        | {subtract} minus
+        | {multiply} star 
+        | {divide} slash;
+
+/*
+    addition_sign = plus;
+
+    subtraction_sign = minus;
+
+    multiplication_sign = star;
+
+    division_sign = slash;
+*/
