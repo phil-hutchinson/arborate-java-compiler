@@ -59,12 +59,3 @@ Productions
         | {multiply} star 
         | {divide} slash;
 
-/*
-    addition_sign = plus;
-
-    subtraction_sign = minus;
-
-    multiplication_sign = star;
-
-    division_sign = slash;
-*/

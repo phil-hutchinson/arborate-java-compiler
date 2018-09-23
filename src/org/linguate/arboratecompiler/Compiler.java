@@ -8,24 +8,61 @@ package org.linguate.arboratecompiler;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import org.linguate.arborate.vm.Instruction;
+import org.linguate.arborate.vm.InstructionCode;
 import org.linguate.arboratecompiler.lexer.Lexer;
 import org.linguate.arboratecompiler.lexer.LexerException;
+import org.linguate.arboratecompiler.node.AAddOperator;
+import org.linguate.arboratecompiler.node.ADivideOperator;
+import org.linguate.arboratecompiler.node.AGrammar;
+import org.linguate.arboratecompiler.node.AIntLit;
+import org.linguate.arboratecompiler.node.AMultiplyOperator;
+import org.linguate.arboratecompiler.node.ASubtractOperator;
+import org.linguate.arboratecompiler.node.POperator;
 import org.linguate.arboratecompiler.node.Start;
 import org.linguate.arboratecompiler.parser.Parser;
 import org.linguate.arboratecompiler.parser.ParserException;
-
 /**
  *
  * @author Phil Hutchinson
  */
 public class Compiler {
-    public static Start compile(String input) throws LexerException, ParserException, IOException {
+    public static List<Instruction> compile(String input) throws LexerException, ParserException, IOException {
         Lexer lexer = new Lexer(new PushbackReader(new StringReader(input)));
         //Lexer lexer = new Lexer(new PushbackReader(new BufferedReader(new FileReader(fileName)), 1024));
         Parser parser = new Parser(lexer);
 
         Start ast = parser.parse();
 
-        return ast;
+        List<Instruction> returnValue = new ArrayList<Instruction>();
+        
+        AGrammar grammar =(AGrammar) ast.getPGrammar();
+        
+        AIntLit op1 = (AIntLit) grammar.getOp1();
+        AIntLit op2 = (AIntLit) grammar.getOp2();
+        
+        long left = Long.parseLong(op1.getIntString().getText());
+        returnValue.add(new Instruction(InstructionCode.INTEGER_TO_STACK, left));
+        
+        long right  = Long.parseLong(op2.getIntString().getText());
+        returnValue.add(new Instruction(InstructionCode.INTEGER_TO_STACK, right));
+        
+        POperator operand =  grammar.getOperand();
+        if (operand instanceof AAddOperator) {
+            returnValue.add(new Instruction(InstructionCode.INTEGER_ADD));
+        } else if (operand instanceof ASubtractOperator){
+            returnValue.add(new Instruction(InstructionCode.INTEGER_SUBTRACT));
+        } else if (operand instanceof AMultiplyOperator){
+            returnValue.add(new Instruction(InstructionCode.INTEGER_MULTIPLY));
+        } else if (operand instanceof ADivideOperator){
+            returnValue.add(new Instruction(InstructionCode.INTEGER_DIVIDE));
+        } else {
+            throw new RuntimeException("Unknown Operator");
+        }
+        
+        return returnValue;
     }
 }
+
