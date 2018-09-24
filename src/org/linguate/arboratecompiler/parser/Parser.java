@@ -36,19 +36,10 @@ public class Parser
         this.lexer = lexer;
     }
 
-    protected void filter() throws ParserException, LexerException, IOException
-    {
-        // Empty body
-    }
-
-    private void push(int numstate, ArrayList<Object> listNode, boolean hidden) throws ParserException, LexerException, IOException
+    @SuppressWarnings({"unchecked","unused"})
+    private void push(int numstate, ArrayList<Object> listNode) throws ParserException, LexerException, IOException
     {
         this.nodeList = listNode;
-
-        if(!hidden)
-        {
-            filter();
-        }
 
         if(!this.stack.hasNext())
         {
@@ -113,7 +104,7 @@ public class Parser
     @SuppressWarnings("unchecked")
     public Start parse() throws ParserException, LexerException, IOException
     {
-        push(0, null, true);
+        push(0, null);
         List<Node> ign = null;
         while(true)
         {
@@ -170,7 +161,7 @@ public class Parser
 		    {
 		        ArrayList<Object> list = new ArrayList<Object>();
 		        list.add(this.lexer.next());
-                        push(this.action[1], list, false);
+                        push(this.action[1], list);
                     }
 		    break;
                 case REDUCE:
@@ -182,7 +173,7 @@ public class Parser
                 case ACCEPT:
                     {
                         EOF node2 = (EOF) this.lexer.next();
-                        PGrammar node1 = (PGrammar) pop().get(0);
+                        PExpr node1 = (PExpr) pop().get(0);
                         Start node = new Start(node1, node2);
                         return node;
                     }
@@ -198,40 +189,34 @@ public class Parser
     {
         switch(reduction)
         {
-            case 0: /* reduce AGrammar */
+            case 0: /* reduce AAddGrammar */
             {
                 ArrayList<Object> list = new0();
-                push(goTo(0), list, false);
+                push(goTo(0), list);
             }
             break;
-            case 1: /* reduce AIntLit */
+            case 1: /* reduce ASubtractGrammar */
             {
                 ArrayList<Object> list = new1();
-                push(goTo(1), list, false);
+                push(goTo(0), list);
             }
             break;
-            case 2: /* reduce AAddOperator */
+            case 2: /* reduce AMultiplyGrammar */
             {
                 ArrayList<Object> list = new2();
-                push(goTo(2), list, false);
+                push(goTo(0), list);
             }
             break;
-            case 3: /* reduce ASubtractOperator */
+            case 3: /* reduce ADivideGrammar */
             {
                 ArrayList<Object> list = new3();
-                push(goTo(2), list, false);
+                push(goTo(0), list);
             }
             break;
-            case 4: /* reduce AMultiplyOperator */
+            case 4: /* reduce AIntLit */
             {
                 ArrayList<Object> list = new4();
-                push(goTo(2), list, false);
-            }
-            break;
-            case 5: /* reduce ADivideOperator */
-            {
-                ArrayList<Object> list = new5();
-                push(goTo(2), list, false);
+                push(goTo(1), list);
             }
             break;
         }
@@ -240,33 +225,103 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new0() /* reduce AGrammar */
+    ArrayList<Object> new0() /* reduce AAddGrammar */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        PGrammar pgrammarNode1;
+        PExpr pexprNode1;
         {
             // Block
         PIntLit pintlitNode2;
-        POperator poperatorNode3;
-        PIntLit pintlitNode4;
+        PIntLit pintlitNode3;
         pintlitNode2 = (PIntLit)nodeArrayList1.get(0);
-        poperatorNode3 = (POperator)nodeArrayList2.get(0);
-        pintlitNode4 = (PIntLit)nodeArrayList3.get(0);
+        pintlitNode3 = (PIntLit)nodeArrayList3.get(0);
 
-        pgrammarNode1 = new AGrammar(pintlitNode2, poperatorNode3, pintlitNode4);
+        pexprNode1 = new AAddExpr(pintlitNode2, pintlitNode3);
         }
-	nodeList.add(pgrammarNode1);
+	nodeList.add(pexprNode1);
         return nodeList;
     }
 
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new1() /* reduce AIntLit */
+    ArrayList<Object> new1() /* reduce ASubtractGrammar */
+    {
+        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
+
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PExpr pexprNode1;
+        {
+            // Block
+        PIntLit pintlitNode2;
+        PIntLit pintlitNode3;
+        pintlitNode2 = (PIntLit)nodeArrayList1.get(0);
+        pintlitNode3 = (PIntLit)nodeArrayList3.get(0);
+
+        pexprNode1 = new ASubtractExpr(pintlitNode2, pintlitNode3);
+        }
+	nodeList.add(pexprNode1);
+        return nodeList;
+    }
+
+
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    ArrayList<Object> new2() /* reduce AMultiplyGrammar */
+    {
+        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
+
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PExpr pexprNode1;
+        {
+            // Block
+        PIntLit pintlitNode2;
+        PIntLit pintlitNode3;
+        pintlitNode2 = (PIntLit)nodeArrayList1.get(0);
+        pintlitNode3 = (PIntLit)nodeArrayList3.get(0);
+
+        pexprNode1 = new AMultiplyExpr(pintlitNode2, pintlitNode3);
+        }
+	nodeList.add(pexprNode1);
+        return nodeList;
+    }
+
+
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    ArrayList<Object> new3() /* reduce ADivideGrammar */
+    {
+        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
+
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PExpr pexprNode1;
+        {
+            // Block
+        PIntLit pintlitNode2;
+        PIntLit pintlitNode3;
+        pintlitNode2 = (PIntLit)nodeArrayList1.get(0);
+        pintlitNode3 = (PIntLit)nodeArrayList3.get(0);
+
+        pexprNode1 = new ADivideExpr(pintlitNode2, pintlitNode3);
+        }
+	nodeList.add(pexprNode1);
+        return nodeList;
+    }
+
+
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    ArrayList<Object> new4() /* reduce AIntLit */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -285,104 +340,25 @@ public class Parser
 
 
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new2() /* reduce AAddOperator */
-    {
-        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
-
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        POperator poperatorNode1;
-        {
-            // Block
-        TPlus tplusNode2;
-        tplusNode2 = (TPlus)nodeArrayList1.get(0);
-
-        poperatorNode1 = new AAddOperator(tplusNode2);
-        }
-	nodeList.add(poperatorNode1);
-        return nodeList;
-    }
-
-
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new3() /* reduce ASubtractOperator */
-    {
-        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
-
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        POperator poperatorNode1;
-        {
-            // Block
-        TMinus tminusNode2;
-        tminusNode2 = (TMinus)nodeArrayList1.get(0);
-
-        poperatorNode1 = new ASubtractOperator(tminusNode2);
-        }
-	nodeList.add(poperatorNode1);
-        return nodeList;
-    }
-
-
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new4() /* reduce AMultiplyOperator */
-    {
-        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
-
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        POperator poperatorNode1;
-        {
-            // Block
-        TStar tstarNode2;
-        tstarNode2 = (TStar)nodeArrayList1.get(0);
-
-        poperatorNode1 = new AMultiplyOperator(tstarNode2);
-        }
-	nodeList.add(poperatorNode1);
-        return nodeList;
-    }
-
-
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new5() /* reduce ADivideOperator */
-    {
-        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
-
-        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        POperator poperatorNode1;
-        {
-            // Block
-        TSlash tslashNode2;
-        tslashNode2 = (TSlash)nodeArrayList1.get(0);
-
-        poperatorNode1 = new ADivideOperator(tslashNode2);
-        }
-	nodeList.add(poperatorNode1);
-        return nodeList;
-    }
-
-
-
     private static int[][][] actionTable;
 /*      {
 			{{-1, ERROR, 0}, {4, SHIFT, 1}, },
-			{{-1, REDUCE, 1}, },
+			{{-1, REDUCE, 4}, },
 			{{-1, ERROR, 2}, {5, ACCEPT, -1}, },
 			{{-1, ERROR, 3}, {0, SHIFT, 4}, {1, SHIFT, 5}, {2, SHIFT, 6}, {3, SHIFT, 7}, },
+			{{-1, ERROR, 4}, {4, SHIFT, 1}, },
+			{{-1, ERROR, 5}, {4, SHIFT, 1}, },
+			{{-1, ERROR, 6}, {4, SHIFT, 1}, },
+			{{-1, ERROR, 7}, {4, SHIFT, 1}, },
+			{{-1, REDUCE, 0}, },
+			{{-1, REDUCE, 1}, },
 			{{-1, REDUCE, 2}, },
 			{{-1, REDUCE, 3}, },
-			{{-1, REDUCE, 4}, },
-			{{-1, REDUCE, 5}, },
-			{{-1, ERROR, 8}, {4, SHIFT, 1}, },
-			{{-1, REDUCE, 0}, },
         };*/
     private static int[][][] gotoTable;
 /*      {
 			{{-1, 2}, },
-			{{-1, 3}, {8, 9}, },
-			{{-1, 8}, },
+			{{-1, 3}, {4, 8}, {5, 9}, {6, 10}, {7, 11}, },
         };*/
     private static String[] errorMessages;
 /*      {
@@ -393,7 +369,7 @@ public class Parser
         };*/
     private static int[] errors;
 /*      {
-			0, 1, 2, 3, 0, 0, 0, 0, 0, 2, 
+			0, 1, 2, 3, 0, 0, 0, 0, 2, 2, 2, 2, 
         };*/
 
     static 

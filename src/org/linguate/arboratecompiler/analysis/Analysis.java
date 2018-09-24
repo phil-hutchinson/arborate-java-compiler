@@ -12,12 +12,11 @@ public interface Analysis extends Switch
     void setOut(Node node, Object o);
 
     void caseStart(Start node);
-    void caseAGrammar(AGrammar node);
+    void caseAAddExpr(AAddExpr node);
+    void caseASubtractExpr(ASubtractExpr node);
+    void caseAMultiplyExpr(AMultiplyExpr node);
+    void caseADivideExpr(ADivideExpr node);
     void caseAIntLit(AIntLit node);
-    void caseAAddOperator(AAddOperator node);
-    void caseASubtractOperator(ASubtractOperator node);
-    void caseAMultiplyOperator(AMultiplyOperator node);
-    void caseADivideOperator(ADivideOperator node);
 
     void caseTPlus(TPlus node);
     void caseTMinus(TMinus node);

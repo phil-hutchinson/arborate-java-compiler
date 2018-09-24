@@ -75,37 +75,31 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAGrammar(AGrammar node)
+    public void caseAAddExpr(AAddExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseASubtractExpr(ASubtractExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMultiplyExpr(AMultiplyExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseADivideExpr(ADivideExpr node)
     {
         defaultCase(node);
     }
 
     @Override
     public void caseAIntLit(AIntLit node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseAAddOperator(AAddOperator node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseASubtractOperator(ASubtractOperator node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseAMultiplyOperator(AMultiplyOperator node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseADivideOperator(ADivideOperator node)
     {
         defaultCase(node);
     }

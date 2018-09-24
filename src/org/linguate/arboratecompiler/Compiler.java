@@ -14,13 +14,13 @@ import org.linguate.arborate.vm.Instruction;
 import org.linguate.arborate.vm.InstructionCode;
 import org.linguate.arboratecompiler.lexer.Lexer;
 import org.linguate.arboratecompiler.lexer.LexerException;
-import org.linguate.arboratecompiler.node.AAddOperator;
-import org.linguate.arboratecompiler.node.ADivideOperator;
-import org.linguate.arboratecompiler.node.AGrammar;
+import org.linguate.arboratecompiler.node.AAddExpr;
+import org.linguate.arboratecompiler.node.ADivideExpr;
 import org.linguate.arboratecompiler.node.AIntLit;
-import org.linguate.arboratecompiler.node.AMultiplyOperator;
-import org.linguate.arboratecompiler.node.ASubtractOperator;
-import org.linguate.arboratecompiler.node.POperator;
+import org.linguate.arboratecompiler.node.AMultiplyExpr;
+import org.linguate.arboratecompiler.node.ASubtractExpr;
+import org.linguate.arboratecompiler.node.PExpr;
+import org.linguate.arboratecompiler.node.PIntLit;
 import org.linguate.arboratecompiler.node.Start;
 import org.linguate.arboratecompiler.parser.Parser;
 import org.linguate.arboratecompiler.parser.ParserException;
@@ -38,31 +38,41 @@ public class Compiler {
 
         List<Instruction> returnValue = new ArrayList<Instruction>();
         
-        AGrammar grammar =(AGrammar) ast.getPGrammar();
+        PExpr expr = ast.getPExpr();
         
-        AIntLit op1 = (AIntLit) grammar.getOp1();
-        AIntLit op2 = (AIntLit) grammar.getOp2();
-        
-        long left = Long.parseLong(op1.getIntString().getText());
-        returnValue.add(new Instruction(InstructionCode.INTEGER_TO_STACK, left));
-        
-        long right  = Long.parseLong(op2.getIntString().getText());
-        returnValue.add(new Instruction(InstructionCode.INTEGER_TO_STACK, right));
-        
-        POperator operand =  grammar.getOperand();
-        if (operand instanceof AAddOperator) {
+        AIntLit op1;
+        AIntLit op2;
+        if (expr instanceof AAddExpr) {
+            AAddExpr addExpr = (AAddExpr) expr;
+            returnValue.add(IntegerConstantInstruction(addExpr.getOp1()));
+            returnValue.add(IntegerConstantInstruction(addExpr.getOp2()));
             returnValue.add(new Instruction(InstructionCode.INTEGER_ADD));
-        } else if (operand instanceof ASubtractOperator){
+        } else if (expr instanceof ASubtractExpr) {
+            ASubtractExpr subtractExpr = (ASubtractExpr) expr;
+            returnValue.add(IntegerConstantInstruction(subtractExpr.getOp1()));
+            returnValue.add(IntegerConstantInstruction(subtractExpr.getOp2()));
             returnValue.add(new Instruction(InstructionCode.INTEGER_SUBTRACT));
-        } else if (operand instanceof AMultiplyOperator){
+        } else if (expr instanceof AMultiplyExpr) {
+            AMultiplyExpr multiplyExpr = (AMultiplyExpr) expr;
+            returnValue.add(IntegerConstantInstruction(multiplyExpr.getOp1()));
+            returnValue.add(IntegerConstantInstruction(multiplyExpr.getOp2()));
             returnValue.add(new Instruction(InstructionCode.INTEGER_MULTIPLY));
-        } else if (operand instanceof ADivideOperator){
+        } else if (expr instanceof ADivideExpr) {
+            ADivideExpr divideExpr = (ADivideExpr) expr;
+            returnValue.add(IntegerConstantInstruction(divideExpr.getOp1()));
+            returnValue.add(IntegerConstantInstruction(divideExpr.getOp2()));
             returnValue.add(new Instruction(InstructionCode.INTEGER_DIVIDE));
         } else {
             throw new RuntimeException("Unknown Operator");
         }
         
         return returnValue;
+    }
+
+    private static Instruction IntegerConstantInstruction(PIntLit pIntLit) {
+        AIntLit aIntLit = (AIntLit) pIntLit;
+        long val = Long.parseLong(aIntLit.getIntString().getText());
+        return new Instruction(InstructionCode.INTEGER_TO_STACK, val);
     }
 }
 

@@ -32,37 +32,108 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     {
         inStart(node);
         node.getEOF().apply(this);
-        node.getPGrammar().apply(this);
+        node.getPExpr().apply(this);
         outStart(node);
     }
 
-    public void inAGrammar(AGrammar node)
+    public void inAAddExpr(AAddExpr node)
     {
         defaultIn(node);
     }
 
-    public void outAGrammar(AGrammar node)
+    public void outAAddExpr(AAddExpr node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAGrammar(AGrammar node)
+    public void caseAAddExpr(AAddExpr node)
     {
-        inAGrammar(node);
+        inAAddExpr(node);
         if(node.getOp2() != null)
         {
             node.getOp2().apply(this);
-        }
-        if(node.getOperand() != null)
-        {
-            node.getOperand().apply(this);
         }
         if(node.getOp1() != null)
         {
             node.getOp1().apply(this);
         }
-        outAGrammar(node);
+        outAAddExpr(node);
+    }
+
+    public void inASubtractExpr(ASubtractExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASubtractExpr(ASubtractExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASubtractExpr(ASubtractExpr node)
+    {
+        inASubtractExpr(node);
+        if(node.getOp2() != null)
+        {
+            node.getOp2().apply(this);
+        }
+        if(node.getOp1() != null)
+        {
+            node.getOp1().apply(this);
+        }
+        outASubtractExpr(node);
+    }
+
+    public void inAMultiplyExpr(AMultiplyExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAMultiplyExpr(AMultiplyExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAMultiplyExpr(AMultiplyExpr node)
+    {
+        inAMultiplyExpr(node);
+        if(node.getOp2() != null)
+        {
+            node.getOp2().apply(this);
+        }
+        if(node.getOp1() != null)
+        {
+            node.getOp1().apply(this);
+        }
+        outAMultiplyExpr(node);
+    }
+
+    public void inADivideExpr(ADivideExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADivideExpr(ADivideExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseADivideExpr(ADivideExpr node)
+    {
+        inADivideExpr(node);
+        if(node.getOp2() != null)
+        {
+            node.getOp2().apply(this);
+        }
+        if(node.getOp1() != null)
+        {
+            node.getOp1().apply(this);
+        }
+        outADivideExpr(node);
     }
 
     public void inAIntLit(AIntLit node)
@@ -84,89 +155,5 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getIntString().apply(this);
         }
         outAIntLit(node);
-    }
-
-    public void inAAddOperator(AAddOperator node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAAddOperator(AAddOperator node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAAddOperator(AAddOperator node)
-    {
-        inAAddOperator(node);
-        if(node.getPlus() != null)
-        {
-            node.getPlus().apply(this);
-        }
-        outAAddOperator(node);
-    }
-
-    public void inASubtractOperator(ASubtractOperator node)
-    {
-        defaultIn(node);
-    }
-
-    public void outASubtractOperator(ASubtractOperator node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseASubtractOperator(ASubtractOperator node)
-    {
-        inASubtractOperator(node);
-        if(node.getMinus() != null)
-        {
-            node.getMinus().apply(this);
-        }
-        outASubtractOperator(node);
-    }
-
-    public void inAMultiplyOperator(AMultiplyOperator node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAMultiplyOperator(AMultiplyOperator node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAMultiplyOperator(AMultiplyOperator node)
-    {
-        inAMultiplyOperator(node);
-        if(node.getStar() != null)
-        {
-            node.getStar().apply(this);
-        }
-        outAMultiplyOperator(node);
-    }
-
-    public void inADivideOperator(ADivideOperator node)
-    {
-        defaultIn(node);
-    }
-
-    public void outADivideOperator(ADivideOperator node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseADivideOperator(ADivideOperator node)
-    {
-        inADivideOperator(node);
-        if(node.getSlash() != null)
-        {
-            node.getSlash().apply(this);
-        }
-        outADivideOperator(node);
     }
 }

@@ -2,7 +2,7 @@
 
 package org.linguate.arboratecompiler.node;
 
-public abstract class PGrammar extends Node
+public abstract class PExpr extends Node
 {
     // Empty body
 }

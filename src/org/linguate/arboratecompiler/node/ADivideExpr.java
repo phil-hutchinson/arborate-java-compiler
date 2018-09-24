@@ -5,26 +5,22 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AGrammar extends PGrammar
+public final class ADivideExpr extends PExpr
 {
     private PIntLit _op1_;
-    private POperator _operand_;
     private PIntLit _op2_;
 
-    public AGrammar()
+    public ADivideExpr()
     {
         // Constructor
     }
 
-    public AGrammar(
+    public ADivideExpr(
         @SuppressWarnings("hiding") PIntLit _op1_,
-        @SuppressWarnings("hiding") POperator _operand_,
         @SuppressWarnings("hiding") PIntLit _op2_)
     {
         // Constructor
         setOp1(_op1_);
-
-        setOperand(_operand_);
 
         setOp2(_op2_);
 
@@ -33,16 +29,15 @@ public final class AGrammar extends PGrammar
     @Override
     public Object clone()
     {
-        return new AGrammar(
+        return new ADivideExpr(
             cloneNode(this._op1_),
-            cloneNode(this._operand_),
             cloneNode(this._op2_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAGrammar(this);
+        ((Analysis) sw).caseADivideExpr(this);
     }
 
     public PIntLit getOp1()
@@ -68,31 +63,6 @@ public final class AGrammar extends PGrammar
         }
 
         this._op1_ = node;
-    }
-
-    public POperator getOperand()
-    {
-        return this._operand_;
-    }
-
-    public void setOperand(POperator node)
-    {
-        if(this._operand_ != null)
-        {
-            this._operand_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._operand_ = node;
     }
 
     public PIntLit getOp2()
@@ -125,7 +95,6 @@ public final class AGrammar extends PGrammar
     {
         return ""
             + toString(this._op1_)
-            + toString(this._operand_)
             + toString(this._op2_);
     }
 
@@ -136,12 +105,6 @@ public final class AGrammar extends PGrammar
         if(this._op1_ == child)
         {
             this._op1_ = null;
-            return;
-        }
-
-        if(this._operand_ == child)
-        {
-            this._operand_ = null;
             return;
         }
 
@@ -161,12 +124,6 @@ public final class AGrammar extends PGrammar
         if(this._op1_ == oldChild)
         {
             setOp1((PIntLit) newChild);
-            return;
-        }
-
-        if(this._operand_ == oldChild)
-        {
-            setOperand((POperator) newChild);
             return;
         }
 

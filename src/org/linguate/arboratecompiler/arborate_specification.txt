@@ -35,27 +35,21 @@ Ignored Tokens
     blank;
 
 Productions
+    grammar {-> expr} =
+        {add} [op1]:int_lit plus [op2]:int_lit { -> New expr.add(op1.int_lit, op2.int_lit)}
+        | {subtract} [op1]:int_lit minus [op2]:int_lit { -> New expr.subtract(op1.int_lit, op2.int_lit)}
+        | {multiply} [op1]:int_lit star [op2]:int_lit { -> New expr.multiply(op1.int_lit, op2.int_lit)}
+        | {divide} [op1]:int_lit slash [op2]:int_lit { -> New expr.divide(op1.int_lit, op2.int_lit)};
 
-/* These are the productions of the grammar. The first production is *
- * used by the implicit start production:                            *
- *   start = (first production) EOF;                                 *
- * ?, * and + have the same meaning as in a regular expression.      *
- * In case a token and a production share the same name, the use of  *
- * P. (for production) or T. (for token) is required.                *
- * Each alternative can be explicitely named by preceding it with a  *
- * name enclosed in braces.                                          *
- * Each alternative element can be explicitely named by preceding it *
- * with a name enclosed in brackets and followed by a colon.         */
+    int_lit {-> int_lit} = 
+        int_string { -> New int_lit(int_string) };
 
 
-    grammar =
-        [op1]:int_lit [operand]:operator [op2]:int_lit;
+Abstract Syntax Tree
 
-    int_lit = int_string;
+expr = {add} [op1]:int_lit [op2]:int_lit
+     | {subtract} [op1]:int_lit [op2]:int_lit
+     | {multiply} [op1]:int_lit [op2]:int_lit
+     | {divide} [op1]:int_lit [op2]:int_lit;
 
-    operator = 
-        {add} plus 
-        | {subtract} minus
-        | {multiply} star 
-        | {divide} slash;
-
+int_lit = int_string;
