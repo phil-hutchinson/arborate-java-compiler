@@ -12,17 +12,24 @@ public interface Analysis extends Switch
     void setOut(Node node, Object o);
 
     void caseStart(Start node);
+    void caseAFunc(AFunc node);
     void caseAAddExpr(AAddExpr node);
     void caseASubtractExpr(ASubtractExpr node);
     void caseAMultiplyExpr(AMultiplyExpr node);
     void caseADivideExpr(ADivideExpr node);
     void caseAIntLit(AIntLit node);
 
+    void caseTKwFunction(TKwFunction node);
+    void caseTLeftCurly(TLeftCurly node);
+    void caseTRightCurly(TRightCurly node);
+    void caseTLeftRound(TLeftRound node);
+    void caseTRightRound(TRightRound node);
     void caseTPlus(TPlus node);
     void caseTMinus(TMinus node);
     void caseTStar(TStar node);
     void caseTSlash(TSlash node);
     void caseTIntString(TIntString node);
+    void caseTIdentifier(TIdentifier node);
     void caseTBlank(TBlank node);
     void caseEOF(EOF node);
     void caseInvalidToken(InvalidToken node);

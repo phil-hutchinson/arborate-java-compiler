@@ -9,9 +9,13 @@ import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.linguate.arborate.vm.BaseType;
+import org.linguate.arborate.vm.FunctionDefinition;
 import org.linguate.arborate.vm.Instruction;
 import org.linguate.arborate.vm.InstructionCode;
+import org.linguate.arborate.vm.VirtualMachine;
 import org.linguate.arboratecompiler.lexer.Lexer;
 import org.linguate.arboratecompiler.lexer.LexerException;
 import org.linguate.arboratecompiler.node.AAddExpr;
@@ -29,7 +33,7 @@ import org.linguate.arboratecompiler.parser.ParserException;
  * @author Phil Hutchinson
  */
 public class Compiler {
-    public static List<Instruction> compile(String input) throws LexerException, ParserException, IOException {
+    public static List<FunctionDefinition> compile(String input) throws LexerException, ParserException, IOException {
         Lexer lexer = new Lexer(new PushbackReader(new StringReader(input)));
         //Lexer lexer = new Lexer(new PushbackReader(new BufferedReader(new FileReader(fileName)), 1024));
         Parser parser = new Parser(lexer);
@@ -39,7 +43,8 @@ public class Compiler {
         SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
         ast.apply(semanticAnalyzer);
         
-        return semanticAnalyzer.instructions;
+        FunctionDefinition mainFunc = new FunctionDefinition(semanticAnalyzer.instructions, 0, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
+        return Arrays.asList(mainFunc);
     }
 }
 

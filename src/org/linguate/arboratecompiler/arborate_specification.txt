@@ -5,10 +5,12 @@ Package org.linguate.arboratecompiler; // Root Java package for generated files.
 Helpers
 
 /* These are character sets and regular expressions used in the definition of tokens. */
-   
+
     digit = ['0' .. '9'];
     non_zero_digit = [digit - '0'];
 
+    alpha = [['a' .. 'z'] + ['A' .. 'Z']];
+    alphanumeric = [alpha + digit];
     tab = 9;
     cr = 13;
     lf = 10;
@@ -20,6 +22,12 @@ States
     normal;
 
 Tokens
+    kw_function = 'function';
+
+    left_curly = '{';
+    right_curly = '}';
+    left_round = '(';
+    right_round = ')';
 
     plus = '+';
     minus = '-';
@@ -27,6 +35,7 @@ Tokens
     slash = '/';
 
     int_string = non_zero_digit digit*;
+    identifier = alpha alphanumeric*;
 
     blank = blank;
 
@@ -35,7 +44,10 @@ Ignored Tokens
     blank;
 
 Productions
-    grammar {-> expr} =
+    grammar {-> func} = 
+        kw_function identifier left_round right_round left_curly statement right_curly { -> New func(statement.expr) };
+
+    statement {-> expr} =
         {add} [op1]:int_lit plus [op2]:int_lit { -> New expr.add(op1.int_lit, op2.int_lit)}
         | {subtract} [op1]:int_lit minus [op2]:int_lit { -> New expr.subtract(op1.int_lit, op2.int_lit)}
         | {multiply} [op1]:int_lit star [op2]:int_lit { -> New expr.multiply(op1.int_lit, op2.int_lit)}
@@ -46,6 +58,7 @@ Productions
 
 
 Abstract Syntax Tree
+func = expr;
 
 expr = {add} [op1]:int_lit [op2]:int_lit
      | {subtract} [op1]:int_lit [op2]:int_lit

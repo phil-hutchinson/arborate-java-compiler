@@ -75,6 +75,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAFunc(AFunc node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAAddExpr(AAddExpr node)
     {
         defaultCase(node);
@@ -105,6 +111,36 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTKwFunction(TKwFunction node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTLeftCurly(TLeftCurly node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTRightCurly(TRightCurly node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTLeftRound(TLeftRound node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTRightRound(TRightRound node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTPlus(TPlus node)
     {
         defaultCase(node);
@@ -130,6 +166,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTIntString(TIntString node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTIdentifier(TIdentifier node)
     {
         defaultCase(node);
     }

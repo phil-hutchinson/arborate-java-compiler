@@ -49,11 +49,9 @@ public class CompilerTest {
 
     @Test
     public void testCompileSimpleAdd() throws Exception {
-        List<Instruction> instructions = Compiler.compile("125 + 1000");
+        List<FunctionDefinition> functions = Compiler.compile("function addTest() {125 + 1000}");
 
-        FunctionDefinition mainFunc = new FunctionDefinition(instructions, 0, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
-        
-        VirtualMachine virtualMachine = new VirtualMachine(Arrays.asList(mainFunc));
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
 
         List<Object> actualValue = virtualMachine.execute();
         assertEquals(1, actualValue.size());
@@ -63,11 +61,9 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleSubtract() throws Exception {
-        List<Instruction> instructions = Compiler.compile("35 -   85");
+        List<FunctionDefinition> functions = Compiler.compile("  function subtractTest(){  35 -   85}");
 
-        FunctionDefinition mainFunc = new FunctionDefinition(instructions, 0, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
-        
-        VirtualMachine virtualMachine = new VirtualMachine(Arrays.asList(mainFunc));
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
 
         List<Object> actualValue = virtualMachine.execute();
         assertEquals(1, actualValue.size());
@@ -77,11 +73,9 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleMultiply() throws Exception {
-        List<Instruction> instructions = Compiler.compile("50*100");
+        List<FunctionDefinition> functions = Compiler.compile("function multiplyTest(){50*100}");
 
-        FunctionDefinition mainFunc = new FunctionDefinition(instructions, 0, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
-        
-        VirtualMachine virtualMachine = new VirtualMachine(Arrays.asList(mainFunc));
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
 
         List<Object> actualValue = virtualMachine.execute();
         assertEquals(1, actualValue.size());
@@ -91,11 +85,9 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleDivide() throws Exception {
-        List<Instruction> instructions = Compiler.compile("87 / 8");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {87 / 8  }");
 
-        FunctionDefinition mainFunc = new FunctionDefinition(instructions, 0, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
-        
-        VirtualMachine virtualMachine = new VirtualMachine(Arrays.asList(mainFunc));
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
 
         List<Object> actualValue = virtualMachine.execute();
         assertEquals(1, actualValue.size());

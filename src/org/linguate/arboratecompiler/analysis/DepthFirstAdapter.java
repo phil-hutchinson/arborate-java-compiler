@@ -31,9 +31,30 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseStart(Start node)
     {
         inStart(node);
-        node.getPExpr().apply(this);
+        node.getPFunc().apply(this);
         node.getEOF().apply(this);
         outStart(node);
+    }
+
+    public void inAFunc(AFunc node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFunc(AFunc node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFunc(AFunc node)
+    {
+        inAFunc(node);
+        if(node.getExpr() != null)
+        {
+            node.getExpr().apply(this);
+        }
+        outAFunc(node);
     }
 
     public void inAAddExpr(AAddExpr node)

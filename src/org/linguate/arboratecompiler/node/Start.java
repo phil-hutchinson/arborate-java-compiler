@@ -7,7 +7,7 @@ import org.linguate.arboratecompiler.analysis.*;
 @SuppressWarnings("nls")
 public final class Start extends Node
 {
-    private PExpr _pExpr_;
+    private PFunc _pFunc_;
     private EOF _eof_;
 
     public Start()
@@ -16,10 +16,10 @@ public final class Start extends Node
     }
 
     public Start(
-        @SuppressWarnings("hiding") PExpr _pExpr_,
+        @SuppressWarnings("hiding") PFunc _pFunc_,
         @SuppressWarnings("hiding") EOF _eof_)
     {
-        setPExpr(_pExpr_);
+        setPFunc(_pFunc_);
         setEOF(_eof_);
     }
 
@@ -27,7 +27,7 @@ public final class Start extends Node
     public Object clone()
     {
         return new Start(
-            cloneNode(this._pExpr_),
+            cloneNode(this._pFunc_),
             cloneNode(this._eof_));
     }
 
@@ -37,16 +37,16 @@ public final class Start extends Node
         ((Analysis) sw).caseStart(this);
     }
 
-    public PExpr getPExpr()
+    public PFunc getPFunc()
     {
-        return this._pExpr_;
+        return this._pFunc_;
     }
 
-    public void setPExpr(PExpr node)
+    public void setPFunc(PFunc node)
     {
-        if(this._pExpr_ != null)
+        if(this._pFunc_ != null)
         {
-            this._pExpr_.parent(null);
+            this._pFunc_.parent(null);
         }
 
         if(node != null)
@@ -59,7 +59,7 @@ public final class Start extends Node
             node.parent(this);
         }
 
-        this._pExpr_ = node;
+        this._pFunc_ = node;
     }
 
     public EOF getEOF()
@@ -90,9 +90,9 @@ public final class Start extends Node
     @Override
     void removeChild(Node child)
     {
-        if(this._pExpr_ == child)
+        if(this._pFunc_ == child)
         {
-            this._pExpr_ = null;
+            this._pFunc_ = null;
             return;
         }
 
@@ -108,9 +108,9 @@ public final class Start extends Node
     @Override
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(this._pExpr_ == oldChild)
+        if(this._pFunc_ == oldChild)
         {
-            setPExpr((PExpr) newChild);
+            setPFunc((PFunc) newChild);
             return;
         }
 
@@ -127,7 +127,7 @@ public final class Start extends Node
     public String toString()
     {
         return "" +
-            toString(this._pExpr_) +
+            toString(this._pFunc_) +
             toString(this._eof_);
     }
 }

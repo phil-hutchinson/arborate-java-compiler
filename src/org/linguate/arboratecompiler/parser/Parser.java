@@ -173,7 +173,7 @@ public class Parser
                 case ACCEPT:
                     {
                         EOF node2 = (EOF) this.lexer.next();
-                        PExpr node1 = (PExpr) pop().get(0);
+                        PFunc node1 = (PFunc) pop().get(0);
                         Start node = new Start(node1, node2);
                         return node;
                     }
@@ -189,34 +189,40 @@ public class Parser
     {
         switch(reduction)
         {
-            case 0: /* reduce AAddGrammar */
+            case 0: /* reduce AGrammar */
             {
                 ArrayList<Object> list = new0();
                 push(goTo(0), list);
             }
             break;
-            case 1: /* reduce ASubtractGrammar */
+            case 1: /* reduce AAddStatement */
             {
                 ArrayList<Object> list = new1();
-                push(goTo(0), list);
+                push(goTo(1), list);
             }
             break;
-            case 2: /* reduce AMultiplyGrammar */
+            case 2: /* reduce ASubtractStatement */
             {
                 ArrayList<Object> list = new2();
-                push(goTo(0), list);
+                push(goTo(1), list);
             }
             break;
-            case 3: /* reduce ADivideGrammar */
+            case 3: /* reduce AMultiplyStatement */
             {
                 ArrayList<Object> list = new3();
-                push(goTo(0), list);
+                push(goTo(1), list);
             }
             break;
-            case 4: /* reduce AIntLit */
+            case 4: /* reduce ADivideStatement */
             {
                 ArrayList<Object> list = new4();
                 push(goTo(1), list);
+            }
+            break;
+            case 5: /* reduce AIntLit */
+            {
+                ArrayList<Object> list = new5();
+                push(goTo(2), list);
             }
             break;
         }
@@ -225,7 +231,33 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new0() /* reduce AAddGrammar */
+    ArrayList<Object> new0() /* reduce AGrammar */
+    {
+        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
+
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList7 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList6 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList5 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList4 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PFunc pfuncNode1;
+        {
+            // Block
+        PExpr pexprNode2;
+        pexprNode2 = (PExpr)nodeArrayList6.get(0);
+
+        pfuncNode1 = new AFunc(pexprNode2);
+        }
+	nodeList.add(pfuncNode1);
+        return nodeList;
+    }
+
+
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    ArrayList<Object> new1() /* reduce AAddStatement */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -249,7 +281,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new1() /* reduce ASubtractGrammar */
+    ArrayList<Object> new2() /* reduce ASubtractStatement */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -273,7 +305,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new2() /* reduce AMultiplyGrammar */
+    ArrayList<Object> new3() /* reduce AMultiplyStatement */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -297,7 +329,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new3() /* reduce ADivideGrammar */
+    ArrayList<Object> new4() /* reduce ADivideStatement */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -321,7 +353,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new4() /* reduce AIntLit */
+    ArrayList<Object> new5() /* reduce AIntLit */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -342,34 +374,48 @@ public class Parser
 
     private static int[][][] actionTable;
 /*      {
-			{{-1, ERROR, 0}, {4, SHIFT, 1}, },
-			{{-1, REDUCE, 4}, },
-			{{-1, ERROR, 2}, {5, ACCEPT, -1}, },
-			{{-1, ERROR, 3}, {0, SHIFT, 4}, {1, SHIFT, 5}, {2, SHIFT, 6}, {3, SHIFT, 7}, },
-			{{-1, ERROR, 4}, {4, SHIFT, 1}, },
-			{{-1, ERROR, 5}, {4, SHIFT, 1}, },
-			{{-1, ERROR, 6}, {4, SHIFT, 1}, },
-			{{-1, ERROR, 7}, {4, SHIFT, 1}, },
+			{{-1, ERROR, 0}, {0, SHIFT, 1}, },
+			{{-1, ERROR, 1}, {10, SHIFT, 3}, },
+			{{-1, ERROR, 2}, {11, ACCEPT, -1}, },
+			{{-1, ERROR, 3}, {3, SHIFT, 4}, },
+			{{-1, ERROR, 4}, {4, SHIFT, 5}, },
+			{{-1, ERROR, 5}, {1, SHIFT, 6}, },
+			{{-1, ERROR, 6}, {9, SHIFT, 7}, },
+			{{-1, REDUCE, 5}, },
+			{{-1, ERROR, 8}, {2, SHIFT, 10}, },
+			{{-1, ERROR, 9}, {5, SHIFT, 11}, {6, SHIFT, 12}, {7, SHIFT, 13}, {8, SHIFT, 14}, },
 			{{-1, REDUCE, 0}, },
+			{{-1, ERROR, 11}, {9, SHIFT, 7}, },
+			{{-1, ERROR, 12}, {9, SHIFT, 7}, },
+			{{-1, ERROR, 13}, {9, SHIFT, 7}, },
+			{{-1, ERROR, 14}, {9, SHIFT, 7}, },
 			{{-1, REDUCE, 1}, },
 			{{-1, REDUCE, 2}, },
 			{{-1, REDUCE, 3}, },
+			{{-1, REDUCE, 4}, },
         };*/
     private static int[][][] gotoTable;
 /*      {
 			{{-1, 2}, },
-			{{-1, 3}, {4, 8}, {5, 9}, {6, 10}, {7, 11}, },
+			{{-1, 8}, },
+			{{-1, 9}, {11, 15}, {12, 16}, {13, 17}, {14, 18}, },
         };*/
     private static String[] errorMessages;
 /*      {
-			"expecting: int string",
-			"expecting: '+', '-', '*', '/', EOF",
+			"expecting: 'function'",
+			"expecting: identifier",
 			"expecting: EOF",
+			"expecting: '('",
+			"expecting: ')'",
+			"expecting: '{'",
+			"expecting: int string",
+			"expecting: '}', '+', '-', '*', '/'",
+			"expecting: '}'",
 			"expecting: '+', '-', '*', '/'",
         };*/
     private static int[] errors;
 /*      {
-			0, 1, 2, 3, 0, 0, 0, 0, 2, 2, 2, 2, 
+			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 6, 6, 6, 6, 8, 8, 8, 8, 
         };*/
 
     static 
