@@ -36,43 +36,10 @@ public class Compiler {
 
         Start ast = parser.parse();
 
-        List<Instruction> returnValue = new ArrayList<Instruction>();
+        SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
+        ast.apply(semanticAnalyzer);
         
-        PExpr expr = ast.getPExpr();
-        
-        AIntLit op1;
-        AIntLit op2;
-        if (expr instanceof AAddExpr) {
-            AAddExpr addExpr = (AAddExpr) expr;
-            returnValue.add(IntegerConstantInstruction(addExpr.getOp1()));
-            returnValue.add(IntegerConstantInstruction(addExpr.getOp2()));
-            returnValue.add(new Instruction(InstructionCode.INTEGER_ADD));
-        } else if (expr instanceof ASubtractExpr) {
-            ASubtractExpr subtractExpr = (ASubtractExpr) expr;
-            returnValue.add(IntegerConstantInstruction(subtractExpr.getOp1()));
-            returnValue.add(IntegerConstantInstruction(subtractExpr.getOp2()));
-            returnValue.add(new Instruction(InstructionCode.INTEGER_SUBTRACT));
-        } else if (expr instanceof AMultiplyExpr) {
-            AMultiplyExpr multiplyExpr = (AMultiplyExpr) expr;
-            returnValue.add(IntegerConstantInstruction(multiplyExpr.getOp1()));
-            returnValue.add(IntegerConstantInstruction(multiplyExpr.getOp2()));
-            returnValue.add(new Instruction(InstructionCode.INTEGER_MULTIPLY));
-        } else if (expr instanceof ADivideExpr) {
-            ADivideExpr divideExpr = (ADivideExpr) expr;
-            returnValue.add(IntegerConstantInstruction(divideExpr.getOp1()));
-            returnValue.add(IntegerConstantInstruction(divideExpr.getOp2()));
-            returnValue.add(new Instruction(InstructionCode.INTEGER_DIVIDE));
-        } else {
-            throw new RuntimeException("Unknown Operator");
-        }
-        
-        return returnValue;
-    }
-
-    private static Instruction IntegerConstantInstruction(PIntLit pIntLit) {
-        AIntLit aIntLit = (AIntLit) pIntLit;
-        long val = Long.parseLong(aIntLit.getIntString().getText());
-        return new Instruction(InstructionCode.INTEGER_TO_STACK, val);
+        return semanticAnalyzer.instructions;
     }
 }
 
