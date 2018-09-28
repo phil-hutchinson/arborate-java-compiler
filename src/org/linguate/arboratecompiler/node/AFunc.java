@@ -7,6 +7,7 @@ import org.linguate.arboratecompiler.analysis.*;
 @SuppressWarnings("nls")
 public final class AFunc extends PFunc
 {
+    private PFuncName _funcName_;
     private PExpr _expr_;
 
     public AFunc()
@@ -15,9 +16,12 @@ public final class AFunc extends PFunc
     }
 
     public AFunc(
+        @SuppressWarnings("hiding") PFuncName _funcName_,
         @SuppressWarnings("hiding") PExpr _expr_)
     {
         // Constructor
+        setFuncName(_funcName_);
+
         setExpr(_expr_);
 
     }
@@ -26,6 +30,7 @@ public final class AFunc extends PFunc
     public Object clone()
     {
         return new AFunc(
+            cloneNode(this._funcName_),
             cloneNode(this._expr_));
     }
 
@@ -33,6 +38,31 @@ public final class AFunc extends PFunc
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFunc(this);
+    }
+
+    public PFuncName getFuncName()
+    {
+        return this._funcName_;
+    }
+
+    public void setFuncName(PFuncName node)
+    {
+        if(this._funcName_ != null)
+        {
+            this._funcName_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._funcName_ = node;
     }
 
     public PExpr getExpr()
@@ -64,6 +94,7 @@ public final class AFunc extends PFunc
     public String toString()
     {
         return ""
+            + toString(this._funcName_)
             + toString(this._expr_);
     }
 
@@ -71,6 +102,12 @@ public final class AFunc extends PFunc
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
+        if(this._funcName_ == child)
+        {
+            this._funcName_ = null;
+            return;
+        }
+
         if(this._expr_ == child)
         {
             this._expr_ = null;
@@ -84,6 +121,12 @@ public final class AFunc extends PFunc
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
+        if(this._funcName_ == oldChild)
+        {
+            setFuncName((PFuncName) newChild);
+            return;
+        }
+
         if(this._expr_ == oldChild)
         {
             setExpr((PExpr) newChild);

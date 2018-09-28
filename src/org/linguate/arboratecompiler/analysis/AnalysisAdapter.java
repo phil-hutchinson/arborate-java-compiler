@@ -75,6 +75,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAProgram(AProgram node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFunc(AFunc node)
     {
         defaultCase(node);
@@ -106,6 +112,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAIntLit(AIntLit node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFuncName(AFuncName node)
     {
         defaultCase(node);
     }

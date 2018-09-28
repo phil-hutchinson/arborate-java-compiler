@@ -6,7 +6,12 @@
 package org.linguate.arboratecompiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.linguate.arborate.vm.BaseType;
+import org.linguate.arborate.vm.FunctionDefinition;
 import org.linguate.arborate.vm.Instruction;
 import org.linguate.arborate.vm.InstructionCode;
 import org.linguate.arboratecompiler.analysis.DepthFirstAdapter;
@@ -17,7 +22,32 @@ import org.linguate.arboratecompiler.node.*;
  * @author Phil Hutchinson
  */
 public class SemanticAnalyzer extends DepthFirstAdapter {
-    List<Instruction> instructions = new ArrayList<Instruction>();
+    List<Instruction> instructions;
+    Map<String, Integer> localFunctions = new HashMap<>();
+    int nextFunctionNumber = 0;
+    List<FunctionDefinition> functionDefinitions = new ArrayList<>();
+    
+    /*****************  NODE-PROCESSING METHODS  *****************/
+    public void inAFuncName(AFuncName node) {
+        TIdentifier identifier = node.getIdentifier();
+        String funcName = identifier.getText();
+        if (localFunctions.containsKey(funcName)) {
+            String location = identifier.getLine() + ":" + identifier.getPos();
+            throw new RuntimeException("Duplicate Function name: " + funcName + " at " + location);
+        }
+        localFunctions.put(funcName, nextFunctionNumber);
+    }
+    
+    public void inAFunc(AFunc node) {
+        instructions = new ArrayList<Instruction>();
+    }
+    
+    public void outAFunc(AFunc node) {
+        FunctionDefinition newFunc = new FunctionDefinition(instructions, 0, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
+        functionDefinitions.add(newFunc);
+        instructions = null;
+        nextFunctionNumber++;
+    }
     
     public void outAAddExpr(AAddExpr node) {
         addInstructionIntToStack(processIntLit(node.getOp1()));
@@ -43,6 +73,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         addInstructionByCode(InstructionCode.INTEGER_DIVIDE);
     }
 
+    /**********************  HELPER METHODS  *********************/
     private static long processIntLit(PIntLit pIntLit) {
         AIntLit aIntLit = (AIntLit) pIntLit;
         return Long.parseLong(aIntLit.getIntString().getText());

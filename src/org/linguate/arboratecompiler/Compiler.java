@@ -43,8 +43,7 @@ public class Compiler {
         SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
         ast.apply(semanticAnalyzer);
         
-        FunctionDefinition mainFunc = new FunctionDefinition(semanticAnalyzer.instructions, 0, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
-        return Arrays.asList(mainFunc);
+        return semanticAnalyzer.functionDefinitions;
     }
 }
 

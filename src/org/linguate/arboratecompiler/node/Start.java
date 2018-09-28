@@ -7,7 +7,7 @@ import org.linguate.arboratecompiler.analysis.*;
 @SuppressWarnings("nls")
 public final class Start extends Node
 {
-    private PFunc _pFunc_;
+    private PProgram _pProgram_;
     private EOF _eof_;
 
     public Start()
@@ -16,10 +16,10 @@ public final class Start extends Node
     }
 
     public Start(
-        @SuppressWarnings("hiding") PFunc _pFunc_,
+        @SuppressWarnings("hiding") PProgram _pProgram_,
         @SuppressWarnings("hiding") EOF _eof_)
     {
-        setPFunc(_pFunc_);
+        setPProgram(_pProgram_);
         setEOF(_eof_);
     }
 
@@ -27,7 +27,7 @@ public final class Start extends Node
     public Object clone()
     {
         return new Start(
-            cloneNode(this._pFunc_),
+            cloneNode(this._pProgram_),
             cloneNode(this._eof_));
     }
 
@@ -37,16 +37,16 @@ public final class Start extends Node
         ((Analysis) sw).caseStart(this);
     }
 
-    public PFunc getPFunc()
+    public PProgram getPProgram()
     {
-        return this._pFunc_;
+        return this._pProgram_;
     }
 
-    public void setPFunc(PFunc node)
+    public void setPProgram(PProgram node)
     {
-        if(this._pFunc_ != null)
+        if(this._pProgram_ != null)
         {
-            this._pFunc_.parent(null);
+            this._pProgram_.parent(null);
         }
 
         if(node != null)
@@ -59,7 +59,7 @@ public final class Start extends Node
             node.parent(this);
         }
 
-        this._pFunc_ = node;
+        this._pProgram_ = node;
     }
 
     public EOF getEOF()
@@ -90,9 +90,9 @@ public final class Start extends Node
     @Override
     void removeChild(Node child)
     {
-        if(this._pFunc_ == child)
+        if(this._pProgram_ == child)
         {
-            this._pFunc_ = null;
+            this._pProgram_ = null;
             return;
         }
 
@@ -108,9 +108,9 @@ public final class Start extends Node
     @Override
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(this._pFunc_ == oldChild)
+        if(this._pProgram_ == oldChild)
         {
-            setPFunc((PFunc) newChild);
+            setPProgram((PProgram) newChild);
             return;
         }
 
@@ -127,7 +127,7 @@ public final class Start extends Node
     public String toString()
     {
         return "" +
-            toString(this._pFunc_) +
+            toString(this._pProgram_) +
             toString(this._eof_);
     }
 }

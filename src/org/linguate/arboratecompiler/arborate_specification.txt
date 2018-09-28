@@ -44,8 +44,15 @@ Ignored Tokens
     blank;
 
 Productions
-    grammar {-> func} = 
-        kw_function identifier left_round right_round left_curly statement right_curly { -> New func(statement.expr) };
+    program {-> program} =
+        [functions]:function_list { -> New program( [functions.func]) };
+
+    function_list {-> func*} =
+        {single} [function]:func { -> [function.func] }
+        | {multiple} [function]:func [rest]:function_list {-> [function.func, rest.func] };
+
+    func {-> func} = 
+        kw_function func_name left_round right_round left_curly statement right_curly { -> New func(func_name, statement.expr) };
 
     statement {-> expr} =
         {add} [op1]:int_lit plus [op2]:int_lit { -> New expr.add(op1.int_lit, op2.int_lit)}
@@ -56,9 +63,13 @@ Productions
     int_lit {-> int_lit} = 
         int_string { -> New int_lit(int_string) };
 
+    func_name =
+        identifier;
 
 Abstract Syntax Tree
-func = expr;
+program = [functions]:func*;
+
+func = func_name expr;
 
 expr = {add} [op1]:int_lit [op2]:int_lit
      | {subtract} [op1]:int_lit [op2]:int_lit
@@ -66,3 +77,5 @@ expr = {add} [op1]:int_lit [op2]:int_lit
      | {divide} [op1]:int_lit [op2]:int_lit;
 
 int_lit = int_string;
+
+func_name = identifier;

@@ -94,4 +94,16 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(10L, result.getValue());
     }
+
+    @Test
+    public void testCompileSimpleTwoFunctions() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {500 / 10  } function dummy() {7 + 15}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(50L, result.getValue());
+    }
 }

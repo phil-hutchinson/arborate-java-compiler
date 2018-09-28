@@ -31,9 +31,33 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseStart(Start node)
     {
         inStart(node);
-        node.getPFunc().apply(this);
+        node.getPProgram().apply(this);
         node.getEOF().apply(this);
         outStart(node);
+    }
+
+    public void inAProgram(AProgram node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAProgram(AProgram node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAProgram(AProgram node)
+    {
+        inAProgram(node);
+        {
+            List<PFunc> copy = new ArrayList<PFunc>(node.getFunctions());
+            for(PFunc e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAProgram(node);
     }
 
     public void inAFunc(AFunc node)
@@ -50,6 +74,10 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAFunc(AFunc node)
     {
         inAFunc(node);
+        if(node.getFuncName() != null)
+        {
+            node.getFuncName().apply(this);
+        }
         if(node.getExpr() != null)
         {
             node.getExpr().apply(this);
@@ -176,5 +204,26 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getIntString().apply(this);
         }
         outAIntLit(node);
+    }
+
+    public void inAFuncName(AFuncName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncName(AFuncName node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncName(AFuncName node)
+    {
+        inAFuncName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAFuncName(node);
     }
 }

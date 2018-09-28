@@ -32,8 +32,33 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     {
         inStart(node);
         node.getEOF().apply(this);
-        node.getPFunc().apply(this);
+        node.getPProgram().apply(this);
         outStart(node);
+    }
+
+    public void inAProgram(AProgram node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAProgram(AProgram node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAProgram(AProgram node)
+    {
+        inAProgram(node);
+        {
+            List<PFunc> copy = new ArrayList<PFunc>(node.getFunctions());
+            Collections.reverse(copy);
+            for(PFunc e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAProgram(node);
     }
 
     public void inAFunc(AFunc node)
@@ -53,6 +78,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         if(node.getExpr() != null)
         {
             node.getExpr().apply(this);
+        }
+        if(node.getFuncName() != null)
+        {
+            node.getFuncName().apply(this);
         }
         outAFunc(node);
     }
@@ -176,5 +205,26 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getIntString().apply(this);
         }
         outAIntLit(node);
+    }
+
+    public void inAFuncName(AFuncName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncName(AFuncName node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncName(AFuncName node)
+    {
+        inAFuncName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAFuncName(node);
     }
 }
