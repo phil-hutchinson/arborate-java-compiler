@@ -55,15 +55,22 @@ Productions
         kw_function func_name left_round right_round left_curly statement right_curly { -> New func(func_name, statement.expr) };
 
     statement {-> expr} =
-        {add} [op1]:int_lit plus [op2]:int_lit { -> New expr.add(op1.int_lit, op2.int_lit)}
-        | {subtract} [op1]:int_lit minus [op2]:int_lit { -> New expr.subtract(op1.int_lit, op2.int_lit)}
-        | {multiply} [op1]:int_lit star [op2]:int_lit { -> New expr.multiply(op1.int_lit, op2.int_lit)}
-        | {divide} [op1]:int_lit slash [op2]:int_lit { -> New expr.divide(op1.int_lit, op2.int_lit)};
+        {add} [op1]:value plus [op2]:value { -> New expr.add(op1.value, op2.value)}
+        | {subtract} [op1]:value minus [op2]:value { -> New expr.subtract(op1.value, op2.value)}
+        | {multiply} [op1]:value star [op2]:value { -> New expr.multiply(op1.value, op2.value)}
+        | {divide} [op1]:value slash [op2]:value { -> New expr.divide(op1.value, op2.value)};
 
-    int_lit {-> int_lit} = 
-        int_string { -> New int_lit(int_string) };
+    value {-> value} =
+        {int_lit} int_string { -> New value.int_lit(int_string) }
+        | {func_call } func_call_name left_round right_round {-> New value.func_call(func_call_name) };
+
+    /*int_lit {-> int_lit} = 
+        int_string { -> New int_lit(int_string) };*/
 
     func_name =
+        identifier;
+
+    func_call_name =
         identifier;
 
 Abstract Syntax Tree
@@ -71,11 +78,17 @@ program = [functions]:func*;
 
 func = func_name expr;
 
-expr = {add} [op1]:int_lit [op2]:int_lit
-     | {subtract} [op1]:int_lit [op2]:int_lit
-     | {multiply} [op1]:int_lit [op2]:int_lit
-     | {divide} [op1]:int_lit [op2]:int_lit;
+func_call = func_call_name;
 
-int_lit = int_string;
+expr = {add} [op1]:value [op2]:value
+     | {subtract} [op1]:value [op2]:value
+     | {multiply} [op1]:value [op2]:value
+     | {divide} [op1]:value [op2]:value;
+
+value =
+    {int_lit} int_string
+    | {func_call} func_call_name;
 
 func_name = identifier;
+
+func_call_name = identifier;

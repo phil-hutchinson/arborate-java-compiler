@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.linguate.arborate.vm.ArborateInteger;
 import org.linguate.arborate.vm.BaseType;
 import org.linguate.arborate.vm.FunctionDefinition;
@@ -27,6 +29,9 @@ import org.linguate.arboratecompiler.node.*;
  * @author Phil Hutchinson
  */
 public class CompilerTest {
+    
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
     
     public CompilerTest() {
     }
@@ -105,5 +110,29 @@ public class CompilerTest {
         assertEquals(1, actualValue.size());
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(50L, result.getValue());
+    }
+
+    @Test
+    public void testCompileSimpleFunctionCall() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {300 / 10  } function funcCallTest() {divideTest() + 100}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(130L, result.getValue());
+    }
+
+    @Test
+    public void testCompileDuplicateFunctionNameThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function duplicateName() {300 / 10  } function duplicateName() {6 + 100}");
+    }
+    
+    @Test
+    public void testCompileUnknownFunctionNameThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function simpleTest() {something() / 10  }");
     }
 }

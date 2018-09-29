@@ -23,8 +23,8 @@ import org.linguate.arboratecompiler.node.*;
  */
 public class SemanticAnalyzer extends DepthFirstAdapter {
     List<Instruction> instructions;
-    Map<String, Integer> localFunctions = new HashMap<>();
-    int nextFunctionNumber = 0;
+    Map<String, Long> localFunctions = new HashMap<>();
+    long nextFunctionNumber = 0;
     List<FunctionDefinition> functionDefinitions = new ArrayList<>();
     
     /*****************  NODE-PROCESSING METHODS  *****************/
@@ -50,41 +50,45 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAAddExpr(AAddExpr node) {
-        addInstructionIntToStack(processIntLit(node.getOp1()));
-        addInstructionIntToStack(processIntLit(node.getOp2()));
-        addInstructionByCode(InstructionCode.INTEGER_ADD);
+        addInstruction(InstructionCode.INTEGER_ADD);
     }
 
     public void outASubtractExpr(ASubtractExpr node) {
-        addInstructionIntToStack(processIntLit(node.getOp1()));
-        addInstructionIntToStack(processIntLit(node.getOp2()));
-        addInstructionByCode(InstructionCode.INTEGER_SUBTRACT);
+        addInstruction(InstructionCode.INTEGER_SUBTRACT);
     }
 
     public void outAMultiplyExpr(AMultiplyExpr node) {
-        addInstructionIntToStack(processIntLit(node.getOp1()));
-        addInstructionIntToStack(processIntLit(node.getOp2()));
-        addInstructionByCode(InstructionCode.INTEGER_MULTIPLY);
+        addInstruction(InstructionCode.INTEGER_MULTIPLY);
     }
 
     public void outADivideExpr(ADivideExpr node) {
-        addInstructionIntToStack(processIntLit(node.getOp1()));
-        addInstructionIntToStack(processIntLit(node.getOp2()));
-        addInstructionByCode(InstructionCode.INTEGER_DIVIDE);
+        addInstruction(InstructionCode.INTEGER_DIVIDE);
     }
 
-    /**********************  HELPER METHODS  *********************/
-    private static long processIntLit(PIntLit pIntLit) {
-        AIntLit aIntLit = (AIntLit) pIntLit;
-        return Long.parseLong(aIntLit.getIntString().getText());
+    public void inAIntLitValue(AIntLitValue node) {
+        long val = Long.parseLong(node.getIntString().getText());
+        addInstruction(InstructionCode.INTEGER_TO_STACK, val);
     }
     
-    private void addInstructionByCode(InstructionCode instructionCode) {
+    public void outAFuncCallName(AFuncCallName node) {
+        TIdentifier identifier = node.getIdentifier();
+        String funcToCall = node.getIdentifier().getText();
+        if (localFunctions.containsKey(funcToCall)) {
+            long functionNumber = localFunctions.get(funcToCall);
+            addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
+        } else {
+            String location = identifier.getLine() + ":" + identifier.getPos();
+            throw new RuntimeException("Unknown function: " + funcToCall + " at " + location);
+        }
+    }
+    
+    /**********************  HELPER METHODS  *********************/
+    private void addInstruction(InstructionCode instructionCode) {
         instructions.add(new Instruction(instructionCode));
     }
     
-    private void addInstructionIntToStack(long val) {
-        instructions.add(new Instruction(InstructionCode.INTEGER_TO_STACK, val));
+    private void addInstruction(InstructionCode instructionCode, Object val) {
+        instructions.add(new Instruction(instructionCode, val));
     }
     
     

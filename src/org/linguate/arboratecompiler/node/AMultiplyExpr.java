@@ -7,8 +7,8 @@ import org.linguate.arboratecompiler.analysis.*;
 @SuppressWarnings("nls")
 public final class AMultiplyExpr extends PExpr
 {
-    private PIntLit _op1_;
-    private PIntLit _op2_;
+    private PValue _op1_;
+    private PValue _op2_;
 
     public AMultiplyExpr()
     {
@@ -16,8 +16,8 @@ public final class AMultiplyExpr extends PExpr
     }
 
     public AMultiplyExpr(
-        @SuppressWarnings("hiding") PIntLit _op1_,
-        @SuppressWarnings("hiding") PIntLit _op2_)
+        @SuppressWarnings("hiding") PValue _op1_,
+        @SuppressWarnings("hiding") PValue _op2_)
     {
         // Constructor
         setOp1(_op1_);
@@ -40,12 +40,12 @@ public final class AMultiplyExpr extends PExpr
         ((Analysis) sw).caseAMultiplyExpr(this);
     }
 
-    public PIntLit getOp1()
+    public PValue getOp1()
     {
         return this._op1_;
     }
 
-    public void setOp1(PIntLit node)
+    public void setOp1(PValue node)
     {
         if(this._op1_ != null)
         {
@@ -65,12 +65,12 @@ public final class AMultiplyExpr extends PExpr
         this._op1_ = node;
     }
 
-    public PIntLit getOp2()
+    public PValue getOp2()
     {
         return this._op2_;
     }
 
-    public void setOp2(PIntLit node)
+    public void setOp2(PValue node)
     {
         if(this._op2_ != null)
         {
@@ -123,13 +123,13 @@ public final class AMultiplyExpr extends PExpr
         // Replace child
         if(this._op1_ == oldChild)
         {
-            setOp1((PIntLit) newChild);
+            setOp1((PValue) newChild);
             return;
         }
 
         if(this._op2_ == oldChild)
         {
-            setOp2((PIntLit) newChild);
+            setOp2((PValue) newChild);
             return;
         }
 

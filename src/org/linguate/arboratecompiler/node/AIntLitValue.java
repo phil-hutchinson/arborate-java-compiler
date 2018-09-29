@@ -5,16 +5,16 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AIntLit extends PIntLit
+public final class AIntLitValue extends PValue
 {
     private TIntString _intString_;
 
-    public AIntLit()
+    public AIntLitValue()
     {
         // Constructor
     }
 
-    public AIntLit(
+    public AIntLitValue(
         @SuppressWarnings("hiding") TIntString _intString_)
     {
         // Constructor
@@ -25,14 +25,14 @@ public final class AIntLit extends PIntLit
     @Override
     public Object clone()
     {
-        return new AIntLit(
+        return new AIntLitValue(
             cloneNode(this._intString_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAIntLit(this);
+        ((Analysis) sw).caseAIntLitValue(this);
     }
 
     public TIntString getIntString()

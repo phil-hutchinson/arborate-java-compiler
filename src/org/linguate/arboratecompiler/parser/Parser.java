@@ -237,16 +237,28 @@ public class Parser
                 push(goTo(3), list);
             }
             break;
-            case 8: /* reduce AIntLit */
+            case 8: /* reduce AIntLitValue */
             {
                 ArrayList<Object> list = new8();
                 push(goTo(4), list);
             }
             break;
-            case 9: /* reduce AFuncName */
+            case 9: /* reduce AFuncCallValue */
             {
                 ArrayList<Object> list = new9();
+                push(goTo(4), list);
+            }
+            break;
+            case 10: /* reduce AFuncName */
+            {
+                ArrayList<Object> list = new10();
                 push(goTo(5), list);
+            }
+            break;
+            case 11: /* reduce AFuncCallName */
+            {
+                ArrayList<Object> list = new11();
+                push(goTo(6), list);
             }
             break;
         }
@@ -372,12 +384,12 @@ public class Parser
         PExpr pexprNode1;
         {
             // Block
-        PIntLit pintlitNode2;
-        PIntLit pintlitNode3;
-        pintlitNode2 = (PIntLit)nodeArrayList1.get(0);
-        pintlitNode3 = (PIntLit)nodeArrayList3.get(0);
+        PValue pvalueNode2;
+        PValue pvalueNode3;
+        pvalueNode2 = (PValue)nodeArrayList1.get(0);
+        pvalueNode3 = (PValue)nodeArrayList3.get(0);
 
-        pexprNode1 = new AAddExpr(pintlitNode2, pintlitNode3);
+        pexprNode1 = new AAddExpr(pvalueNode2, pvalueNode3);
         }
 	nodeList.add(pexprNode1);
         return nodeList;
@@ -396,12 +408,12 @@ public class Parser
         PExpr pexprNode1;
         {
             // Block
-        PIntLit pintlitNode2;
-        PIntLit pintlitNode3;
-        pintlitNode2 = (PIntLit)nodeArrayList1.get(0);
-        pintlitNode3 = (PIntLit)nodeArrayList3.get(0);
+        PValue pvalueNode2;
+        PValue pvalueNode3;
+        pvalueNode2 = (PValue)nodeArrayList1.get(0);
+        pvalueNode3 = (PValue)nodeArrayList3.get(0);
 
-        pexprNode1 = new ASubtractExpr(pintlitNode2, pintlitNode3);
+        pexprNode1 = new ASubtractExpr(pvalueNode2, pvalueNode3);
         }
 	nodeList.add(pexprNode1);
         return nodeList;
@@ -420,12 +432,12 @@ public class Parser
         PExpr pexprNode1;
         {
             // Block
-        PIntLit pintlitNode2;
-        PIntLit pintlitNode3;
-        pintlitNode2 = (PIntLit)nodeArrayList1.get(0);
-        pintlitNode3 = (PIntLit)nodeArrayList3.get(0);
+        PValue pvalueNode2;
+        PValue pvalueNode3;
+        pvalueNode2 = (PValue)nodeArrayList1.get(0);
+        pvalueNode3 = (PValue)nodeArrayList3.get(0);
 
-        pexprNode1 = new AMultiplyExpr(pintlitNode2, pintlitNode3);
+        pexprNode1 = new AMultiplyExpr(pvalueNode2, pvalueNode3);
         }
 	nodeList.add(pexprNode1);
         return nodeList;
@@ -444,12 +456,12 @@ public class Parser
         PExpr pexprNode1;
         {
             // Block
-        PIntLit pintlitNode2;
-        PIntLit pintlitNode3;
-        pintlitNode2 = (PIntLit)nodeArrayList1.get(0);
-        pintlitNode3 = (PIntLit)nodeArrayList3.get(0);
+        PValue pvalueNode2;
+        PValue pvalueNode3;
+        pvalueNode2 = (PValue)nodeArrayList1.get(0);
+        pvalueNode3 = (PValue)nodeArrayList3.get(0);
 
-        pexprNode1 = new ADivideExpr(pintlitNode2, pintlitNode3);
+        pexprNode1 = new ADivideExpr(pvalueNode2, pvalueNode3);
         }
 	nodeList.add(pexprNode1);
         return nodeList;
@@ -458,27 +470,49 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new8() /* reduce AIntLit */
+    ArrayList<Object> new8() /* reduce AIntLitValue */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        PIntLit pintlitNode1;
+        PValue pvalueNode1;
         {
             // Block
         TIntString tintstringNode2;
         tintstringNode2 = (TIntString)nodeArrayList1.get(0);
 
-        pintlitNode1 = new AIntLit(tintstringNode2);
+        pvalueNode1 = new AIntLitValue(tintstringNode2);
         }
-	nodeList.add(pintlitNode1);
+	nodeList.add(pvalueNode1);
         return nodeList;
     }
 
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new9() /* reduce AFuncName */
+    ArrayList<Object> new9() /* reduce AFuncCallValue */
+    {
+        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
+
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PValue pvalueNode1;
+        {
+            // Block
+        PFuncCallName pfunccallnameNode2;
+        pfunccallnameNode2 = (PFuncCallName)nodeArrayList1.get(0);
+
+        pvalueNode1 = new AFuncCallValue(pfunccallnameNode2);
+        }
+	nodeList.add(pvalueNode1);
+        return nodeList;
+    }
+
+
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    ArrayList<Object> new10() /* reduce AFuncName */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -497,6 +531,26 @@ public class Parser
 
 
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    ArrayList<Object> new11() /* reduce AFuncCallName */
+    {
+        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
+
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PFuncCallName pfunccallnameNode1;
+        {
+            // Block
+        TIdentifier tidentifierNode2;
+        tidentifierNode2 = (TIdentifier)nodeArrayList1.get(0);
+
+        pfunccallnameNode1 = new AFuncCallName(tidentifierNode2);
+        }
+	nodeList.add(pfunccallnameNode1);
+        return nodeList;
+    }
+
+
+
     private static int[][][] actionTable;
 /*      {
 			{{-1, ERROR, 0}, {0, SHIFT, 1}, },
@@ -504,33 +558,38 @@ public class Parser
 			{{-1, ERROR, 2}, {11, ACCEPT, -1}, },
 			{{-1, REDUCE, 0}, },
 			{{-1, REDUCE, 1}, {0, SHIFT, 1}, },
-			{{-1, REDUCE, 9}, },
+			{{-1, REDUCE, 10}, },
 			{{-1, ERROR, 6}, {3, SHIFT, 8}, },
 			{{-1, REDUCE, 2}, },
 			{{-1, ERROR, 8}, {4, SHIFT, 9}, },
 			{{-1, ERROR, 9}, {1, SHIFT, 10}, },
-			{{-1, ERROR, 10}, {9, SHIFT, 11}, },
+			{{-1, ERROR, 10}, {9, SHIFT, 11}, {10, SHIFT, 12}, },
 			{{-1, REDUCE, 8}, },
-			{{-1, ERROR, 12}, {2, SHIFT, 14}, },
-			{{-1, ERROR, 13}, {5, SHIFT, 15}, {6, SHIFT, 16}, {7, SHIFT, 17}, {8, SHIFT, 18}, },
+			{{-1, REDUCE, 11}, },
+			{{-1, ERROR, 13}, {2, SHIFT, 16}, },
+			{{-1, ERROR, 14}, {5, SHIFT, 17}, {6, SHIFT, 18}, {7, SHIFT, 19}, {8, SHIFT, 20}, },
+			{{-1, ERROR, 15}, {3, SHIFT, 21}, },
 			{{-1, REDUCE, 3}, },
-			{{-1, ERROR, 15}, {9, SHIFT, 11}, },
-			{{-1, ERROR, 16}, {9, SHIFT, 11}, },
-			{{-1, ERROR, 17}, {9, SHIFT, 11}, },
-			{{-1, ERROR, 18}, {9, SHIFT, 11}, },
+			{{-1, ERROR, 17}, {9, SHIFT, 11}, {10, SHIFT, 12}, },
+			{{-1, ERROR, 18}, {9, SHIFT, 11}, {10, SHIFT, 12}, },
+			{{-1, ERROR, 19}, {9, SHIFT, 11}, {10, SHIFT, 12}, },
+			{{-1, ERROR, 20}, {9, SHIFT, 11}, {10, SHIFT, 12}, },
+			{{-1, ERROR, 21}, {4, SHIFT, 26}, },
 			{{-1, REDUCE, 4}, },
 			{{-1, REDUCE, 5}, },
 			{{-1, REDUCE, 6}, },
 			{{-1, REDUCE, 7}, },
+			{{-1, REDUCE, 9}, },
         };*/
     private static int[][][] gotoTable;
 /*      {
 			{{-1, 2}, },
 			{{-1, 3}, {4, 7}, },
 			{{-1, 4}, },
-			{{-1, 12}, },
-			{{-1, 13}, {15, 19}, {16, 20}, {17, 21}, {18, 22}, },
+			{{-1, 13}, },
+			{{-1, 14}, {17, 22}, {18, 23}, {19, 24}, {20, 25}, },
 			{{-1, 6}, },
+			{{-1, 15}, },
         };*/
     private static String[] errorMessages;
 /*      {
@@ -541,14 +600,14 @@ public class Parser
 			"expecting: '('",
 			"expecting: ')'",
 			"expecting: '{'",
-			"expecting: int string",
+			"expecting: int string, identifier",
 			"expecting: '}', '+', '-', '*', '/'",
 			"expecting: '}'",
 			"expecting: '+', '-', '*', '/'",
         };*/
     private static int[] errors;
 /*      {
-			0, 1, 2, 2, 3, 4, 4, 2, 5, 6, 7, 8, 9, 10, 3, 7, 7, 7, 7, 9, 9, 9, 9, 
+			0, 1, 2, 2, 3, 4, 4, 2, 5, 6, 7, 8, 4, 9, 10, 4, 3, 7, 7, 7, 7, 5, 9, 9, 9, 9, 8, 
         };*/
 
     static 

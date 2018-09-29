@@ -14,12 +14,15 @@ public interface Analysis extends Switch
     void caseStart(Start node);
     void caseAProgram(AProgram node);
     void caseAFunc(AFunc node);
+    void caseAFuncCall(AFuncCall node);
     void caseAAddExpr(AAddExpr node);
     void caseASubtractExpr(ASubtractExpr node);
     void caseAMultiplyExpr(AMultiplyExpr node);
     void caseADivideExpr(ADivideExpr node);
-    void caseAIntLit(AIntLit node);
+    void caseAIntLitValue(AIntLitValue node);
+    void caseAFuncCallValue(AFuncCallValue node);
     void caseAFuncName(AFuncName node);
+    void caseAFuncCallName(AFuncCallName node);
 
     void caseTKwFunction(TKwFunction node);
     void caseTLeftCurly(TLeftCurly node);

@@ -85,6 +85,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAFunc(node);
     }
 
+    public void inAFuncCall(AFuncCall node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncCall(AFuncCall node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncCall(AFuncCall node)
+    {
+        inAFuncCall(node);
+        if(node.getFuncCallName() != null)
+        {
+            node.getFuncCallName().apply(this);
+        }
+        outAFuncCall(node);
+    }
+
     public void inAAddExpr(AAddExpr node)
     {
         defaultIn(node);
@@ -185,25 +206,46 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outADivideExpr(node);
     }
 
-    public void inAIntLit(AIntLit node)
+    public void inAIntLitValue(AIntLitValue node)
     {
         defaultIn(node);
     }
 
-    public void outAIntLit(AIntLit node)
+    public void outAIntLitValue(AIntLitValue node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAIntLit(AIntLit node)
+    public void caseAIntLitValue(AIntLitValue node)
     {
-        inAIntLit(node);
+        inAIntLitValue(node);
         if(node.getIntString() != null)
         {
             node.getIntString().apply(this);
         }
-        outAIntLit(node);
+        outAIntLitValue(node);
+    }
+
+    public void inAFuncCallValue(AFuncCallValue node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncCallValue(AFuncCallValue node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncCallValue(AFuncCallValue node)
+    {
+        inAFuncCallValue(node);
+        if(node.getFuncCallName() != null)
+        {
+            node.getFuncCallName().apply(this);
+        }
+        outAFuncCallValue(node);
     }
 
     public void inAFuncName(AFuncName node)
@@ -225,5 +267,26 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getIdentifier().apply(this);
         }
         outAFuncName(node);
+    }
+
+    public void inAFuncCallName(AFuncCallName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncCallName(AFuncCallName node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncCallName(AFuncCallName node)
+    {
+        inAFuncCallName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAFuncCallName(node);
     }
 }
