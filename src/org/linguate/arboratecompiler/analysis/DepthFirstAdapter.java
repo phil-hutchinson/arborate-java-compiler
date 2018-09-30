@@ -78,9 +78,12 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getFuncName().apply(this);
         }
-        if(node.getExpr() != null)
         {
-            node.getExpr().apply(this);
+            List<PExpr> copy = new ArrayList<PExpr>(node.getExpr());
+            for(PExpr e : copy)
+            {
+                e.apply(this);
+            }
         }
         outAFunc(node);
     }

@@ -2,13 +2,14 @@
 
 package org.linguate.arboratecompiler.node;
 
+import java.util.*;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
 public final class AFunc extends PFunc
 {
     private PFuncName _funcName_;
-    private PExpr _expr_;
+    private final LinkedList<PExpr> _expr_ = new LinkedList<PExpr>();
 
     public AFunc()
     {
@@ -17,7 +18,7 @@ public final class AFunc extends PFunc
 
     public AFunc(
         @SuppressWarnings("hiding") PFuncName _funcName_,
-        @SuppressWarnings("hiding") PExpr _expr_)
+        @SuppressWarnings("hiding") List<?> _expr_)
     {
         // Constructor
         setFuncName(_funcName_);
@@ -31,7 +32,7 @@ public final class AFunc extends PFunc
     {
         return new AFunc(
             cloneNode(this._funcName_),
-            cloneNode(this._expr_));
+            cloneList(this._expr_));
     }
 
     @Override
@@ -65,29 +66,30 @@ public final class AFunc extends PFunc
         this._funcName_ = node;
     }
 
-    public PExpr getExpr()
+    public LinkedList<PExpr> getExpr()
     {
         return this._expr_;
     }
 
-    public void setExpr(PExpr node)
+    public void setExpr(List<?> list)
     {
-        if(this._expr_ != null)
+        for(PExpr e : this._expr_)
         {
-            this._expr_.parent(null);
+            e.parent(null);
         }
+        this._expr_.clear();
 
-        if(node != null)
+        for(Object obj_e : list)
         {
-            if(node.parent() != null)
+            PExpr e = (PExpr) obj_e;
+            if(e.parent() != null)
             {
-                node.parent().removeChild(node);
+                e.parent().removeChild(e);
             }
 
-            node.parent(this);
+            e.parent(this);
+            this._expr_.add(e);
         }
-
-        this._expr_ = node;
     }
 
     @Override
@@ -108,9 +110,8 @@ public final class AFunc extends PFunc
             return;
         }
 
-        if(this._expr_ == child)
+        if(this._expr_.remove(child))
         {
-            this._expr_ = null;
             return;
         }
 
@@ -127,10 +128,22 @@ public final class AFunc extends PFunc
             return;
         }
 
-        if(this._expr_ == oldChild)
+        for(ListIterator<PExpr> i = this._expr_.listIterator(); i.hasNext();)
         {
-            setExpr((PExpr) newChild);
-            return;
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PExpr) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
+
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
         }
 
         throw new RuntimeException("Not a child.");

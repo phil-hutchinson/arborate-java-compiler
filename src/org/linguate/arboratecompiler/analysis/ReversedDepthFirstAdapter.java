@@ -75,9 +75,13 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseAFunc(AFunc node)
     {
         inAFunc(node);
-        if(node.getExpr() != null)
         {
-            node.getExpr().apply(this);
+            List<PExpr> copy = new ArrayList<PExpr>(node.getExpr());
+            Collections.reverse(copy);
+            for(PExpr e : copy)
+            {
+                e.apply(this);
+            }
         }
         if(node.getFuncName() != null)
         {
