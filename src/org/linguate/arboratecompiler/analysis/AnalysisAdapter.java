@@ -147,6 +147,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAVarFetchValue(AVarFetchValue node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFuncName(AFuncName node)
     {
         defaultCase(node);
@@ -172,6 +178,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAVarAssignName(AVarAssignName node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAVarFetchName(AVarFetchName node)
     {
         defaultCase(node);
     }

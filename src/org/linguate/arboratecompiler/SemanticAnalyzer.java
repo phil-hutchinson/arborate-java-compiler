@@ -23,11 +23,12 @@ import org.linguate.arboratecompiler.node.*;
  */
 public class SemanticAnalyzer extends DepthFirstAdapter {
     Map<String, Long> localFunctions = new HashMap<>();
+    long functionCount = 0;
+
     List<Instruction> instructions;
     Map<String, Long> localVariables;
-    
-    long nextFunctionNumber = 0;
-    long nextVariableNumber = 0;
+    long variableCount;
+    boolean hasReturn;
     
     List<FunctionDefinition> functionDefinitions = new ArrayList<>();
     
@@ -42,19 +43,24 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Duplicate Function name: " + funcName + " at " + location);
         }
-        localFunctions.put(funcName, nextFunctionNumber);
+        localFunctions.put(funcName, functionCount);
     }
     
     public void inAFunc(AFunc node) {
         instructions = new ArrayList<Instruction>();
         localVariables = new HashMap<>();
+        variableCount = 0;
+        hasReturn = false;
     }
     
     public void outAFunc(AFunc node) {
-        FunctionDefinition newFunc = new FunctionDefinition(instructions, 0, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
+        FunctionDefinition newFunc = new FunctionDefinition(instructions, (int)variableCount, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
         functionDefinitions.add(newFunc);
         instructions = null;
-        nextFunctionNumber++;
+        functionCount++;
+        if (!hasReturn) {
+            throw new RuntimeException("function missing return statement");
+        }
     }
 
     public void inADeclarationStatement(ADeclarationStatement node) {
@@ -63,7 +69,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void inAVarDeclType(AVarDeclType node) {
         String varType = node.getIdentifier().getText();
-        if (varType != "int") {
+        if (!varType.equals("int")) {
             throw new RuntimeException("int is the only valid variable type at the moment.");
         }
     }
@@ -80,12 +86,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             throw new RuntimeException("Duplicate Variable name: " 
                     + varName + " at " + location);
         }
-        localVariables.put(varName, nextVariableNumber);
+        localVariables.put(varName, variableCount);
         
         addInstruction(InstructionCode.INTEGER_TO_STACK, 0L);
-        addInstruction(InstructionCode.STACK_TO_VARIABLE, nextVariableNumber);
+        addInstruction(InstructionCode.STACK_TO_VARIABLE, variableCount);
         
-        nextVariableNumber++;
+        variableCount++;
     }
     
     public void inAAssignmentStatement(AAssignmentStatement node) {
@@ -105,6 +111,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAAssignmentStatement(AAssignmentStatement node) {
         addInstruction(InstructionCode.STACK_TO_VARIABLE, (long)assignmentVariablePosition);
+    }
+    
+    public void outAReturnStatement(AReturnStatement node) {
+        hasReturn = true;
+        addInstruction(InstructionCode.EXIT_FUNCTION);
     }
     
     public void outAAddExpr(AAddExpr node) {
@@ -137,6 +148,18 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Unknown function: " + funcToCall + " at " + location);
+        }
+    }
+    
+    public void inAVarFetchName(AVarFetchName node) {
+        TIdentifier identifier = node.getIdentifier();
+        String varNameToFetch = identifier.getText();
+        if (localVariables.containsKey(varNameToFetch)) {
+            long varPos = localVariables.get(varNameToFetch);
+            addInstruction(InstructionCode.VARIABLE_TO_STACK, varPos);
+        } else {
+            String location = identifier.getLine() + ":" + identifier.getPos();
+            throw new RuntimeException("Attempt to use unknown variable or before variable declaration: " + varNameToFetch + " at " + location);
         }
     }
     

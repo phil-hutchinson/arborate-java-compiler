@@ -135,4 +135,89 @@ public class CompilerTest {
         expectedException.expect(Exception.class);
         List<FunctionDefinition> functions = Compiler.compile("function simpleTest() {return something() / 10;  }");
     }
+    
+    @Test
+    public void testDummyVariable() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function dummyVariableTest() {int a; return 8 / 2;  }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(4L, result.getValue());
+    }
+
+    @Test
+    public void testDummyVariableWithAssignment() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function dummyAssignmentTest() {int a; a = 6 * 5; return 12 / 6;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(2L, result.getValue());
+    }
+    
+    @Test
+    public void testVariableAssignment() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function assignmentTest() {int a; a = 7 / 2; return 10 * a;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(30L, result.getValue());
+    }
+    
+    @Test
+    public void testSameVariableMultipleFunctions() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function subFunction() {int a; a = 2 + 2; return 2 * a;} function mainFunction() {int a; a = 2 * subFunction(); return a + 1;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(17L, result.getValue());
+    }
+
+    @Test
+    public void testStatementsAfterReturnBypassed() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function returnTest() {return 3 + 2; int a; a = 1000 + 100; return a * 50;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(5L, result.getValue());
+    }
+    
+    @Test
+    public void testCompileDuplicateVariableNameInFunctionThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function duplicateVariableName() {var a; var a; return 300 / 10;}");
+    }
+    
+    @Test
+    public void testCompileUnknownVariableNameAssignmentThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function unknownVariableAssignment() {a = 6 + 6; return 30 / 10;  }");
+    }
+    
+    @Test
+    public void testCompileUnknownVariableNameFetchThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function unknownVariableFetch() {return a / 10;  }");
+    }
+    
+    @Test
+    public void testCompileNoReturnThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function unknownVariableFetch() {int a; a = 3 / 10;}");
+    }
+    
 }

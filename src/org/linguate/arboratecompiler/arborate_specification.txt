@@ -79,7 +79,8 @@ Productions
 
     value {-> value} =
         {int_lit} int_string { -> New value.int_lit(int_string) }
-        | {func_call } func_call_name left_round right_round {-> New value.func_call(func_call_name) };
+        | {func_call} func_call_name left_round right_round {-> New value.func_call(func_call_name) }
+        | {var_fetch} var_fetch_name { -> New value.var_fetch(var_fetch_name)};
 
     func_name = identifier;
     func_call_name = identifier;
@@ -87,6 +88,8 @@ Productions
     var_decl_type = identifier;
     var_decl_name = identifier;
     var_assign_name = identifier;
+
+    var_fetch_name = identifier;
 
 Abstract Syntax Tree
     program = [functions]:func*;
@@ -108,7 +111,8 @@ Abstract Syntax Tree
 
     value =
         {int_lit} int_string
-        | {func_call} func_call_name;
+        | {func_call} func_call_name
+        | {var_fetch} var_fetch_name;
 
     func_name = identifier;
     func_call_name = identifier;
@@ -116,3 +120,5 @@ Abstract Syntax Tree
     var_decl_type = identifier;
     var_decl_name = identifier;
     var_assign_name = identifier;
+
+    var_fetch_name = identifier;

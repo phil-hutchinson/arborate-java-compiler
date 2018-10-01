@@ -279,34 +279,46 @@ public class Parser
                 push(goTo(6), list);
             }
             break;
-            case 15: /* reduce AFuncName */
+            case 15: /* reduce AVarFetchValue */
             {
                 ArrayList<Object> list = new15();
+                push(goTo(6), list);
+            }
+            break;
+            case 16: /* reduce AFuncName */
+            {
+                ArrayList<Object> list = new16();
                 push(goTo(7), list);
             }
             break;
-            case 16: /* reduce AFuncCallName */
+            case 17: /* reduce AFuncCallName */
             {
-                ArrayList<Object> list = new16();
+                ArrayList<Object> list = new17();
                 push(goTo(8), list);
             }
             break;
-            case 17: /* reduce AVarDeclType */
+            case 18: /* reduce AVarDeclType */
             {
-                ArrayList<Object> list = new17();
+                ArrayList<Object> list = new18();
                 push(goTo(9), list);
             }
             break;
-            case 18: /* reduce AVarDeclName */
+            case 19: /* reduce AVarDeclName */
             {
-                ArrayList<Object> list = new18();
+                ArrayList<Object> list = new19();
                 push(goTo(10), list);
             }
             break;
-            case 19: /* reduce AVarAssignName */
+            case 20: /* reduce AVarAssignName */
             {
-                ArrayList<Object> list = new19();
+                ArrayList<Object> list = new20();
                 push(goTo(11), list);
+            }
+            break;
+            case 21: /* reduce AVarFetchName */
+            {
+                ArrayList<Object> list = new21();
+                push(goTo(12), list);
             }
             break;
         }
@@ -689,7 +701,27 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new15() /* reduce AFuncName */
+    ArrayList<Object> new15() /* reduce AVarFetchValue */
+    {
+        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
+
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PValue pvalueNode1;
+        {
+            // Block
+        PVarFetchName pvarfetchnameNode2;
+        pvarfetchnameNode2 = (PVarFetchName)nodeArrayList1.get(0);
+
+        pvalueNode1 = new AVarFetchValue(pvarfetchnameNode2);
+        }
+	nodeList.add(pvalueNode1);
+        return nodeList;
+    }
+
+
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    ArrayList<Object> new16() /* reduce AFuncName */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -709,7 +741,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new16() /* reduce AFuncCallName */
+    ArrayList<Object> new17() /* reduce AFuncCallName */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -729,7 +761,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new17() /* reduce AVarDeclType */
+    ArrayList<Object> new18() /* reduce AVarDeclType */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -749,7 +781,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new18() /* reduce AVarDeclName */
+    ArrayList<Object> new19() /* reduce AVarDeclName */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -769,7 +801,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new19() /* reduce AVarAssignName */
+    ArrayList<Object> new20() /* reduce AVarAssignName */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -788,6 +820,26 @@ public class Parser
 
 
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    ArrayList<Object> new21() /* reduce AVarFetchName */
+    {
+        @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
+
+        @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PVarFetchName pvarfetchnameNode1;
+        {
+            // Block
+        TIdentifier tidentifierNode2;
+        tidentifierNode2 = (TIdentifier)nodeArrayList1.get(0);
+
+        pvarfetchnameNode1 = new AVarFetchName(tidentifierNode2);
+        }
+	nodeList.add(pvarfetchnameNode1);
+        return nodeList;
+    }
+
+
+
     private static int[][][] actionTable;
 /*      {
 			{{-1, ERROR, 0}, {0, SHIFT, 1}, },
@@ -795,33 +847,34 @@ public class Parser
 			{{-1, ERROR, 2}, {14, ACCEPT, -1}, },
 			{{-1, REDUCE, 0}, },
 			{{-1, REDUCE, 1}, {0, SHIFT, 1}, },
-			{{-1, REDUCE, 15}, },
+			{{-1, REDUCE, 16}, },
 			{{-1, ERROR, 6}, {4, SHIFT, 8}, },
 			{{-1, REDUCE, 2}, },
 			{{-1, ERROR, 8}, {5, SHIFT, 9}, },
 			{{-1, ERROR, 9}, {2, SHIFT, 10}, },
 			{{-1, ERROR, 10}, {1, SHIFT, 11}, {13, SHIFT, 12}, },
 			{{-1, ERROR, 11}, {12, SHIFT, 17}, {13, SHIFT, 18}, },
-			{{-1, REDUCE, 19}, {13, REDUCE, 17}, },
-			{{-1, ERROR, 13}, {3, SHIFT, 22}, },
-			{{-1, ERROR, 14}, {11, SHIFT, 23}, },
-			{{-1, ERROR, 15}, {13, SHIFT, 24}, },
-			{{-1, ERROR, 16}, {10, SHIFT, 26}, },
+			{{-1, REDUCE, 20}, {13, REDUCE, 18}, },
+			{{-1, ERROR, 13}, {3, SHIFT, 23}, },
+			{{-1, ERROR, 14}, {11, SHIFT, 24}, },
+			{{-1, ERROR, 15}, {13, SHIFT, 25}, },
+			{{-1, ERROR, 16}, {10, SHIFT, 27}, },
 			{{-1, REDUCE, 13}, },
-			{{-1, REDUCE, 16}, },
+			{{-1, REDUCE, 21}, {4, REDUCE, 17}, },
 			{{-1, REDUCE, 8}, },
-			{{-1, ERROR, 20}, {6, SHIFT, 27}, {7, SHIFT, 28}, {8, SHIFT, 29}, {9, SHIFT, 30}, },
-			{{-1, ERROR, 21}, {4, SHIFT, 31}, },
+			{{-1, ERROR, 20}, {6, SHIFT, 28}, {7, SHIFT, 29}, {8, SHIFT, 30}, {9, SHIFT, 31}, },
+			{{-1, ERROR, 21}, {4, SHIFT, 32}, },
+			{{-1, REDUCE, 15}, },
 			{{-1, REDUCE, 3}, },
 			{{-1, REDUCE, 4}, {1, SHIFT, 11}, {13, SHIFT, 12}, },
-			{{-1, REDUCE, 18}, },
+			{{-1, REDUCE, 19}, },
 			{{-1, REDUCE, 6}, },
-			{{-1, ERROR, 26}, {12, SHIFT, 17}, {13, SHIFT, 18}, },
 			{{-1, ERROR, 27}, {12, SHIFT, 17}, {13, SHIFT, 18}, },
 			{{-1, ERROR, 28}, {12, SHIFT, 17}, {13, SHIFT, 18}, },
 			{{-1, ERROR, 29}, {12, SHIFT, 17}, {13, SHIFT, 18}, },
 			{{-1, ERROR, 30}, {12, SHIFT, 17}, {13, SHIFT, 18}, },
-			{{-1, ERROR, 31}, {5, SHIFT, 38}, },
+			{{-1, ERROR, 31}, {12, SHIFT, 17}, {13, SHIFT, 18}, },
+			{{-1, ERROR, 32}, {5, SHIFT, 39}, },
 			{{-1, REDUCE, 5}, },
 			{{-1, REDUCE, 7}, },
 			{{-1, REDUCE, 9}, },
@@ -835,15 +888,16 @@ public class Parser
 			{{-1, 2}, },
 			{{-1, 3}, {4, 7}, },
 			{{-1, 4}, },
-			{{-1, 13}, {23, 32}, },
+			{{-1, 13}, {24, 33}, },
 			{{-1, 14}, },
-			{{-1, 19}, {26, 33}, },
-			{{-1, 20}, {27, 34}, {28, 35}, {29, 36}, {30, 37}, },
+			{{-1, 19}, {27, 34}, },
+			{{-1, 20}, {28, 35}, {29, 36}, {30, 37}, {31, 38}, },
 			{{-1, 6}, },
 			{{-1, 21}, },
 			{{-1, 15}, },
-			{{-1, 25}, },
+			{{-1, 26}, },
 			{{-1, 16}, },
+			{{-1, 22}, },
         };*/
     private static String[] errorMessages;
 /*      {
@@ -861,12 +915,13 @@ public class Parser
 			"expecting: ';'",
 			"expecting: '='",
 			"expecting: '+', '-', '*', '/', ';'",
+			"expecting: '(', '+', '-', '*', '/', ';'",
 			"expecting: '+', '-', '*', '/'",
 			"expecting: 'return', '}', identifier",
         };*/
     private static int[] errors;
 /*      {
-			0, 1, 2, 2, 3, 4, 4, 2, 5, 6, 7, 8, 9, 10, 11, 1, 12, 13, 4, 11, 14, 4, 3, 15, 11, 11, 8, 8, 8, 8, 8, 5, 10, 11, 11, 11, 11, 11, 13, 
+			0, 1, 2, 2, 3, 4, 4, 2, 5, 6, 7, 8, 9, 10, 11, 1, 12, 13, 14, 11, 15, 4, 13, 3, 16, 11, 11, 8, 8, 8, 8, 8, 5, 10, 11, 11, 11, 11, 11, 13, 
         };*/
 
     static 

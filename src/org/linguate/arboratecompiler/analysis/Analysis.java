@@ -24,11 +24,13 @@ public interface Analysis extends Switch
     void caseADivideExpr(ADivideExpr node);
     void caseAIntLitValue(AIntLitValue node);
     void caseAFuncCallValue(AFuncCallValue node);
+    void caseAVarFetchValue(AVarFetchValue node);
     void caseAFuncName(AFuncName node);
     void caseAFuncCallName(AFuncCallName node);
     void caseAVarDeclType(AVarDeclType node);
     void caseAVarDeclName(AVarDeclName node);
     void caseAVarAssignName(AVarAssignName node);
+    void caseAVarFetchName(AVarFetchName node);
 
     void caseTKwFunction(TKwFunction node);
     void caseTKwReturn(TKwReturn node);
