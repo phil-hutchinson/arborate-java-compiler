@@ -54,7 +54,7 @@ public class CompilerTest {
 
     @Test
     public void testCompileSimpleAdd() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function addTest() {125 + 1000}");
+        List<FunctionDefinition> functions = Compiler.compile("function addTest() {return 125 + 1000;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -66,7 +66,7 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleSubtract() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("  function subtractTest(){  35 -   85}");
+        List<FunctionDefinition> functions = Compiler.compile("  function subtractTest(){   return   35 -   85  ;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -78,7 +78,7 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleMultiply() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function multiplyTest(){50*100}");
+        List<FunctionDefinition> functions = Compiler.compile("function multiplyTest(){return 50*100;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -90,7 +90,7 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleDivide() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {87 / 8  }");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 87 / 8 ; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -102,7 +102,7 @@ public class CompilerTest {
 
     @Test
     public void testCompileSimpleTwoFunctions() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {500 / 10  } function dummy() {7 + 15}");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 500 / 10;  } function dummy() {return 7 + 15;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -114,7 +114,7 @@ public class CompilerTest {
 
     @Test
     public void testCompileSimpleFunctionCall() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {300 / 10  } function funcCallTest() {divideTest() + 100}");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 300 / 10;  } function funcCallTest() {return divideTest() + 100;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -127,12 +127,12 @@ public class CompilerTest {
     @Test
     public void testCompileDuplicateFunctionNameThrows() throws Exception {
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function duplicateName() {300 / 10  } function duplicateName() {6 + 100}");
+        List<FunctionDefinition> functions = Compiler.compile("function duplicateName() {return 300 / 10;  } function duplicateName() {return 6 + 100;}");
     }
     
     @Test
     public void testCompileUnknownFunctionNameThrows() throws Exception {
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function simpleTest() {something() / 10  }");
+        List<FunctionDefinition> functions = Compiler.compile("function simpleTest() {return something() / 10;  }");
     }
 }

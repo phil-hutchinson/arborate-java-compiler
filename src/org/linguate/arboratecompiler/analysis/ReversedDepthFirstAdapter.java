@@ -76,9 +76,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     {
         inAFunc(node);
         {
-            List<PExpr> copy = new ArrayList<PExpr>(node.getExpr());
+            List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
             Collections.reverse(copy);
-            for(PExpr e : copy)
+            for(PStatement e : copy)
             {
                 e.apply(this);
             }
@@ -109,6 +109,77 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getFuncCallName().apply(this);
         }
         outAFuncCall(node);
+    }
+
+    public void inADeclarationStatement(ADeclarationStatement node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADeclarationStatement(ADeclarationStatement node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseADeclarationStatement(ADeclarationStatement node)
+    {
+        inADeclarationStatement(node);
+        if(node.getVarDeclName() != null)
+        {
+            node.getVarDeclName().apply(this);
+        }
+        if(node.getVarDeclType() != null)
+        {
+            node.getVarDeclType().apply(this);
+        }
+        outADeclarationStatement(node);
+    }
+
+    public void inAAssignmentStatement(AAssignmentStatement node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAAssignmentStatement(AAssignmentStatement node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAAssignmentStatement(AAssignmentStatement node)
+    {
+        inAAssignmentStatement(node);
+        if(node.getExpr() != null)
+        {
+            node.getExpr().apply(this);
+        }
+        if(node.getVarAssignName() != null)
+        {
+            node.getVarAssignName().apply(this);
+        }
+        outAAssignmentStatement(node);
+    }
+
+    public void inAReturnStatement(AReturnStatement node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAReturnStatement(AReturnStatement node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAReturnStatement(AReturnStatement node)
+    {
+        inAReturnStatement(node);
+        if(node.getExpr() != null)
+        {
+            node.getExpr().apply(this);
+        }
+        outAReturnStatement(node);
     }
 
     public void inAAddExpr(AAddExpr node)
@@ -293,5 +364,68 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getIdentifier().apply(this);
         }
         outAFuncCallName(node);
+    }
+
+    public void inAVarDeclType(AVarDeclType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAVarDeclType(AVarDeclType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAVarDeclType(AVarDeclType node)
+    {
+        inAVarDeclType(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAVarDeclType(node);
+    }
+
+    public void inAVarDeclName(AVarDeclName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAVarDeclName(AVarDeclName node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAVarDeclName(AVarDeclName node)
+    {
+        inAVarDeclName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAVarDeclName(node);
+    }
+
+    public void inAVarAssignName(AVarAssignName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAVarAssignName(AVarAssignName node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAVarAssignName(AVarAssignName node)
+    {
+        inAVarAssignName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAVarAssignName(node);
     }
 }

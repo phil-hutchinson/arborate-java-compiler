@@ -93,6 +93,24 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseADeclarationStatement(ADeclarationStatement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAAssignmentStatement(AAssignmentStatement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAReturnStatement(AReturnStatement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAAddExpr(AAddExpr node)
     {
         defaultCase(node);
@@ -141,7 +159,31 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAVarDeclType(AVarDeclType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAVarDeclName(AVarDeclName node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAVarAssignName(AVarAssignName node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTKwFunction(TKwFunction node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTKwReturn(TKwReturn node)
     {
         defaultCase(node);
     }
@@ -190,6 +232,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTSlash(TSlash node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTEquals(TEquals node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTSemicolon(TSemicolon node)
     {
         defaultCase(node);
     }

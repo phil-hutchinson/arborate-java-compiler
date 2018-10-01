@@ -23,6 +23,7 @@ States
 
 Tokens
     kw_function = 'function';
+    kw_return = 'return';
 
     left_curly = '{';
     right_curly = '}';
@@ -33,6 +34,10 @@ Tokens
     minus = '-';
     star = '*';
     slash = '/';
+
+    equals = '=';
+
+    semicolon = ';';
 
     int_string = non_zero_digit digit*;
     identifier = alpha alphanumeric*;
@@ -52,13 +57,21 @@ Productions
         | {multiple} [function]:func [rest]:function_list {-> [function.func, rest.func] };
 
     func {-> func} = 
-        kw_function func_name left_round right_round left_curly func_body right_curly { -> New func(func_name, [func_body.expr]) };
+        kw_function func_name left_round right_round left_curly func_body right_curly { -> New func(func_name, [func_body.statement]) };
 
-    func_body {-> expr*} = 
-        {single} [function_body]:statement { -> [function_body.expr] }
-        | {multiple} [function_body]:statement [rest]:func_body {-> [function_body.expr, rest.expr] };
+    func_body {-> statement*} = 
+        {single} [function_body]:statement semicolon { -> [function_body.statement] }
+        | {multiple} [function_body]:statement semicolon [rest]:func_body {-> [function_body.statement, rest.statement] };
 
-    statement {-> expr} =
+    statement {-> statement} =
+        {declaration} var_decl_type var_decl_name 
+            { -> New statement.declaration(var_decl_type, var_decl_name) }
+        | {assignment} var_assign_name equals expr
+            { -> New statement.assignment(var_assign_name, expr) }
+        | {return} kw_return expr
+            { -> New statement.return(expr) };
+
+    expr {-> expr} =
         {add} [op1]:value plus [op2]:value { -> New expr.add(op1.value, op2.value)}
         | {subtract} [op1]:value minus [op2]:value { -> New expr.subtract(op1.value, op2.value)}
         | {multiply} [op1]:value star [op2]:value { -> New expr.multiply(op1.value, op2.value)}
@@ -68,31 +81,38 @@ Productions
         {int_lit} int_string { -> New value.int_lit(int_string) }
         | {func_call } func_call_name left_round right_round {-> New value.func_call(func_call_name) };
 
-    /*int_lit {-> int_lit} = 
-        int_string { -> New int_lit(int_string) };*/
+    func_name = identifier;
+    func_call_name = identifier;
 
-    func_name =
-        identifier;
-
-    func_call_name =
-        identifier;
+    var_decl_type = identifier;
+    var_decl_name = identifier;
+    var_assign_name = identifier;
 
 Abstract Syntax Tree
-program = [functions]:func*;
+    program = [functions]:func*;
 
-func = func_name expr*;
+    func = func_name statement*;
 
-func_call = func_call_name;
+    func_call = func_call_name;
 
-expr = {add} [op1]:value [op2]:value
-     | {subtract} [op1]:value [op2]:value
-     | {multiply} [op1]:value [op2]:value
-     | {divide} [op1]:value [op2]:value;
+    statement =
+        {declaration} var_decl_type var_decl_name
+        | {assignment} var_assign_name expr
+        | {return} expr;
 
-value =
-    {int_lit} int_string
-    | {func_call} func_call_name;
+    expr = 
+        {add} [op1]:value [op2]:value
+        | {subtract} [op1]:value [op2]:value
+        | {multiply} [op1]:value [op2]:value
+        | {divide} [op1]:value [op2]:value;
 
-func_name = identifier;
+    value =
+        {int_lit} int_string
+        | {func_call} func_call_name;
 
-func_call_name = identifier;
+    func_name = identifier;
+    func_call_name = identifier;
+
+    var_decl_type = identifier;
+    var_decl_name = identifier;
+    var_assign_name = identifier;

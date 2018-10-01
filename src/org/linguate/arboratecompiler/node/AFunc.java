@@ -9,7 +9,7 @@ import org.linguate.arboratecompiler.analysis.*;
 public final class AFunc extends PFunc
 {
     private PFuncName _funcName_;
-    private final LinkedList<PExpr> _expr_ = new LinkedList<PExpr>();
+    private final LinkedList<PStatement> _statement_ = new LinkedList<PStatement>();
 
     public AFunc()
     {
@@ -18,12 +18,12 @@ public final class AFunc extends PFunc
 
     public AFunc(
         @SuppressWarnings("hiding") PFuncName _funcName_,
-        @SuppressWarnings("hiding") List<?> _expr_)
+        @SuppressWarnings("hiding") List<?> _statement_)
     {
         // Constructor
         setFuncName(_funcName_);
 
-        setExpr(_expr_);
+        setStatement(_statement_);
 
     }
 
@@ -32,7 +32,7 @@ public final class AFunc extends PFunc
     {
         return new AFunc(
             cloneNode(this._funcName_),
-            cloneList(this._expr_));
+            cloneList(this._statement_));
     }
 
     @Override
@@ -66,29 +66,29 @@ public final class AFunc extends PFunc
         this._funcName_ = node;
     }
 
-    public LinkedList<PExpr> getExpr()
+    public LinkedList<PStatement> getStatement()
     {
-        return this._expr_;
+        return this._statement_;
     }
 
-    public void setExpr(List<?> list)
+    public void setStatement(List<?> list)
     {
-        for(PExpr e : this._expr_)
+        for(PStatement e : this._statement_)
         {
             e.parent(null);
         }
-        this._expr_.clear();
+        this._statement_.clear();
 
         for(Object obj_e : list)
         {
-            PExpr e = (PExpr) obj_e;
+            PStatement e = (PStatement) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
-            this._expr_.add(e);
+            this._statement_.add(e);
         }
     }
 
@@ -97,7 +97,7 @@ public final class AFunc extends PFunc
     {
         return ""
             + toString(this._funcName_)
-            + toString(this._expr_);
+            + toString(this._statement_);
     }
 
     @Override
@@ -110,7 +110,7 @@ public final class AFunc extends PFunc
             return;
         }
 
-        if(this._expr_.remove(child))
+        if(this._statement_.remove(child))
         {
             return;
         }
@@ -128,13 +128,13 @@ public final class AFunc extends PFunc
             return;
         }
 
-        for(ListIterator<PExpr> i = this._expr_.listIterator(); i.hasNext();)
+        for(ListIterator<PStatement> i = this._statement_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)
             {
                 if(newChild != null)
                 {
-                    i.set((PExpr) newChild);
+                    i.set((PStatement) newChild);
                     newChild.parent(this);
                     oldChild.parent(null);
                     return;

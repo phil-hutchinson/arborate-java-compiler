@@ -15,6 +15,9 @@ public interface Analysis extends Switch
     void caseAProgram(AProgram node);
     void caseAFunc(AFunc node);
     void caseAFuncCall(AFuncCall node);
+    void caseADeclarationStatement(ADeclarationStatement node);
+    void caseAAssignmentStatement(AAssignmentStatement node);
+    void caseAReturnStatement(AReturnStatement node);
     void caseAAddExpr(AAddExpr node);
     void caseASubtractExpr(ASubtractExpr node);
     void caseAMultiplyExpr(AMultiplyExpr node);
@@ -23,8 +26,12 @@ public interface Analysis extends Switch
     void caseAFuncCallValue(AFuncCallValue node);
     void caseAFuncName(AFuncName node);
     void caseAFuncCallName(AFuncCallName node);
+    void caseAVarDeclType(AVarDeclType node);
+    void caseAVarDeclName(AVarDeclName node);
+    void caseAVarAssignName(AVarAssignName node);
 
     void caseTKwFunction(TKwFunction node);
+    void caseTKwReturn(TKwReturn node);
     void caseTLeftCurly(TLeftCurly node);
     void caseTRightCurly(TRightCurly node);
     void caseTLeftRound(TLeftRound node);
@@ -33,6 +40,8 @@ public interface Analysis extends Switch
     void caseTMinus(TMinus node);
     void caseTStar(TStar node);
     void caseTSlash(TSlash node);
+    void caseTEquals(TEquals node);
+    void caseTSemicolon(TSemicolon node);
     void caseTIntString(TIntString node);
     void caseTIdentifier(TIdentifier node);
     void caseTBlank(TBlank node);
