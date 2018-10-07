@@ -195,19 +195,19 @@ public class Parser
                 push(goTo(0), list);
             }
             break;
-            case 1: /* reduce ASingleFunctionList */
+            case 1: /* reduce ASingleFuncDeclList */
             {
                 ArrayList<Object> list = new1();
                 push(goTo(1), list);
             }
             break;
-            case 2: /* reduce AMultipleFunctionList */
+            case 2: /* reduce AMultipleFuncDeclList */
             {
                 ArrayList<Object> list = new2();
                 push(goTo(1), list);
             }
             break;
-            case 3: /* reduce AFunc */
+            case 3: /* reduce AFuncDecl */
             {
                 ArrayList<Object> list = new3();
                 push(goTo(2), list);
@@ -285,7 +285,7 @@ public class Parser
                 push(goTo(6), list);
             }
             break;
-            case 16: /* reduce AFuncName */
+            case 16: /* reduce AFuncDeclName */
             {
                 ArrayList<Object> list = new16();
                 push(goTo(7), list);
@@ -355,7 +355,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new1() /* reduce ASingleFunctionList */
+    ArrayList<Object> new1() /* reduce ASingleFuncDeclList */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -363,11 +363,11 @@ public class Parser
         LinkedList<Object> listNode2 = new LinkedList<Object>();
         {
             // Block
-        PFunc pfuncNode1;
-        pfuncNode1 = (PFunc)nodeArrayList1.get(0);
-	if(pfuncNode1 != null)
+        PFuncDecl pfuncdeclNode1;
+        pfuncdeclNode1 = (PFuncDecl)nodeArrayList1.get(0);
+	if(pfuncdeclNode1 != null)
 	{
-	  listNode2.add(pfuncNode1);
+	  listNode2.add(pfuncdeclNode1);
 	}
         }
 	nodeList.add(listNode2);
@@ -377,7 +377,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new2() /* reduce AMultipleFunctionList */
+    ArrayList<Object> new2() /* reduce AMultipleFuncDeclList */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -386,13 +386,13 @@ public class Parser
         LinkedList<Object> listNode3 = new LinkedList<Object>();
         {
             // Block
-        PFunc pfuncNode1;
+        PFuncDecl pfuncdeclNode1;
         LinkedList<Object> listNode2 = new LinkedList<Object>();
-        pfuncNode1 = (PFunc)nodeArrayList1.get(0);
+        pfuncdeclNode1 = (PFuncDecl)nodeArrayList1.get(0);
         listNode2 = (LinkedList)nodeArrayList2.get(0);
-	if(pfuncNode1 != null)
+	if(pfuncdeclNode1 != null)
 	{
-	  listNode3.add(pfuncNode1);
+	  listNode3.add(pfuncdeclNode1);
 	}
 	if(listNode2 != null)
 	{
@@ -406,7 +406,7 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new3() /* reduce AFunc */
+    ArrayList<Object> new3() /* reduce AFuncDecl */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
@@ -417,12 +417,12 @@ public class Parser
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        PFunc pfuncNode1;
+        PFuncDecl pfuncdeclNode1;
         {
             // Block
-        PFuncName pfuncnameNode2;
+        PFuncDeclName pfuncdeclnameNode2;
         LinkedList<Object> listNode4 = new LinkedList<Object>();
-        pfuncnameNode2 = (PFuncName)nodeArrayList2.get(0);
+        pfuncdeclnameNode2 = (PFuncDeclName)nodeArrayList2.get(0);
         {
             // Block
         LinkedList<Object> listNode3 = new LinkedList<Object>();
@@ -433,9 +433,9 @@ public class Parser
 	}
         }
 
-        pfuncNode1 = new AFunc(pfuncnameNode2, listNode4);
+        pfuncdeclNode1 = new AFuncDecl(pfuncdeclnameNode2, listNode4);
         }
-	nodeList.add(pfuncNode1);
+	nodeList.add(pfuncdeclNode1);
         return nodeList;
     }
 
@@ -721,20 +721,20 @@ public class Parser
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    ArrayList<Object> new16() /* reduce AFuncName */
+    ArrayList<Object> new16() /* reduce AFuncDeclName */
     {
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        PFuncName pfuncnameNode1;
+        PFuncDeclName pfuncdeclnameNode1;
         {
             // Block
         TIdentifier tidentifierNode2;
         tidentifierNode2 = (TIdentifier)nodeArrayList1.get(0);
 
-        pfuncnameNode1 = new AFuncName(tidentifierNode2);
+        pfuncdeclnameNode1 = new AFuncDeclName(tidentifierNode2);
         }
-	nodeList.add(pfuncnameNode1);
+	nodeList.add(pfuncdeclnameNode1);
         return nodeList;
     }
 

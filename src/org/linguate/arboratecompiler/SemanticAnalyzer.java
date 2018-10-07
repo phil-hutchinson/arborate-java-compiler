@@ -36,7 +36,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     Long assignmentVariablePosition;
     
     /*****************  NODE-PROCESSING METHODS  *****************/
-    public void inAFuncName(AFuncName node) {
+    public void inAFuncDeclName(AFuncDeclName node) {
         TIdentifier identifier = node.getIdentifier();
         String funcName = identifier.getText();
         if (localFunctions.containsKey(funcName)) {
@@ -46,14 +46,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         localFunctions.put(funcName, functionCount);
     }
     
-    public void inAFunc(AFunc node) {
+    public void inAFuncDecl(AFuncDecl node) {
         instructions = new ArrayList<Instruction>();
         localVariables = new HashMap<>();
         variableCount = 0;
         hasReturn = false;
     }
     
-    public void outAFunc(AFunc node) {
+    public void outAFuncDecl(AFuncDecl node) {
         FunctionDefinition newFunc = new FunctionDefinition(instructions, (int)variableCount, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
         functionDefinitions.add(newFunc);
         instructions = null;

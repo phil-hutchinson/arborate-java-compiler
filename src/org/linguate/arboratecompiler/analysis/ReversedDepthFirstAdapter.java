@@ -51,9 +51,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     {
         inAProgram(node);
         {
-            List<PFunc> copy = new ArrayList<PFunc>(node.getFunctions());
+            List<PFuncDecl> copy = new ArrayList<PFuncDecl>(node.getFunctions());
             Collections.reverse(copy);
-            for(PFunc e : copy)
+            for(PFuncDecl e : copy)
             {
                 e.apply(this);
             }
@@ -61,20 +61,20 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAProgram(node);
     }
 
-    public void inAFunc(AFunc node)
+    public void inAFuncDecl(AFuncDecl node)
     {
         defaultIn(node);
     }
 
-    public void outAFunc(AFunc node)
+    public void outAFuncDecl(AFuncDecl node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFunc(AFunc node)
+    public void caseAFuncDecl(AFuncDecl node)
     {
-        inAFunc(node);
+        inAFuncDecl(node);
         {
             List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
             Collections.reverse(copy);
@@ -83,11 +83,11 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
-        if(node.getFuncName() != null)
+        if(node.getFuncDeclName() != null)
         {
-            node.getFuncName().apply(this);
+            node.getFuncDeclName().apply(this);
         }
-        outAFunc(node);
+        outAFuncDecl(node);
     }
 
     public void inAFuncCall(AFuncCall node)
@@ -345,25 +345,25 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAVarFetchValue(node);
     }
 
-    public void inAFuncName(AFuncName node)
+    public void inAFuncDeclName(AFuncDeclName node)
     {
         defaultIn(node);
     }
 
-    public void outAFuncName(AFuncName node)
+    public void outAFuncDeclName(AFuncDeclName node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFuncName(AFuncName node)
+    public void caseAFuncDeclName(AFuncDeclName node)
     {
-        inAFuncName(node);
+        inAFuncDeclName(node);
         if(node.getIdentifier() != null)
         {
             node.getIdentifier().apply(this);
         }
-        outAFuncName(node);
+        outAFuncDeclName(node);
     }
 
     public void inAFuncCallName(AFuncCallName node)

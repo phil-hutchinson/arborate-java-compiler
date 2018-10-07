@@ -8,7 +8,7 @@ import org.linguate.arboratecompiler.analysis.*;
 @SuppressWarnings("nls")
 public final class AProgram extends PProgram
 {
-    private final LinkedList<PFunc> _functions_ = new LinkedList<PFunc>();
+    private final LinkedList<PFuncDecl> _functions_ = new LinkedList<PFuncDecl>();
 
     public AProgram()
     {
@@ -36,14 +36,14 @@ public final class AProgram extends PProgram
         ((Analysis) sw).caseAProgram(this);
     }
 
-    public LinkedList<PFunc> getFunctions()
+    public LinkedList<PFuncDecl> getFunctions()
     {
         return this._functions_;
     }
 
     public void setFunctions(List<?> list)
     {
-        for(PFunc e : this._functions_)
+        for(PFuncDecl e : this._functions_)
         {
             e.parent(null);
         }
@@ -51,7 +51,7 @@ public final class AProgram extends PProgram
 
         for(Object obj_e : list)
         {
-            PFunc e = (PFunc) obj_e;
+            PFuncDecl e = (PFuncDecl) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
@@ -85,13 +85,13 @@ public final class AProgram extends PProgram
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        for(ListIterator<PFunc> i = this._functions_.listIterator(); i.hasNext();)
+        for(ListIterator<PFuncDecl> i = this._functions_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)
             {
                 if(newChild != null)
                 {
-                    i.set((PFunc) newChild);
+                    i.set((PFuncDecl) newChild);
                     newChild.parent(this);
                     oldChild.parent(null);
                     return;

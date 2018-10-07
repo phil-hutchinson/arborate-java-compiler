@@ -51,8 +51,8 @@ public class DepthFirstAdapter extends AnalysisAdapter
     {
         inAProgram(node);
         {
-            List<PFunc> copy = new ArrayList<PFunc>(node.getFunctions());
-            for(PFunc e : copy)
+            List<PFuncDecl> copy = new ArrayList<PFuncDecl>(node.getFunctions());
+            for(PFuncDecl e : copy)
             {
                 e.apply(this);
             }
@@ -60,23 +60,23 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAProgram(node);
     }
 
-    public void inAFunc(AFunc node)
+    public void inAFuncDecl(AFuncDecl node)
     {
         defaultIn(node);
     }
 
-    public void outAFunc(AFunc node)
+    public void outAFuncDecl(AFuncDecl node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFunc(AFunc node)
+    public void caseAFuncDecl(AFuncDecl node)
     {
-        inAFunc(node);
-        if(node.getFuncName() != null)
+        inAFuncDecl(node);
+        if(node.getFuncDeclName() != null)
         {
-            node.getFuncName().apply(this);
+            node.getFuncDeclName().apply(this);
         }
         {
             List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
@@ -85,7 +85,7 @@ public class DepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
-        outAFunc(node);
+        outAFuncDecl(node);
     }
 
     public void inAFuncCall(AFuncCall node)
@@ -343,25 +343,25 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAVarFetchValue(node);
     }
 
-    public void inAFuncName(AFuncName node)
+    public void inAFuncDeclName(AFuncDeclName node)
     {
         defaultIn(node);
     }
 
-    public void outAFuncName(AFuncName node)
+    public void outAFuncDeclName(AFuncDeclName node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFuncName(AFuncName node)
+    public void caseAFuncDeclName(AFuncDeclName node)
     {
-        inAFuncName(node);
+        inAFuncDeclName(node);
         if(node.getIdentifier() != null)
         {
             node.getIdentifier().apply(this);
         }
-        outAFuncName(node);
+        outAFuncDeclName(node);
     }
 
     public void inAFuncCallName(AFuncCallName node)

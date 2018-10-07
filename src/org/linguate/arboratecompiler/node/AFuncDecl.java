@@ -6,22 +6,22 @@ import java.util.*;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AFunc extends PFunc
+public final class AFuncDecl extends PFuncDecl
 {
-    private PFuncName _funcName_;
+    private PFuncDeclName _funcDeclName_;
     private final LinkedList<PStatement> _statement_ = new LinkedList<PStatement>();
 
-    public AFunc()
+    public AFuncDecl()
     {
         // Constructor
     }
 
-    public AFunc(
-        @SuppressWarnings("hiding") PFuncName _funcName_,
+    public AFuncDecl(
+        @SuppressWarnings("hiding") PFuncDeclName _funcDeclName_,
         @SuppressWarnings("hiding") List<?> _statement_)
     {
         // Constructor
-        setFuncName(_funcName_);
+        setFuncDeclName(_funcDeclName_);
 
         setStatement(_statement_);
 
@@ -30,27 +30,27 @@ public final class AFunc extends PFunc
     @Override
     public Object clone()
     {
-        return new AFunc(
-            cloneNode(this._funcName_),
+        return new AFuncDecl(
+            cloneNode(this._funcDeclName_),
             cloneList(this._statement_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAFunc(this);
+        ((Analysis) sw).caseAFuncDecl(this);
     }
 
-    public PFuncName getFuncName()
+    public PFuncDeclName getFuncDeclName()
     {
-        return this._funcName_;
+        return this._funcDeclName_;
     }
 
-    public void setFuncName(PFuncName node)
+    public void setFuncDeclName(PFuncDeclName node)
     {
-        if(this._funcName_ != null)
+        if(this._funcDeclName_ != null)
         {
-            this._funcName_.parent(null);
+            this._funcDeclName_.parent(null);
         }
 
         if(node != null)
@@ -63,7 +63,7 @@ public final class AFunc extends PFunc
             node.parent(this);
         }
 
-        this._funcName_ = node;
+        this._funcDeclName_ = node;
     }
 
     public LinkedList<PStatement> getStatement()
@@ -96,7 +96,7 @@ public final class AFunc extends PFunc
     public String toString()
     {
         return ""
-            + toString(this._funcName_)
+            + toString(this._funcDeclName_)
             + toString(this._statement_);
     }
 
@@ -104,9 +104,9 @@ public final class AFunc extends PFunc
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._funcName_ == child)
+        if(this._funcDeclName_ == child)
         {
-            this._funcName_ = null;
+            this._funcDeclName_ = null;
             return;
         }
 
@@ -122,9 +122,9 @@ public final class AFunc extends PFunc
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._funcName_ == oldChild)
+        if(this._funcDeclName_ == oldChild)
         {
-            setFuncName((PFuncName) newChild);
+            setFuncDeclName((PFuncDeclName) newChild);
             return;
         }
 

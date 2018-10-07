@@ -50,14 +50,14 @@ Ignored Tokens
 
 Productions
     program {-> program} =
-        [functions]:function_list { -> New program( [functions.func]) };
+        [functions]:func_decl_list { -> New program( [functions.func_decl]) };
 
-    function_list {-> func*} =
-        {single} [function]:func { -> [function.func] }
-        | {multiple} [function]:func [rest]:function_list {-> [function.func, rest.func] };
+    func_decl_list {-> func_decl*} =
+        {single} [function]:func_decl { -> [function.func_decl] }
+        | {multiple} [function]:func_decl [rest]:func_decl_list {-> [function.func_decl, rest.func_decl] };
 
-    func {-> func} = 
-        kw_function func_name left_round right_round left_curly func_body right_curly { -> New func(func_name, [func_body.statement]) };
+    func_decl {-> func_decl} = 
+        kw_function func_decl_name left_round right_round left_curly func_body right_curly { -> New func_decl(func_decl_name, [func_body.statement]) };
 
     func_body {-> statement*} = 
         {single} [function_body]:statement semicolon { -> [function_body.statement] }
@@ -82,7 +82,7 @@ Productions
         | {func_call} func_call_name left_round right_round {-> New value.func_call(func_call_name) }
         | {var_fetch} var_fetch_name { -> New value.var_fetch(var_fetch_name)};
 
-    func_name = identifier;
+    func_decl_name = identifier;
     func_call_name = identifier;
 
     var_decl_type = identifier;
@@ -92,9 +92,9 @@ Productions
     var_fetch_name = identifier;
 
 Abstract Syntax Tree
-    program = [functions]:func*;
+    program = [functions]:func_decl*;
 
-    func = func_name statement*;
+    func_decl = func_decl_name statement*;
 
     func_call = func_call_name;
 
@@ -114,7 +114,7 @@ Abstract Syntax Tree
         | {func_call} func_call_name
         | {var_fetch} var_fetch_name;
 
-    func_name = identifier;
+    func_decl_name = identifier;
     func_call_name = identifier;
 
     var_decl_type = identifier;
