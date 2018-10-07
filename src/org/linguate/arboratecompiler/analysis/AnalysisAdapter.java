@@ -87,7 +87,7 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAFuncCall(AFuncCall node)
+    public void caseAFuncArgDecl(AFuncArgDecl node)
     {
         defaultCase(node);
     }
@@ -106,6 +106,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAReturnStatement(AReturnStatement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFuncCall(AFuncCall node)
     {
         defaultCase(node);
     }
@@ -154,6 +160,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAFuncDeclName(AFuncDeclName node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFuncArgDeclType(AFuncArgDeclType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFuncArgDeclName(AFuncArgDeclName node)
     {
         defaultCase(node);
     }
@@ -250,6 +268,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTEquals(TEquals node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTComma(TComma node)
     {
         defaultCase(node);
     }

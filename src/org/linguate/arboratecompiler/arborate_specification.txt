@@ -37,6 +37,7 @@ Tokens
 
     equals = '=';
 
+    comma = ',';
     semicolon = ';';
 
     int_string = non_zero_digit digit*;
@@ -54,10 +55,32 @@ Productions
 
     func_decl_list {-> func_decl*} =
         {single} [function]:func_decl { -> [function.func_decl] }
-        | {multiple} [function]:func_decl [rest]:func_decl_list {-> [function.func_decl, rest.func_decl] };
+        | {multiple} [function]:func_decl [rest]:func_decl_list { -> [function.func_decl, rest.func_decl] };
+/*
+    func_decl {-> func_decl} = 
+        {no_args} kw_function func_decl_name left_round right_round left_curly func_body right_curly 
+            { -> New func_decl(func_decl_name, [], [func_body.statement]) }
+        | {with_args} kw_function func_decl_name left_round func_arg_decl_list right_round left_curly func_body right_curly 
+            { -> New func_decl(func_decl_name, [func_arg_decl_list.func_arg_decl], [func_body.statement]) };
+*/
 
     func_decl {-> func_decl} = 
-        kw_function func_decl_name left_round right_round left_curly func_body right_curly { -> New func_decl(func_decl_name, [func_body.statement]) };
+        kw_function func_decl_name left_round func_arg_decl_list right_round left_curly func_body right_curly 
+            { -> New func_decl(func_decl_name, [func_arg_decl_list.func_arg_decl], [func_body.statement]) };
+
+/*
+    func_arg_decl_list {->  func_arg_decl*} =
+        {single} [func_arg]:func_arg_decl { -> [func_arg.func_arg_decl] }
+        | {multiple} [func_arg]:func_arg_decl comma [rest]:func_arg_decl_list { -> [func_arg.func_arg_decl, rest.func_arg_decl] };
+*/
+
+    func_arg_decl_list {->  func_arg_decl*} =
+        {none} { -> [] }
+        | {single} [func_arg]:func_arg_decl { -> [func_arg.func_arg_decl] }
+        | {multiple} [func_arg]:func_arg_decl comma [rest]:func_arg_decl_list { -> [func_arg.func_arg_decl, rest.func_arg_decl] };
+
+    func_arg_decl {-> func_arg_decl} =
+        func_arg_decl_type func_arg_decl_name { -> New func_arg_decl(func_arg_decl_type, func_arg_decl_name) };
 
     func_body {-> statement*} = 
         {single} [function_body]:statement semicolon { -> [function_body.statement] }
@@ -83,6 +106,9 @@ Productions
         | {var_fetch} var_fetch_name { -> New value.var_fetch(var_fetch_name)};
 
     func_decl_name = identifier;
+    func_arg_decl_type = identifier;
+    func_arg_decl_name = identifier;
+
     func_call_name = identifier;
 
     var_decl_type = identifier;
@@ -94,14 +120,16 @@ Productions
 Abstract Syntax Tree
     program = [functions]:func_decl*;
 
-    func_decl = func_decl_name statement*;
+    func_decl = func_decl_name func_arg_decl* statement*;
 
-    func_call = func_call_name;
+    func_arg_decl = func_arg_decl_type func_arg_decl_name;
 
     statement =
         {declaration} var_decl_type var_decl_name
         | {assignment} var_assign_name expr
         | {return} expr;
+
+    func_call = func_call_name;
 
     expr = 
         {add} [op1]:value [op2]:value
@@ -115,6 +143,9 @@ Abstract Syntax Tree
         | {var_fetch} var_fetch_name;
 
     func_decl_name = identifier;
+    func_arg_decl_type = identifier; 
+    func_arg_decl_name = identifier;
+
     func_call_name = identifier;
 
     var_decl_type = identifier;

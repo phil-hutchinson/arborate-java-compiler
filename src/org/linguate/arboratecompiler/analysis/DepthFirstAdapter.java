@@ -79,6 +79,13 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getFuncDeclName().apply(this);
         }
         {
+            List<PFuncArgDecl> copy = new ArrayList<PFuncArgDecl>(node.getFuncArgDecl());
+            for(PFuncArgDecl e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        {
             List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
             for(PStatement e : copy)
             {
@@ -88,25 +95,29 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAFuncDecl(node);
     }
 
-    public void inAFuncCall(AFuncCall node)
+    public void inAFuncArgDecl(AFuncArgDecl node)
     {
         defaultIn(node);
     }
 
-    public void outAFuncCall(AFuncCall node)
+    public void outAFuncArgDecl(AFuncArgDecl node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFuncCall(AFuncCall node)
+    public void caseAFuncArgDecl(AFuncArgDecl node)
     {
-        inAFuncCall(node);
-        if(node.getFuncCallName() != null)
+        inAFuncArgDecl(node);
+        if(node.getFuncArgDeclType() != null)
         {
-            node.getFuncCallName().apply(this);
+            node.getFuncArgDeclType().apply(this);
         }
-        outAFuncCall(node);
+        if(node.getFuncArgDeclName() != null)
+        {
+            node.getFuncArgDeclName().apply(this);
+        }
+        outAFuncArgDecl(node);
     }
 
     public void inADeclarationStatement(ADeclarationStatement node)
@@ -178,6 +189,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getExpr().apply(this);
         }
         outAReturnStatement(node);
+    }
+
+    public void inAFuncCall(AFuncCall node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncCall(AFuncCall node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncCall(AFuncCall node)
+    {
+        inAFuncCall(node);
+        if(node.getFuncCallName() != null)
+        {
+            node.getFuncCallName().apply(this);
+        }
+        outAFuncCall(node);
     }
 
     public void inAAddExpr(AAddExpr node)
@@ -362,6 +394,48 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getIdentifier().apply(this);
         }
         outAFuncDeclName(node);
+    }
+
+    public void inAFuncArgDeclType(AFuncArgDeclType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncArgDeclType(AFuncArgDeclType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncArgDeclType(AFuncArgDeclType node)
+    {
+        inAFuncArgDeclType(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAFuncArgDeclType(node);
+    }
+
+    public void inAFuncArgDeclName(AFuncArgDeclName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncArgDeclName(AFuncArgDeclName node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncArgDeclName(AFuncArgDeclName node)
+    {
+        inAFuncArgDeclName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAFuncArgDeclName(node);
     }
 
     public void inAFuncCallName(AFuncCallName node)

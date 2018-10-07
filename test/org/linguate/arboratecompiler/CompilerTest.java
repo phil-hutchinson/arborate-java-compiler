@@ -219,5 +219,16 @@ public class CompilerTest {
         expectedException.expect(Exception.class);
         List<FunctionDefinition> functions = Compiler.compile("function unknownVariableFetch() {int a; a = 3 / 10;}");
     }
-    
+
+    @Test 
+    public void testFunctionWithParameters() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int a) {return 6 / 3;  } function funcCallTest() {return divideTest() * 5;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(10L, result.getValue());
+    }
 }
