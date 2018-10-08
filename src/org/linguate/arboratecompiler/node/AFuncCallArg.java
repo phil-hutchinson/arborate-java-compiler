@@ -5,46 +5,46 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AFuncCall extends PFuncCall
+public final class AFuncCallArg extends PFuncCallArg
 {
-    private PFuncCallName _funcCallName_;
+    private PValue _value_;
 
-    public AFuncCall()
+    public AFuncCallArg()
     {
         // Constructor
     }
 
-    public AFuncCall(
-        @SuppressWarnings("hiding") PFuncCallName _funcCallName_)
+    public AFuncCallArg(
+        @SuppressWarnings("hiding") PValue _value_)
     {
         // Constructor
-        setFuncCallName(_funcCallName_);
+        setValue(_value_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AFuncCall(
-            cloneNode(this._funcCallName_));
+        return new AFuncCallArg(
+            cloneNode(this._value_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAFuncCall(this);
+        ((Analysis) sw).caseAFuncCallArg(this);
     }
 
-    public PFuncCallName getFuncCallName()
+    public PValue getValue()
     {
-        return this._funcCallName_;
+        return this._value_;
     }
 
-    public void setFuncCallName(PFuncCallName node)
+    public void setValue(PValue node)
     {
-        if(this._funcCallName_ != null)
+        if(this._value_ != null)
         {
-            this._funcCallName_.parent(null);
+            this._value_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class AFuncCall extends PFuncCall
             node.parent(this);
         }
 
-        this._funcCallName_ = node;
+        this._value_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._funcCallName_);
+            + toString(this._value_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._funcCallName_ == child)
+        if(this._value_ == child)
         {
-            this._funcCallName_ = null;
+            this._value_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class AFuncCall extends PFuncCall
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._funcCallName_ == oldChild)
+        if(this._value_ == oldChild)
         {
-            setFuncCallName((PFuncCallName) newChild);
+            setValue((PValue) newChild);
             return;
         }
 

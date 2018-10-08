@@ -87,7 +87,7 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAFuncArgDecl(AFuncArgDecl node)
+    public void caseAFuncDeclArg(AFuncDeclArg node)
     {
         defaultCase(node);
     }
@@ -111,7 +111,7 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAFuncCall(AFuncCall node)
+    public void caseAFuncCallArg(AFuncCallArg node)
     {
         defaultCase(node);
     }
@@ -165,13 +165,13 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAFuncArgDeclType(AFuncArgDeclType node)
+    public void caseAFuncDeclArgType(AFuncDeclArgType node)
     {
         defaultCase(node);
     }
 
     @Override
-    public void caseAFuncArgDeclName(AFuncArgDeclName node)
+    public void caseAFuncDeclArgName(AFuncDeclArgName node)
     {
         defaultCase(node);
     }

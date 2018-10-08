@@ -221,7 +221,7 @@ public class CompilerTest {
     }
 
     @Test 
-    public void testFunctionWithParameters() throws Exception {
+    public void testFunctionDummyParameter() throws Exception {
         List<FunctionDefinition> functions = Compiler.compile("function divideTest(int a) {return 6 / 3;  } function funcCallTest() {return divideTest() * 5;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
@@ -231,4 +231,55 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(10L, result.getValue());
     }
+
+    @Test 
+    public void testFunctionTwoDummyParameters() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int a, int b) {return 9 / 3;  } function funcCallTest() {return divideTest() + 5;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(8L, result.getValue());
+    }
+
+    /* Function call tests not passing because of incorrect number of items on stack
+       Will not work until receiving function actually processes the arguments.
+    @Test 
+    public void testFunctionCallDummyParameter() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 8 / 2;  } function funcCallTest() {return divideTest(14) * 5;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(20L, result.getValue());
+    }
+
+    @Test 
+    public void testFunctionCallTwoDummyParameters() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 100 / 5;  } function funcCallTest() {int a; a = 3 + 9; return divideTest(a, 22) + 9;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(29L, result.getValue());
+    }
+
+    @Test 
+    public void testFunctionCallDummyParameterMulti() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 10 / 2;  } function funcCallTest() {return divideTest(divideTest(12)) + 99;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(104L, result.getValue());
+    }
+    */
 }

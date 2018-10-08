@@ -84,9 +84,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             }
         }
         {
-            List<PFuncArgDecl> copy = new ArrayList<PFuncArgDecl>(node.getFuncArgDecl());
+            List<PFuncDeclArg> copy = new ArrayList<PFuncDeclArg>(node.getFuncDeclArg());
             Collections.reverse(copy);
-            for(PFuncArgDecl e : copy)
+            for(PFuncDeclArg e : copy)
             {
                 e.apply(this);
             }
@@ -98,29 +98,29 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAFuncDecl(node);
     }
 
-    public void inAFuncArgDecl(AFuncArgDecl node)
+    public void inAFuncDeclArg(AFuncDeclArg node)
     {
         defaultIn(node);
     }
 
-    public void outAFuncArgDecl(AFuncArgDecl node)
+    public void outAFuncDeclArg(AFuncDeclArg node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFuncArgDecl(AFuncArgDecl node)
+    public void caseAFuncDeclArg(AFuncDeclArg node)
     {
-        inAFuncArgDecl(node);
-        if(node.getFuncArgDeclName() != null)
+        inAFuncDeclArg(node);
+        if(node.getFuncDeclArgName() != null)
         {
-            node.getFuncArgDeclName().apply(this);
+            node.getFuncDeclArgName().apply(this);
         }
-        if(node.getFuncArgDeclType() != null)
+        if(node.getFuncDeclArgType() != null)
         {
-            node.getFuncArgDeclType().apply(this);
+            node.getFuncDeclArgType().apply(this);
         }
-        outAFuncArgDecl(node);
+        outAFuncDeclArg(node);
     }
 
     public void inADeclarationStatement(ADeclarationStatement node)
@@ -194,25 +194,25 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAReturnStatement(node);
     }
 
-    public void inAFuncCall(AFuncCall node)
+    public void inAFuncCallArg(AFuncCallArg node)
     {
         defaultIn(node);
     }
 
-    public void outAFuncCall(AFuncCall node)
+    public void outAFuncCallArg(AFuncCallArg node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFuncCall(AFuncCall node)
+    public void caseAFuncCallArg(AFuncCallArg node)
     {
-        inAFuncCall(node);
-        if(node.getFuncCallName() != null)
+        inAFuncCallArg(node);
+        if(node.getValue() != null)
         {
-            node.getFuncCallName().apply(this);
+            node.getValue().apply(this);
         }
-        outAFuncCall(node);
+        outAFuncCallArg(node);
     }
 
     public void inAAddExpr(AAddExpr node)
@@ -350,6 +350,14 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseAFuncCallValue(AFuncCallValue node)
     {
         inAFuncCallValue(node);
+        {
+            List<PFuncCallArg> copy = new ArrayList<PFuncCallArg>(node.getFuncCallArg());
+            Collections.reverse(copy);
+            for(PFuncCallArg e : copy)
+            {
+                e.apply(this);
+            }
+        }
         if(node.getFuncCallName() != null)
         {
             node.getFuncCallName().apply(this);
@@ -399,46 +407,46 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAFuncDeclName(node);
     }
 
-    public void inAFuncArgDeclType(AFuncArgDeclType node)
+    public void inAFuncDeclArgType(AFuncDeclArgType node)
     {
         defaultIn(node);
     }
 
-    public void outAFuncArgDeclType(AFuncArgDeclType node)
+    public void outAFuncDeclArgType(AFuncDeclArgType node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFuncArgDeclType(AFuncArgDeclType node)
+    public void caseAFuncDeclArgType(AFuncDeclArgType node)
     {
-        inAFuncArgDeclType(node);
+        inAFuncDeclArgType(node);
         if(node.getIdentifier() != null)
         {
             node.getIdentifier().apply(this);
         }
-        outAFuncArgDeclType(node);
+        outAFuncDeclArgType(node);
     }
 
-    public void inAFuncArgDeclName(AFuncArgDeclName node)
+    public void inAFuncDeclArgName(AFuncDeclArgName node)
     {
         defaultIn(node);
     }
 
-    public void outAFuncArgDeclName(AFuncArgDeclName node)
+    public void outAFuncDeclArgName(AFuncDeclArgName node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFuncArgDeclName(AFuncArgDeclName node)
+    public void caseAFuncDeclArgName(AFuncDeclArgName node)
     {
-        inAFuncArgDeclName(node);
+        inAFuncDeclArgName(node);
         if(node.getIdentifier() != null)
         {
             node.getIdentifier().apply(this);
         }
-        outAFuncArgDeclName(node);
+        outAFuncDeclArgName(node);
     }
 
     public void inAFuncCallName(AFuncCallName node)

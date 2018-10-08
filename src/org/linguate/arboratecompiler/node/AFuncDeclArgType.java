@@ -5,16 +5,16 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AFuncArgDeclName extends PFuncArgDeclName
+public final class AFuncDeclArgType extends PFuncDeclArgType
 {
     private TIdentifier _identifier_;
 
-    public AFuncArgDeclName()
+    public AFuncDeclArgType()
     {
         // Constructor
     }
 
-    public AFuncArgDeclName(
+    public AFuncDeclArgType(
         @SuppressWarnings("hiding") TIdentifier _identifier_)
     {
         // Constructor
@@ -25,14 +25,14 @@ public final class AFuncArgDeclName extends PFuncArgDeclName
     @Override
     public Object clone()
     {
-        return new AFuncArgDeclName(
+        return new AFuncDeclArgType(
             cloneNode(this._identifier_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAFuncArgDeclName(this);
+        ((Analysis) sw).caseAFuncDeclArgType(this);
     }
 
     public TIdentifier getIdentifier()

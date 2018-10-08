@@ -2,12 +2,14 @@
 
 package org.linguate.arboratecompiler.node;
 
+import java.util.*;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
 public final class AFuncCallValue extends PValue
 {
     private PFuncCallName _funcCallName_;
+    private final LinkedList<PFuncCallArg> _funcCallArg_ = new LinkedList<PFuncCallArg>();
 
     public AFuncCallValue()
     {
@@ -15,10 +17,13 @@ public final class AFuncCallValue extends PValue
     }
 
     public AFuncCallValue(
-        @SuppressWarnings("hiding") PFuncCallName _funcCallName_)
+        @SuppressWarnings("hiding") PFuncCallName _funcCallName_,
+        @SuppressWarnings("hiding") List<?> _funcCallArg_)
     {
         // Constructor
         setFuncCallName(_funcCallName_);
+
+        setFuncCallArg(_funcCallArg_);
 
     }
 
@@ -26,7 +31,8 @@ public final class AFuncCallValue extends PValue
     public Object clone()
     {
         return new AFuncCallValue(
-            cloneNode(this._funcCallName_));
+            cloneNode(this._funcCallName_),
+            cloneList(this._funcCallArg_));
     }
 
     @Override
@@ -60,11 +66,38 @@ public final class AFuncCallValue extends PValue
         this._funcCallName_ = node;
     }
 
+    public LinkedList<PFuncCallArg> getFuncCallArg()
+    {
+        return this._funcCallArg_;
+    }
+
+    public void setFuncCallArg(List<?> list)
+    {
+        for(PFuncCallArg e : this._funcCallArg_)
+        {
+            e.parent(null);
+        }
+        this._funcCallArg_.clear();
+
+        for(Object obj_e : list)
+        {
+            PFuncCallArg e = (PFuncCallArg) obj_e;
+            if(e.parent() != null)
+            {
+                e.parent().removeChild(e);
+            }
+
+            e.parent(this);
+            this._funcCallArg_.add(e);
+        }
+    }
+
     @Override
     public String toString()
     {
         return ""
-            + toString(this._funcCallName_);
+            + toString(this._funcCallName_)
+            + toString(this._funcCallArg_);
     }
 
     @Override
@@ -74,6 +107,11 @@ public final class AFuncCallValue extends PValue
         if(this._funcCallName_ == child)
         {
             this._funcCallName_ = null;
+            return;
+        }
+
+        if(this._funcCallArg_.remove(child))
+        {
             return;
         }
 
@@ -88,6 +126,24 @@ public final class AFuncCallValue extends PValue
         {
             setFuncCallName((PFuncCallName) newChild);
             return;
+        }
+
+        for(ListIterator<PFuncCallArg> i = this._funcCallArg_.listIterator(); i.hasNext();)
+        {
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PFuncCallArg) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
+
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
         }
 
         throw new RuntimeException("Not a child.");

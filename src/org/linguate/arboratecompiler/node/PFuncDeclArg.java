@@ -2,7 +2,7 @@
 
 package org.linguate.arboratecompiler.node;
 
-public abstract class PFuncCall extends Node
+public abstract class PFuncDeclArg extends Node
 {
     // Empty body
 }
