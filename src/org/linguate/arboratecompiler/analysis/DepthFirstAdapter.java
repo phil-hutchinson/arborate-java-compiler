@@ -78,12 +78,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getFuncDeclName().apply(this);
         }
+        if(node.getFuncDeclArgList() != null)
         {
-            List<PFuncDeclArg> copy = new ArrayList<PFuncDeclArg>(node.getFuncDeclArg());
-            for(PFuncDeclArg e : copy)
-            {
-                e.apply(this);
-            }
+            node.getFuncDeclArgList().apply(this);
         }
         {
             List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
@@ -93,6 +90,30 @@ public class DepthFirstAdapter extends AnalysisAdapter
             }
         }
         outAFuncDecl(node);
+    }
+
+    public void inAFuncDeclArgList(AFuncDeclArgList node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncDeclArgList(AFuncDeclArgList node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncDeclArgList(AFuncDeclArgList node)
+    {
+        inAFuncDeclArgList(node);
+        {
+            List<PFuncDeclArg> copy = new ArrayList<PFuncDeclArg>(node.getFuncDeclArg());
+            for(PFuncDeclArg e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAFuncDeclArgList(node);
     }
 
     public void inAFuncDeclArg(AFuncDeclArg node)

@@ -87,6 +87,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAFuncDeclArgList(AFuncDeclArgList node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFuncDeclArg(AFuncDeclArg node)
     {
         defaultCase(node);

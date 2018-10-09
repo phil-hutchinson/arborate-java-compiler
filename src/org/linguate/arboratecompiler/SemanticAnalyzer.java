@@ -7,6 +7,7 @@ package org.linguate.arboratecompiler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,14 +29,25 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     List<Instruction> instructions;
     Map<String, Long> localVariables;
     long variableCount;
+    List<TIdentifier> declarationArguments;
     boolean hasReturn;
     
     List<FunctionDefinition> functionDefinitions = new ArrayList<>();
     
     TIdentifier declarationIdentifier;
     Long assignmentVariablePosition;
+
+    TIdentifier functionCallNameIdentifier;
     
-    /*****************  NODE-PROCESSING METHODS  *****************/
+    /*****************  NODE DEFINITIONS  *****************/
+
+    public void inAFuncDecl(AFuncDecl node) {
+        instructions = new ArrayList<Instruction>();
+        localVariables = new HashMap<>();
+        variableCount = 0;
+        hasReturn = false;
+    }
+    
     public void inAFuncDeclName(AFuncDeclName node) {
         TIdentifier identifier = node.getIdentifier();
         String funcName = identifier.getText();
@@ -45,13 +57,47 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
         localFunctions.put(funcName, functionCount);
     }
-    
-    public void inAFuncDecl(AFuncDecl node) {
-        instructions = new ArrayList<Instruction>();
-        localVariables = new HashMap<>();
-        variableCount = 0;
-        hasReturn = false;
+
+    public void inAFuncDeclArgList(AFuncDeclArgList node) {
+        declarationArguments = new ArrayList<>();
     }
+    
+    public void inAFuncDeclArgType(AFuncDeclArgType node) {
+        String varType = node.getIdentifier().getText();
+        if (!varType.equals("int")) {
+            throw new RuntimeException("int is the only valid argument type at the moment.");
+        }
+    }
+    
+    public void inAFuncDeclArgName(AFuncDeclArgName node) {
+        declarationArguments.add(node.getIdentifier());
+    }
+    
+    public void outAFuncDeclArgList(AFuncDeclArgList node) {
+        for (TIdentifier argIdentifier : declarationArguments) {
+            String varName = argIdentifier.getText();
+            if (localVariables.containsKey(varName)) {
+                String location = declarationIdentifier.getLine() 
+                        + ":" + declarationIdentifier.getPos();
+                throw new RuntimeException("Duplicate argument name: " 
+                        + varName + " at " + location);
+            }
+            localVariables.put(varName, variableCount);
+            
+            variableCount++;
+        }
+
+        List<TIdentifier> reversed = new ArrayList(declarationArguments);
+        Collections.reverse(reversed);
+        
+        long argPos = declarationArguments.size();
+        
+        for(TIdentifier argIdentifier: reversed) {
+            argPos--;
+            addInstruction(InstructionCode.STACK_TO_VARIABLE, argPos);
+        }
+    }
+    
     
     public void outAFuncDecl(AFuncDecl node) {
         FunctionDefinition newFunc = new FunctionDefinition(instructions, (int)variableCount, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
@@ -139,14 +185,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         addInstruction(InstructionCode.INTEGER_TO_STACK, val);
     }
     
+    public void inAFuncCallValue(AFuncCallValue node) {
+        functionCallNameIdentifier = null;
+    }
+    
     public void outAFuncCallName(AFuncCallName node) {
-        TIdentifier identifier = node.getIdentifier();
-        String funcToCall = node.getIdentifier().getText();
+        functionCallNameIdentifier = node.getIdentifier();
+    }
+    
+    public void outAFuncCallValue(AFuncCallValue node) {
+        String funcToCall = functionCallNameIdentifier.getText();
         if (localFunctions.containsKey(funcToCall)) {
             long functionNumber = localFunctions.get(funcToCall);
             addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
         } else {
-            String location = identifier.getLine() + ":" + identifier.getPos();
+            String location = functionCallNameIdentifier.getLine() + ":" + functionCallNameIdentifier.getPos();
             throw new RuntimeException("Unknown function: " + funcToCall + " at " + location);
         }
     }

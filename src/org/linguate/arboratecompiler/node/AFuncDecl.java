@@ -9,7 +9,7 @@ import org.linguate.arboratecompiler.analysis.*;
 public final class AFuncDecl extends PFuncDecl
 {
     private PFuncDeclName _funcDeclName_;
-    private final LinkedList<PFuncDeclArg> _funcDeclArg_ = new LinkedList<PFuncDeclArg>();
+    private PFuncDeclArgList _funcDeclArgList_;
     private final LinkedList<PStatement> _statement_ = new LinkedList<PStatement>();
 
     public AFuncDecl()
@@ -19,13 +19,13 @@ public final class AFuncDecl extends PFuncDecl
 
     public AFuncDecl(
         @SuppressWarnings("hiding") PFuncDeclName _funcDeclName_,
-        @SuppressWarnings("hiding") List<?> _funcDeclArg_,
+        @SuppressWarnings("hiding") PFuncDeclArgList _funcDeclArgList_,
         @SuppressWarnings("hiding") List<?> _statement_)
     {
         // Constructor
         setFuncDeclName(_funcDeclName_);
 
-        setFuncDeclArg(_funcDeclArg_);
+        setFuncDeclArgList(_funcDeclArgList_);
 
         setStatement(_statement_);
 
@@ -36,7 +36,7 @@ public final class AFuncDecl extends PFuncDecl
     {
         return new AFuncDecl(
             cloneNode(this._funcDeclName_),
-            cloneList(this._funcDeclArg_),
+            cloneNode(this._funcDeclArgList_),
             cloneList(this._statement_));
     }
 
@@ -71,30 +71,29 @@ public final class AFuncDecl extends PFuncDecl
         this._funcDeclName_ = node;
     }
 
-    public LinkedList<PFuncDeclArg> getFuncDeclArg()
+    public PFuncDeclArgList getFuncDeclArgList()
     {
-        return this._funcDeclArg_;
+        return this._funcDeclArgList_;
     }
 
-    public void setFuncDeclArg(List<?> list)
+    public void setFuncDeclArgList(PFuncDeclArgList node)
     {
-        for(PFuncDeclArg e : this._funcDeclArg_)
+        if(this._funcDeclArgList_ != null)
         {
-            e.parent(null);
+            this._funcDeclArgList_.parent(null);
         }
-        this._funcDeclArg_.clear();
 
-        for(Object obj_e : list)
+        if(node != null)
         {
-            PFuncDeclArg e = (PFuncDeclArg) obj_e;
-            if(e.parent() != null)
+            if(node.parent() != null)
             {
-                e.parent().removeChild(e);
+                node.parent().removeChild(node);
             }
 
-            e.parent(this);
-            this._funcDeclArg_.add(e);
+            node.parent(this);
         }
+
+        this._funcDeclArgList_ = node;
     }
 
     public LinkedList<PStatement> getStatement()
@@ -128,7 +127,7 @@ public final class AFuncDecl extends PFuncDecl
     {
         return ""
             + toString(this._funcDeclName_)
-            + toString(this._funcDeclArg_)
+            + toString(this._funcDeclArgList_)
             + toString(this._statement_);
     }
 
@@ -142,8 +141,9 @@ public final class AFuncDecl extends PFuncDecl
             return;
         }
 
-        if(this._funcDeclArg_.remove(child))
+        if(this._funcDeclArgList_ == child)
         {
+            this._funcDeclArgList_ = null;
             return;
         }
 
@@ -165,22 +165,10 @@ public final class AFuncDecl extends PFuncDecl
             return;
         }
 
-        for(ListIterator<PFuncDeclArg> i = this._funcDeclArg_.listIterator(); i.hasNext();)
+        if(this._funcDeclArgList_ == oldChild)
         {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PFuncDeclArg) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
+            setFuncDeclArgList((PFuncDeclArgList) newChild);
+            return;
         }
 
         for(ListIterator<PStatement> i = this._statement_.listIterator(); i.hasNext();)

@@ -14,6 +14,7 @@ public interface Analysis extends Switch
     void caseStart(Start node);
     void caseAProgram(AProgram node);
     void caseAFuncDecl(AFuncDecl node);
+    void caseAFuncDeclArgList(AFuncDeclArgList node);
     void caseAFuncDeclArg(AFuncDeclArg node);
     void caseADeclarationStatement(ADeclarationStatement node);
     void caseAAssignmentStatement(AAssignmentStatement node);

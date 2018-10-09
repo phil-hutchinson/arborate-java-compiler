@@ -83,6 +83,31 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
+        if(node.getFuncDeclArgList() != null)
+        {
+            node.getFuncDeclArgList().apply(this);
+        }
+        if(node.getFuncDeclName() != null)
+        {
+            node.getFuncDeclName().apply(this);
+        }
+        outAFuncDecl(node);
+    }
+
+    public void inAFuncDeclArgList(AFuncDeclArgList node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncDeclArgList(AFuncDeclArgList node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncDeclArgList(AFuncDeclArgList node)
+    {
+        inAFuncDeclArgList(node);
         {
             List<PFuncDeclArg> copy = new ArrayList<PFuncDeclArg>(node.getFuncDeclArg());
             Collections.reverse(copy);
@@ -91,11 +116,7 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
-        if(node.getFuncDeclName() != null)
-        {
-            node.getFuncDeclName().apply(this);
-        }
-        outAFuncDecl(node);
+        outAFuncDeclArgList(node);
     }
 
     public void inAFuncDeclArg(AFuncDeclArg node)

@@ -222,7 +222,7 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionDummyParameter() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int a) {return 6 / 3;  } function funcCallTest() {return divideTest() * 5;}");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int a) {return 6 / 3;  } function funcCallTest() {return divideTest(7) * 5;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -234,7 +234,7 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionTwoDummyParameters() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int a, int b) {return 9 / 3;  } function funcCallTest() {return divideTest() + 5;}");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int a, int b) {return 9 / 3;  } function funcCallTest() {return divideTest(9, 3) + 5;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -245,10 +245,10 @@ public class CompilerTest {
     }
 
     /* Function call tests not passing because of incorrect number of items on stack
-       Will not work until receiving function actually processes the arguments.
+       Will not work until receiving function actually processes the arguments.*/
     @Test 
     public void testFunctionCallDummyParameter() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 8 / 2;  } function funcCallTest() {return divideTest(14) * 5;}");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int zz) {return 8 / 2;  } function funcCallTest() {return divideTest(14) * 5;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -260,7 +260,7 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionCallTwoDummyParameters() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 100 / 5;  } function funcCallTest() {int a; a = 3 + 9; return divideTest(a, 22) + 9;}");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int dummy1, int dummy2) {return 100 / 5;  } function funcCallTest() {int a; a = 3 + 9; return divideTest(a, 22) + 9;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -272,7 +272,7 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionCallDummyParameterMulti() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function divideTest() {return 10 / 2;  } function funcCallTest() {return divideTest(divideTest(12)) + 99;}");
+        List<FunctionDefinition> functions = Compiler.compile("function divideTest(int dummy) {return 10 / 2;  } function funcCallTest() {return divideTest(divideTest(12)) + 99;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -281,5 +281,40 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(104L, result.getValue());
     }
-    */
+    
+    @Test 
+    public void testFunctionCallParameter() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function square(int val) {return val * val;  } function funcCallTest() {return square(20) * 1;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(400L, result.getValue());
+    }
+    
+    @Test 
+    public void testFunctionCallMultiParameter() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function volume(int length, int width, int height) {int lw; lw = length * width; return lw * height;  } function roomVolume() {return volume(14, 13, 8) + volume(6, 10, 8);}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(1936L, result.getValue());
+    }
+
+    @Test 
+    public void testFunctionCallOrderSensitiveMultiParameter() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function subAndDivide(int a, int b, int c) {int diff; diff = a - b; return diff / c;  } function test() {return subAndDivide(100, 40, 5) * 1;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(12L, result.getValue());
+    }
 }
