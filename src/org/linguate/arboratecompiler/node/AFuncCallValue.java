@@ -2,14 +2,13 @@
 
 package org.linguate.arboratecompiler.node;
 
-import java.util.*;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
 public final class AFuncCallValue extends PValue
 {
     private PFuncCallName _funcCallName_;
-    private final LinkedList<PFuncCallArg> _funcCallArg_ = new LinkedList<PFuncCallArg>();
+    private PFuncCallArgList _funcCallArgList_;
 
     public AFuncCallValue()
     {
@@ -18,12 +17,12 @@ public final class AFuncCallValue extends PValue
 
     public AFuncCallValue(
         @SuppressWarnings("hiding") PFuncCallName _funcCallName_,
-        @SuppressWarnings("hiding") List<?> _funcCallArg_)
+        @SuppressWarnings("hiding") PFuncCallArgList _funcCallArgList_)
     {
         // Constructor
         setFuncCallName(_funcCallName_);
 
-        setFuncCallArg(_funcCallArg_);
+        setFuncCallArgList(_funcCallArgList_);
 
     }
 
@@ -32,7 +31,7 @@ public final class AFuncCallValue extends PValue
     {
         return new AFuncCallValue(
             cloneNode(this._funcCallName_),
-            cloneList(this._funcCallArg_));
+            cloneNode(this._funcCallArgList_));
     }
 
     @Override
@@ -66,30 +65,29 @@ public final class AFuncCallValue extends PValue
         this._funcCallName_ = node;
     }
 
-    public LinkedList<PFuncCallArg> getFuncCallArg()
+    public PFuncCallArgList getFuncCallArgList()
     {
-        return this._funcCallArg_;
+        return this._funcCallArgList_;
     }
 
-    public void setFuncCallArg(List<?> list)
+    public void setFuncCallArgList(PFuncCallArgList node)
     {
-        for(PFuncCallArg e : this._funcCallArg_)
+        if(this._funcCallArgList_ != null)
         {
-            e.parent(null);
+            this._funcCallArgList_.parent(null);
         }
-        this._funcCallArg_.clear();
 
-        for(Object obj_e : list)
+        if(node != null)
         {
-            PFuncCallArg e = (PFuncCallArg) obj_e;
-            if(e.parent() != null)
+            if(node.parent() != null)
             {
-                e.parent().removeChild(e);
+                node.parent().removeChild(node);
             }
 
-            e.parent(this);
-            this._funcCallArg_.add(e);
+            node.parent(this);
         }
+
+        this._funcCallArgList_ = node;
     }
 
     @Override
@@ -97,7 +95,7 @@ public final class AFuncCallValue extends PValue
     {
         return ""
             + toString(this._funcCallName_)
-            + toString(this._funcCallArg_);
+            + toString(this._funcCallArgList_);
     }
 
     @Override
@@ -110,8 +108,9 @@ public final class AFuncCallValue extends PValue
             return;
         }
 
-        if(this._funcCallArg_.remove(child))
+        if(this._funcCallArgList_ == child)
         {
+            this._funcCallArgList_ = null;
             return;
         }
 
@@ -128,22 +127,10 @@ public final class AFuncCallValue extends PValue
             return;
         }
 
-        for(ListIterator<PFuncCallArg> i = this._funcCallArg_.listIterator(); i.hasNext();)
+        if(this._funcCallArgList_ == oldChild)
         {
-            if(i.next() == oldChild)
-            {
-                if(newChild != null)
-                {
-                    i.set((PFuncCallArg) newChild);
-                    newChild.parent(this);
-                    oldChild.parent(null);
-                    return;
-                }
-
-                i.remove();
-                oldChild.parent(null);
-                return;
-            }
+            setFuncCallArgList((PFuncCallArgList) newChild);
+            return;
         }
 
         throw new RuntimeException("Not a child.");

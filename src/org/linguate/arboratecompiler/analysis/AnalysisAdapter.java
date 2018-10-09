@@ -117,12 +117,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAFuncCallArg(AFuncCallArg node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
     public void caseAAddExpr(AAddExpr node)
     {
         defaultCase(node);
@@ -160,6 +154,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAVarFetchValue(AVarFetchValue node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFuncCallArgList(AFuncCallArgList node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFuncCallArg(AFuncCallArg node)
     {
         defaultCase(node);
     }

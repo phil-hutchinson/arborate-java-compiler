@@ -317,4 +317,28 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(12L, result.getValue());
     }
+
+    @Test 
+    public void testTwoFunctionsSameParameterName() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function times2(int val) {return val * 2;  } function divideBy2(int val) {return val / 2;} function test() {return times2(10) + divideBy2(10); }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(2);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(25L, result.getValue());
+    }
+
+    @Test 
+    public void testFunctionCallSameParameterNameThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function areaOfSquare(int length, int length) {return length * length;  } function test() {return areaOfSquare(5, 5) * 1;}");
+    }
+
+    @Test 
+    public void testFunctionCallSameParameterNameAsVarNameThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function subTest(int val) {int val; val = 1 * 1; return val * 1;  } function test() {return subTest(1) * 1;}");
+    }
 }

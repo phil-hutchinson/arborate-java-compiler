@@ -212,27 +212,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAReturnStatement(node);
     }
 
-    public void inAFuncCallArg(AFuncCallArg node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAFuncCallArg(AFuncCallArg node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAFuncCallArg(AFuncCallArg node)
-    {
-        inAFuncCallArg(node);
-        if(node.getValue() != null)
-        {
-            node.getValue().apply(this);
-        }
-        outAFuncCallArg(node);
-    }
-
     public void inAAddExpr(AAddExpr node)
     {
         defaultIn(node);
@@ -372,12 +351,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getFuncCallName().apply(this);
         }
+        if(node.getFuncCallArgList() != null)
         {
-            List<PFuncCallArg> copy = new ArrayList<PFuncCallArg>(node.getFuncCallArg());
-            for(PFuncCallArg e : copy)
-            {
-                e.apply(this);
-            }
+            node.getFuncCallArgList().apply(this);
         }
         outAFuncCallValue(node);
     }
@@ -401,6 +377,51 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getVarFetchName().apply(this);
         }
         outAVarFetchValue(node);
+    }
+
+    public void inAFuncCallArgList(AFuncCallArgList node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncCallArgList(AFuncCallArgList node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncCallArgList(AFuncCallArgList node)
+    {
+        inAFuncCallArgList(node);
+        {
+            List<PFuncCallArg> copy = new ArrayList<PFuncCallArg>(node.getFuncCallArg());
+            for(PFuncCallArg e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAFuncCallArgList(node);
+    }
+
+    public void inAFuncCallArg(AFuncCallArg node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncCallArg(AFuncCallArg node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncCallArg(AFuncCallArg node)
+    {
+        inAFuncCallArg(node);
+        if(node.getValue() != null)
+        {
+            node.getValue().apply(this);
+        }
+        outAFuncCallArg(node);
     }
 
     public void inAFuncDeclName(AFuncDeclName node)
