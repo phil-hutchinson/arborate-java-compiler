@@ -7,8 +7,8 @@ import org.linguate.arboratecompiler.analysis.*;
 @SuppressWarnings("nls")
 public final class ASubtractExpr extends PExpr
 {
-    private PValue _op1_;
-    private PValue _op2_;
+    private PExpr _expr_;
+    private PTerm _term_;
 
     public ASubtractExpr()
     {
@@ -16,13 +16,13 @@ public final class ASubtractExpr extends PExpr
     }
 
     public ASubtractExpr(
-        @SuppressWarnings("hiding") PValue _op1_,
-        @SuppressWarnings("hiding") PValue _op2_)
+        @SuppressWarnings("hiding") PExpr _expr_,
+        @SuppressWarnings("hiding") PTerm _term_)
     {
         // Constructor
-        setOp1(_op1_);
+        setExpr(_expr_);
 
-        setOp2(_op2_);
+        setTerm(_term_);
 
     }
 
@@ -30,8 +30,8 @@ public final class ASubtractExpr extends PExpr
     public Object clone()
     {
         return new ASubtractExpr(
-            cloneNode(this._op1_),
-            cloneNode(this._op2_));
+            cloneNode(this._expr_),
+            cloneNode(this._term_));
     }
 
     @Override
@@ -40,16 +40,16 @@ public final class ASubtractExpr extends PExpr
         ((Analysis) sw).caseASubtractExpr(this);
     }
 
-    public PValue getOp1()
+    public PExpr getExpr()
     {
-        return this._op1_;
+        return this._expr_;
     }
 
-    public void setOp1(PValue node)
+    public void setExpr(PExpr node)
     {
-        if(this._op1_ != null)
+        if(this._expr_ != null)
         {
-            this._op1_.parent(null);
+            this._expr_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +62,19 @@ public final class ASubtractExpr extends PExpr
             node.parent(this);
         }
 
-        this._op1_ = node;
+        this._expr_ = node;
     }
 
-    public PValue getOp2()
+    public PTerm getTerm()
     {
-        return this._op2_;
+        return this._term_;
     }
 
-    public void setOp2(PValue node)
+    public void setTerm(PTerm node)
     {
-        if(this._op2_ != null)
+        if(this._term_ != null)
         {
-            this._op2_.parent(null);
+            this._term_.parent(null);
         }
 
         if(node != null)
@@ -87,30 +87,30 @@ public final class ASubtractExpr extends PExpr
             node.parent(this);
         }
 
-        this._op2_ = node;
+        this._term_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._op1_)
-            + toString(this._op2_);
+            + toString(this._expr_)
+            + toString(this._term_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._op1_ == child)
+        if(this._expr_ == child)
         {
-            this._op1_ = null;
+            this._expr_ = null;
             return;
         }
 
-        if(this._op2_ == child)
+        if(this._term_ == child)
         {
-            this._op2_ = null;
+            this._term_ = null;
             return;
         }
 
@@ -121,15 +121,15 @@ public final class ASubtractExpr extends PExpr
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._op1_ == oldChild)
+        if(this._expr_ == oldChild)
         {
-            setOp1((PValue) newChild);
+            setExpr((PExpr) newChild);
             return;
         }
 
-        if(this._op2_ == oldChild)
+        if(this._term_ == oldChild)
         {
-            setOp2((PValue) newChild);
+            setTerm((PTerm) newChild);
             return;
         }
 

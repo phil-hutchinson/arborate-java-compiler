@@ -129,31 +129,49 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAMultiplyExpr(AMultiplyExpr node)
+    public void caseAOnlyTermExpr(AOnlyTermExpr node)
     {
         defaultCase(node);
     }
 
     @Override
-    public void caseADivideExpr(ADivideExpr node)
+    public void caseAMultiplyTerm(AMultiplyTerm node)
     {
         defaultCase(node);
     }
 
     @Override
-    public void caseAIntLitValue(AIntLitValue node)
+    public void caseADivideTerm(ADivideTerm node)
     {
         defaultCase(node);
     }
 
     @Override
-    public void caseAFuncCallValue(AFuncCallValue node)
+    public void caseAOnlyFactorTerm(AOnlyFactorTerm node)
     {
         defaultCase(node);
     }
 
     @Override
-    public void caseAVarFetchValue(AVarFetchValue node)
+    public void caseAIntLitFactor(AIntLitFactor node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFuncCallFactor(AFuncCallFactor node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAVarFetchFactor(AVarFetchFactor node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseABracketedExprFactor(ABracketedExprFactor node)
     {
         defaultCase(node);
     }

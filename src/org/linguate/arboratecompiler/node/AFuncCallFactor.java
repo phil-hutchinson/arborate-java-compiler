@@ -5,17 +5,17 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AFuncCallValue extends PValue
+public final class AFuncCallFactor extends PFactor
 {
     private PFuncCallName _funcCallName_;
     private PFuncCallArgList _funcCallArgList_;
 
-    public AFuncCallValue()
+    public AFuncCallFactor()
     {
         // Constructor
     }
 
-    public AFuncCallValue(
+    public AFuncCallFactor(
         @SuppressWarnings("hiding") PFuncCallName _funcCallName_,
         @SuppressWarnings("hiding") PFuncCallArgList _funcCallArgList_)
     {
@@ -29,7 +29,7 @@ public final class AFuncCallValue extends PValue
     @Override
     public Object clone()
     {
-        return new AFuncCallValue(
+        return new AFuncCallFactor(
             cloneNode(this._funcCallName_),
             cloneNode(this._funcCallArgList_));
     }
@@ -37,7 +37,7 @@ public final class AFuncCallValue extends PValue
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAFuncCallValue(this);
+        ((Analysis) sw).caseAFuncCallFactor(this);
     }
 
     public PFuncCallName getFuncCallName()

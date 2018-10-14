@@ -5,46 +5,46 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AFuncCallArg extends PFuncCallArg
+public final class AOnlyTermExpr extends PExpr
 {
-    private PExpr _expr_;
+    private PTerm _term_;
 
-    public AFuncCallArg()
+    public AOnlyTermExpr()
     {
         // Constructor
     }
 
-    public AFuncCallArg(
-        @SuppressWarnings("hiding") PExpr _expr_)
+    public AOnlyTermExpr(
+        @SuppressWarnings("hiding") PTerm _term_)
     {
         // Constructor
-        setExpr(_expr_);
+        setTerm(_term_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AFuncCallArg(
-            cloneNode(this._expr_));
+        return new AOnlyTermExpr(
+            cloneNode(this._term_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAFuncCallArg(this);
+        ((Analysis) sw).caseAOnlyTermExpr(this);
     }
 
-    public PExpr getExpr()
+    public PTerm getTerm()
     {
-        return this._expr_;
+        return this._term_;
     }
 
-    public void setExpr(PExpr node)
+    public void setTerm(PTerm node)
     {
-        if(this._expr_ != null)
+        if(this._term_ != null)
         {
-            this._expr_.parent(null);
+            this._term_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class AFuncCallArg extends PFuncCallArg
             node.parent(this);
         }
 
-        this._expr_ = node;
+        this._term_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._expr_);
+            + toString(this._term_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._expr_ == child)
+        if(this._term_ == child)
         {
-            this._expr_ = null;
+            this._term_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class AFuncCallArg extends PFuncCallArg
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._expr_ == oldChild)
+        if(this._term_ == oldChild)
         {
-            setExpr((PExpr) newChild);
+            setTerm((PTerm) newChild);
             return;
         }
 

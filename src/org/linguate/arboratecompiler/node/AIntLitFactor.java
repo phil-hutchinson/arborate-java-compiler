@@ -5,46 +5,46 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AFuncCallArg extends PFuncCallArg
+public final class AIntLitFactor extends PFactor
 {
-    private PExpr _expr_;
+    private TIntString _intString_;
 
-    public AFuncCallArg()
+    public AIntLitFactor()
     {
         // Constructor
     }
 
-    public AFuncCallArg(
-        @SuppressWarnings("hiding") PExpr _expr_)
+    public AIntLitFactor(
+        @SuppressWarnings("hiding") TIntString _intString_)
     {
         // Constructor
-        setExpr(_expr_);
+        setIntString(_intString_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AFuncCallArg(
-            cloneNode(this._expr_));
+        return new AIntLitFactor(
+            cloneNode(this._intString_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAFuncCallArg(this);
+        ((Analysis) sw).caseAIntLitFactor(this);
     }
 
-    public PExpr getExpr()
+    public TIntString getIntString()
     {
-        return this._expr_;
+        return this._intString_;
     }
 
-    public void setExpr(PExpr node)
+    public void setIntString(TIntString node)
     {
-        if(this._expr_ != null)
+        if(this._intString_ != null)
         {
-            this._expr_.parent(null);
+            this._intString_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class AFuncCallArg extends PFuncCallArg
             node.parent(this);
         }
 
-        this._expr_ = node;
+        this._intString_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._expr_);
+            + toString(this._intString_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._expr_ == child)
+        if(this._intString_ == child)
         {
-            this._expr_ = null;
+            this._intString_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class AFuncCallArg extends PFuncCallArg
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._expr_ == oldChild)
+        if(this._intString_ == oldChild)
         {
-            setExpr((PExpr) newChild);
+            setIntString((TIntString) newChild);
             return;
         }
 

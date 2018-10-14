@@ -353,4 +353,52 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(8L, result.getValue());
     }
+    
+    @Test
+    public void testExpressionTermFactor() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function etfTest() {int a; int b; int c; a = 3; b = 6 / 3 * 2; c = 7 + 5 * 5; return a * (b + c);  }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(108L, result.getValue());
+    }
+
+    @Test
+    public void testFunctionCallWithExpressionTermFactor() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function double(int a) {return a * 2;  } function test() {int a; int b; a = double(2 + 5); b = double((1 + 3) / (2 * 2)); b = b + a; return double(b);}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(32L, result.getValue());
+    }
+
+    @Test
+    public void testRepeatedOperationsWithExpressionTermFactor() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function etfRepeatedOperationsTest() {int a; int b; int c; a = 3 + 2 + 5 + 1; b = 20 - 5 - 5 - 5 + 3; c = a * b * 2 * 6 * 3 * 5; return c / 9 / 10 / 4;  }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(44L, result.getValue());
+    }
+
+    @Test
+    public void testNestedBrackets() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function etfRepeatedOperationsTest() {int a; int b; a = 3 - (12 - (25 - (9 - 4))); b = 36 / (32 / (40 / (15 / 3))); return a * b;  }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(99L, result.getValue());
+    }
 }

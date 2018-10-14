@@ -5,46 +5,46 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AIntLitValue extends PValue
+public final class AVarFetchFactor extends PFactor
 {
-    private TIntString _intString_;
+    private PVarFetchName _varFetchName_;
 
-    public AIntLitValue()
+    public AVarFetchFactor()
     {
         // Constructor
     }
 
-    public AIntLitValue(
-        @SuppressWarnings("hiding") TIntString _intString_)
+    public AVarFetchFactor(
+        @SuppressWarnings("hiding") PVarFetchName _varFetchName_)
     {
         // Constructor
-        setIntString(_intString_);
+        setVarFetchName(_varFetchName_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AIntLitValue(
-            cloneNode(this._intString_));
+        return new AVarFetchFactor(
+            cloneNode(this._varFetchName_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAIntLitValue(this);
+        ((Analysis) sw).caseAVarFetchFactor(this);
     }
 
-    public TIntString getIntString()
+    public PVarFetchName getVarFetchName()
     {
-        return this._intString_;
+        return this._varFetchName_;
     }
 
-    public void setIntString(TIntString node)
+    public void setVarFetchName(PVarFetchName node)
     {
-        if(this._intString_ != null)
+        if(this._varFetchName_ != null)
         {
-            this._intString_.parent(null);
+            this._varFetchName_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class AIntLitValue extends PValue
             node.parent(this);
         }
 
-        this._intString_ = node;
+        this._varFetchName_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._intString_);
+            + toString(this._varFetchName_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._intString_ == child)
+        if(this._varFetchName_ == child)
         {
-            this._intString_ = null;
+            this._varFetchName_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class AIntLitValue extends PValue
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._intString_ == oldChild)
+        if(this._varFetchName_ == oldChild)
         {
-            setIntString((TIntString) newChild);
+            setVarFetchName((PVarFetchName) newChild);
             return;
         }
 

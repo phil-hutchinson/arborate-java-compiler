@@ -5,46 +5,46 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AVarFetchValue extends PValue
+public final class ABracketedExprFactor extends PFactor
 {
-    private PVarFetchName _varFetchName_;
+    private PExpr _expr_;
 
-    public AVarFetchValue()
+    public ABracketedExprFactor()
     {
         // Constructor
     }
 
-    public AVarFetchValue(
-        @SuppressWarnings("hiding") PVarFetchName _varFetchName_)
+    public ABracketedExprFactor(
+        @SuppressWarnings("hiding") PExpr _expr_)
     {
         // Constructor
-        setVarFetchName(_varFetchName_);
+        setExpr(_expr_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AVarFetchValue(
-            cloneNode(this._varFetchName_));
+        return new ABracketedExprFactor(
+            cloneNode(this._expr_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAVarFetchValue(this);
+        ((Analysis) sw).caseABracketedExprFactor(this);
     }
 
-    public PVarFetchName getVarFetchName()
+    public PExpr getExpr()
     {
-        return this._varFetchName_;
+        return this._expr_;
     }
 
-    public void setVarFetchName(PVarFetchName node)
+    public void setExpr(PExpr node)
     {
-        if(this._varFetchName_ != null)
+        if(this._expr_ != null)
         {
-            this._varFetchName_.parent(null);
+            this._expr_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class AVarFetchValue extends PValue
             node.parent(this);
         }
 
-        this._varFetchName_ = node;
+        this._expr_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._varFetchName_);
+            + toString(this._expr_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._varFetchName_ == child)
+        if(this._expr_ == child)
         {
-            this._varFetchName_ = null;
+            this._expr_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class AVarFetchValue extends PValue
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._varFetchName_ == oldChild)
+        if(this._expr_ == oldChild)
         {
-            setVarFetchName((PVarFetchName) newChild);
+            setExpr((PExpr) newChild);
             return;
         }
 

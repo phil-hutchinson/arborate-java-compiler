@@ -172,20 +172,20 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         addInstruction(InstructionCode.INTEGER_SUBTRACT);
     }
 
-    public void outAMultiplyExpr(AMultiplyExpr node) {
+    public void outAMultiplyTerm(AMultiplyTerm node) {
         addInstruction(InstructionCode.INTEGER_MULTIPLY);
     }
 
-    public void outADivideExpr(ADivideExpr node) {
+    public void outADivideTerm(ADivideTerm node) {
         addInstruction(InstructionCode.INTEGER_DIVIDE);
     }
 
-    public void inAIntLitValue(AIntLitValue node) {
+    public void inAIntLitFactor(AIntLitFactor node) {
         long val = Long.parseLong(node.getIntString().getText());
         addInstruction(InstructionCode.INTEGER_TO_STACK, val);
     }
     
-    public void inAFuncCallValue(AFuncCallValue node) {
+    public void inAFuncCallFactor(AFuncCallFactor node) {
         functionCallNameIdentifier = null;
     }
     
@@ -193,7 +193,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         functionCallNameIdentifier = node.getIdentifier();
     }
     
-    public void outAFuncCallValue(AFuncCallValue node) {
+    public void outAFuncCallFactor(AFuncCallFactor node) {
         String funcToCall = functionCallNameIdentifier.getText();
         if (localFunctions.containsKey(funcToCall)) {
             long functionNumber = localFunctions.get(funcToCall);

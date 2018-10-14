@@ -2,7 +2,7 @@
 
 package org.linguate.arboratecompiler.node;
 
-public abstract class PValue extends Node
+public abstract class PFactor extends Node
 {
     // Empty body
 }
