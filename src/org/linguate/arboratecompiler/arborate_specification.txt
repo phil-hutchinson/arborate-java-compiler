@@ -7,6 +7,7 @@ Helpers
 /* These are character sets and regular expressions used in the definition of tokens. */
 
     digit = ['0' .. '9'];
+    zero = '0';
     non_zero_digit = [digit - '0'];
 
     alpha = [['a' .. 'z'] + ['A' .. 'Z']];
@@ -40,7 +41,7 @@ Tokens
     comma = ',';
     semicolon = ';';
 
-    int_string = non_zero_digit digit*;
+    int_string = non_zero_digit digit* | zero;
     identifier = alpha alphanumeric*;
 
     blank = blank;

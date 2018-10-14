@@ -341,4 +341,16 @@ public class CompilerTest {
         expectedException.expect(Exception.class);
         List<FunctionDefinition> functions = Compiler.compile("function subTest(int val) {int val; val = 1 * 1; return val * 1;  } function test() {return subTest(1) * 1;}");
     }
+
+    @Test 
+    public void testZeroIntLiteral() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function zeroLiteral() {return 8 + 0;  }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(8L, result.getValue());
+    }
 }
