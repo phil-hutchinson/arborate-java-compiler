@@ -23,12 +23,14 @@ import org.linguate.arboratecompiler.node.*;
  * @author Phil Hutchinson
  */
 public class SemanticAnalyzer extends DepthFirstAdapter {
-    Map<String, Long> localFunctions = new HashMap<>();
-    long functionCount = 0;
-
+    ProgramContext programBuilder;
+    
     List<Instruction> instructions;
     Map<String, Long> localVariables;
-    long variableCount;
+    long getVariableCount() {
+        return localVariables.size();
+    }
+    
     List<TIdentifier> declarationArguments;
     boolean hasReturn;
     
@@ -40,22 +42,24 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     TIdentifier functionCallNameIdentifier;
     
     /*****************  NODE DEFINITIONS  *****************/
-
+    public void inAProgram(AProgram node) {
+        programBuilder = new ProgramContext();
+    }
+    
     public void inAFuncDecl(AFuncDecl node) {
         instructions = new ArrayList<Instruction>();
         localVariables = new HashMap<>();
-        variableCount = 0;
         hasReturn = false;
     }
     
     public void inAFuncDeclName(AFuncDeclName node) {
         TIdentifier identifier = node.getIdentifier();
         String funcName = identifier.getText();
-        if (localFunctions.containsKey(funcName)) {
+        if (programBuilder.localFunctions.containsKey(funcName)) {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Duplicate Function name: " + funcName + " at " + location);
         }
-        localFunctions.put(funcName, functionCount);
+        programBuilder.localFunctions.put(funcName, programBuilder.getFunctionCount());
     }
 
     public void inAFuncDeclArgList(AFuncDeclArgList node) {
@@ -82,9 +86,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
                 throw new RuntimeException("Duplicate argument name: " 
                         + varName + " at " + location);
             }
-            localVariables.put(varName, variableCount);
-            
-            variableCount++;
+            localVariables.put(varName, getVariableCount());
         }
 
         List<TIdentifier> reversed = new ArrayList(declarationArguments);
@@ -100,22 +102,31 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     
     public void outAFuncDecl(AFuncDecl node) {
-        FunctionDefinition newFunc = new FunctionDefinition(instructions, (int)variableCount, Arrays.asList(), Arrays.asList(BaseType.INTEGER));
+        FunctionDefinition newFunc = new FunctionDefinition(instructions, (int)getVariableCount(), Arrays.asList(), Arrays.asList(BaseType.INTEGER));
         functionDefinitions.add(newFunc);
         instructions = null;
-        functionCount++;
         if (!hasReturn) {
             throw new RuntimeException("function missing return statement");
         }
     }
-
+    
+    public void inPStatement(PStatement node) {
+        int abc = 3;
+    }
+    
     public void inADeclarationStatement(ADeclarationStatement node) {
         declarationIdentifier = null;
     }
     
     public void inAVarDeclType(AVarDeclType node) {
-        String varType = node.getIdentifier().getText();
-        if (!varType.equals("int")) {
+        String declaredType = node.getIdentifier().getText();
+        BasicType varType; 
+        if (declaredType.equals("int")) {
+
+        }
+        else if (declaredType.equals("string")) {
+            
+        } else {
             throw new RuntimeException("int is the only valid variable type at the moment.");
         }
     }
@@ -132,12 +143,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             throw new RuntimeException("Duplicate Variable name: " 
                     + varName + " at " + location);
         }
-        localVariables.put(varName, variableCount);
+        long varPos = getVariableCount();
+        localVariables.put(varName, varPos);
         
         addInstruction(InstructionCode.INTEGER_TO_STACK, 0L);
-        addInstruction(InstructionCode.STACK_TO_VARIABLE, variableCount);
-        
-        variableCount++;
+        addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
     }
     
     public void inAAssignmentStatement(AAssignmentStatement node) {
@@ -195,8 +205,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAFuncCallFactor(AFuncCallFactor node) {
         String funcToCall = functionCallNameIdentifier.getText();
-        if (localFunctions.containsKey(funcToCall)) {
-            long functionNumber = localFunctions.get(funcToCall);
+        if (programBuilder.localFunctions.containsKey(funcToCall)) {
+            long functionNumber = programBuilder.localFunctions.get(funcToCall);
             addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
         } else {
             String location = functionCallNameIdentifier.getLine() + ":" + functionCallNameIdentifier.getPos();
