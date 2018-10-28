@@ -36,7 +36,7 @@ public class Compiler {
         SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
         ast.apply(semanticAnalyzer);
         
-        return semanticAnalyzer.functionDefinitions;
+        return semanticAnalyzer.programContext.functionDefinitions;
     }
 }
 

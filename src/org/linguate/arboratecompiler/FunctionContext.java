@@ -5,10 +5,26 @@
  */
 package org.linguate.arboratecompiler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.linguate.arborate.vm.Instruction;
+import org.linguate.arboratecompiler.node.TIdentifier;
+
 /**
  *
  * @author Phil Hutchinson
  */
 public class FunctionContext {
+    List<Instruction> instructions = new ArrayList<>();
     
+    Map<String, Long> localVariables = new HashMap<>();
+    long getVariableCount() {
+        return localVariables.size();
+    }
+
+    List<TIdentifier> declarationArguments = new ArrayList<>();
+
+    boolean hasReturn = false;
 }

@@ -5,8 +5,11 @@
  */
 package org.linguate.arboratecompiler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.linguate.arborate.vm.FunctionDefinition;
 
 /**
  *
@@ -14,9 +17,9 @@ import java.util.Map;
  */
 class ProgramContext {
     Map<String, Long> localFunctions = new HashMap<>();
-    
     long getFunctionCount() {
         return localFunctions.size();
     }
     
+    List<FunctionDefinition> functionDefinitions = new ArrayList<>();
 }

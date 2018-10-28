@@ -244,8 +244,6 @@ public class CompilerTest {
         assertEquals(8L, result.getValue());
     }
 
-    /* Function call tests not passing because of incorrect number of items on stack
-       Will not work until receiving function actually processes the arguments.*/
     @Test 
     public void testFunctionCallDummyParameter() throws Exception {
         List<FunctionDefinition> functions = Compiler.compile("function divideTest(int zz) {return 8 / 2;  } function funcCallTest() {return divideTest(14) * 5;}");
