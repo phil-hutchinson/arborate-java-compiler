@@ -25,8 +25,10 @@ import org.linguate.arboratecompiler.node.*;
 public class SemanticAnalyzer extends DepthFirstAdapter {
     ProgramContext programContext;
     FunctionContext activeFunctionContext;
+    DeclarationStatementContext declarationStatementContext;
+    AssignmentStatementContext assignmentStatementContext;
+    ReturnStatementContext returnStatementContext;
     
-    TIdentifier declarationIdentifier;
     Long assignmentVariablePosition;
 
     TIdentifier functionCallNameIdentifier;
@@ -68,8 +70,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         for (TIdentifier argIdentifier : activeFunctionContext.declarationArguments) {
             String varName = argIdentifier.getText();
             if (activeFunctionContext.localVariables.containsKey(varName)) {
-                String location = declarationIdentifier.getLine() 
-                        + ":" + declarationIdentifier.getPos();
+                String location = argIdentifier.getLine() 
+                        + ":" + argIdentifier.getPos();
                 throw new RuntimeException("Duplicate argument name: " 
                         + varName + " at " + location);
             }
@@ -97,12 +99,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         activeFunctionContext = null;
     }
     
-    public void inPStatement(PStatement node) {
-        int abc = 3;
-    }
-    
     public void inADeclarationStatement(ADeclarationStatement node) {
-        declarationIdentifier = null;
+        declarationStatementContext = new DeclarationStatementContext();
     }
     
     public void inAVarDeclType(AVarDeclType node) {
@@ -119,14 +117,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void inAVarDeclName(AVarDeclName node) {
-        declarationIdentifier = node.getIdentifier();
+        declarationStatementContext.varIdentifier = node.getIdentifier();
     }
     
     public void outADeclarationStatement(ADeclarationStatement node) {
-        String varName = declarationIdentifier.getText();
+        String varName = declarationStatementContext.varIdentifier.getText();
         if (activeFunctionContext.localVariables.containsKey(varName)) {
-            String location = declarationIdentifier.getLine() 
-                    + ":" + declarationIdentifier.getPos();
+            String location = declarationStatementContext.varIdentifier.getLine() 
+                    + ":" + declarationStatementContext.varIdentifier.getPos();
             throw new RuntimeException("Duplicate Variable name: " 
                     + varName + " at " + location);
         }
@@ -135,6 +133,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         addInstruction(InstructionCode.INTEGER_TO_STACK, 0L);
         addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
+        
+        declarationStatementContext = null;
     }
     
     public void inAAssignmentStatement(AAssignmentStatement node) {

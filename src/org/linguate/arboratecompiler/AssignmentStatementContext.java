@@ -9,5 +9,6 @@ package org.linguate.arboratecompiler;
  *
  * @author Phil Hutchinson
  */
-public abstract class StatementContext {
+public class AssignmentStatementContext extends StatementContext {
+    
 }

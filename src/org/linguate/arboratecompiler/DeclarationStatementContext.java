@@ -5,9 +5,12 @@
  */
 package org.linguate.arboratecompiler;
 
+import org.linguate.arboratecompiler.node.TIdentifier;
+
 /**
  *
  * @author Phil Hutchinson
  */
-public abstract class StatementContext {
+public class DeclarationStatementContext extends StatementContext {
+    TIdentifier varIdentifier = null;
 }
