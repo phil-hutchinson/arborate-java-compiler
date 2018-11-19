@@ -5,10 +5,12 @@
  */
 package org.linguate.arboratecompiler;
 
+import org.linguate.arboratecompiler.node.TIdentifier;
+
 /**
  *
  * @author Phil Hutchinson
  */
-public class AssignmentStatementContext extends StatementContext {
-    Long varPosition = null;
+public class FunctionCallContext {
+    TIdentifier callIdentifier = null;
 }

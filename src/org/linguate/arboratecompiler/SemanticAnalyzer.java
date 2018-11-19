@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import org.linguate.arborate.vm.BaseType;
 import org.linguate.arborate.vm.FunctionDefinition;
 import org.linguate.arborate.vm.Instruction;
@@ -28,10 +29,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     DeclarationStatementContext declarationStatementContext;
     AssignmentStatementContext assignmentStatementContext;
     ReturnStatementContext returnStatementContext;
-    
-    Long assignmentVariablePosition;
-
-    TIdentifier functionCallNameIdentifier;
+    Stack<FunctionCallContext> functionCallContext = new Stack<>();
     
     /*****************  NODE DEFINITIONS  *****************/
     public void inAProgram(AProgram node) {
@@ -138,14 +136,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void inAAssignmentStatement(AAssignmentStatement node) {
-        assignmentVariablePosition = null;
+        assignmentStatementContext = new AssignmentStatementContext();
     }
     
     public void inAVarAssignName(AVarAssignName node) {
         TIdentifier identifier = node.getIdentifier();
         String varNameToAssign = identifier.getText();
         if (activeFunctionContext.localVariables.containsKey(varNameToAssign)) {
-            assignmentVariablePosition = activeFunctionContext.localVariables.get(varNameToAssign);
+            assignmentStatementContext.varPosition = activeFunctionContext.localVariables.get(varNameToAssign);
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Assignment to unknown variable or before variable declaration: " + varNameToAssign + " at " + location);
@@ -153,12 +151,18 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAAssignmentStatement(AAssignmentStatement node) {
-        addInstruction(InstructionCode.STACK_TO_VARIABLE, (long)assignmentVariablePosition);
+        addInstruction(InstructionCode.STACK_TO_VARIABLE, (long)assignmentStatementContext.varPosition);
+        assignmentStatementContext = null;
+    }
+    
+    public void inAReturnStatement(AReturnStatement node) {
+        returnStatementContext = new ReturnStatementContext();
     }
     
     public void outAReturnStatement(AReturnStatement node) {
         activeFunctionContext.hasReturn = true;
         addInstruction(InstructionCode.EXIT_FUNCTION);
+        returnStatementContext = null;
     }
     
     public void outAAddExpr(AAddExpr node) {
@@ -183,20 +187,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void inAFuncCallFactor(AFuncCallFactor node) {
-        functionCallNameIdentifier = null;
+        functionCallContext.push(new FunctionCallContext());
     }
     
     public void outAFuncCallName(AFuncCallName node) {
-        functionCallNameIdentifier = node.getIdentifier();
+        functionCallContext.peek().callIdentifier = node.getIdentifier();
     }
     
     public void outAFuncCallFactor(AFuncCallFactor node) {
-        String funcToCall = functionCallNameIdentifier.getText();
+        FunctionCallContext currentFunctionCallContext = functionCallContext.pop();
+        String funcToCall = currentFunctionCallContext.callIdentifier.getText();
         if (programContext.localFunctions.containsKey(funcToCall)) {
             long functionNumber = programContext.localFunctions.get(funcToCall);
             addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
         } else {
-            String location = functionCallNameIdentifier.getLine() + ":" + functionCallNameIdentifier.getPos();
+            String location = currentFunctionCallContext.callIdentifier.getLine() + ":" + currentFunctionCallContext.callIdentifier.getPos();
             throw new RuntimeException("Unknown function: " + funcToCall + " at " + location);
         }
     }
