@@ -5,13 +5,16 @@
  */
 package org.linguate.arboratecompiler;
 
-import org.linguate.arboratecompiler.node.TIdentifier;
-
 /**
  *
  * @author Phil Hutchinson
  */
-public class DeclarationStatementContext extends StatementContext {
-    TIdentifier varIdentifier = null;
-    BasicType basicType = null;
+public class VariableDefinition {
+    long variablePosition;
+    BasicType basicType;
+
+    public VariableDefinition(long variablePosition, BasicType basicType) {
+        this.variablePosition = variablePosition;
+        this.basicType = basicType;
+    }
 }

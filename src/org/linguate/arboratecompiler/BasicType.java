@@ -5,13 +5,11 @@
  */
 package org.linguate.arboratecompiler;
 
-import org.linguate.arboratecompiler.node.TIdentifier;
-
 /**
  *
  * @author Phil Hutchinson
  */
-public class DeclarationStatementContext extends StatementContext {
-    TIdentifier varIdentifier = null;
-    BasicType basicType = null;
+public enum BasicType {
+    Integer,
+    String,
 }

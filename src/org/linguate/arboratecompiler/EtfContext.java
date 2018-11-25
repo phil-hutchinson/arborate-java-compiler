@@ -9,6 +9,6 @@ package org.linguate.arboratecompiler;
  *
  * @author Phil Hutchinson
  */
-public class ExpressionContext {
-    
+public class EtfContext {
+    BasicType naturalType;
 }

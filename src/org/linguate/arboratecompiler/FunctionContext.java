@@ -19,11 +19,36 @@ import org.linguate.arboratecompiler.node.TIdentifier;
 public class FunctionContext {
     List<Instruction> instructions = new ArrayList<>();
     
-    Map<String, Long> localVariables = new HashMap<>();
+    private Map<String, VariableDefinition> localVariables = new HashMap<>();
+
+    long addVariable(TIdentifier identifier, BasicType basicType) {
+        String variableName = identifier.getText();
+        if (localVariables.containsKey(variableName)) {
+            String location = identifier.getLine() 
+                    + ":" + identifier.getPos();
+            throw new RuntimeException("Duplicate argument name: " 
+                    + variableName + " at " + location);
+        }
+        long varPos = getVariableCount();
+        VariableDefinition varDef = new VariableDefinition(varPos, basicType);
+        localVariables.put(variableName, varDef);
+        return varPos;
+    }
+    
+    VariableDefinition getVariable(String variableName) {
+        if (localVariables.containsKey(variableName)) {
+            return localVariables.get(variableName);
+        } else {
+            return null;
+        }
+        
+    }
+
     long getVariableCount() {
         return localVariables.size();
     }
 
+    
     List<TIdentifier> declarationArguments = new ArrayList<>();
 
     boolean hasReturn = false;

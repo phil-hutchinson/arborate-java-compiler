@@ -24,30 +24,31 @@ import org.linguate.arboratecompiler.node.*;
  * @author Phil Hutchinson
  */
 public class SemanticAnalyzer extends DepthFirstAdapter {
-    ProgramContext programContext;
-    FunctionContext activeFunctionContext;
-    DeclarationStatementContext declarationStatementContext;
-    AssignmentStatementContext assignmentStatementContext;
-    ReturnStatementContext returnStatementContext;
-    Stack<FunctionCallContext> functionCallContext = new Stack<>();
-    
+    ProgramContext programCtx;
+    FunctionContext activeFunctionCtx;
+    DeclarationStatementContext declarationStatementCtx;
+    AssignmentStatementContext assignmentStatementCtx;
+    ReturnStatementContext returnStatementCtx;
+    Stack<FunctionCallContext> functionCallCtxStack = new Stack<>();
+    Stack<Map<Node,EtfContext>> etfCtxStack = new Stack<>();
+            
     /*****************  NODE DEFINITIONS  *****************/
     public void inAProgram(AProgram node) {
-        programContext = new ProgramContext();
+        programCtx = new ProgramContext();
     }
     
     public void inAFuncDecl(AFuncDecl node) {
-        activeFunctionContext = new FunctionContext();
+        activeFunctionCtx = new FunctionContext();
     }
     
     public void inAFuncDeclName(AFuncDeclName node) {
         TIdentifier identifier = node.getIdentifier();
         String funcName = identifier.getText();
-        if (programContext.localFunctions.containsKey(funcName)) {
+        if (programCtx.localFunctions.containsKey(funcName)) {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Duplicate Function name: " + funcName + " at " + location);
         }
-        programContext.localFunctions.put(funcName, programContext.getFunctionCount());
+        programCtx.localFunctions.put(funcName, programCtx.getFunctionCount());
     }
 
     public void inAFuncDeclArgList(AFuncDeclArgList node) {
@@ -61,25 +62,18 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void inAFuncDeclArgName(AFuncDeclArgName node) {
-        activeFunctionContext.declarationArguments.add(node.getIdentifier());
+        activeFunctionCtx.declarationArguments.add(node.getIdentifier());
     }
     
     public void outAFuncDeclArgList(AFuncDeclArgList node) {
-        for (TIdentifier argIdentifier : activeFunctionContext.declarationArguments) {
-            String varName = argIdentifier.getText();
-            if (activeFunctionContext.localVariables.containsKey(varName)) {
-                String location = argIdentifier.getLine() 
-                        + ":" + argIdentifier.getPos();
-                throw new RuntimeException("Duplicate argument name: " 
-                        + varName + " at " + location);
-            }
-            activeFunctionContext.localVariables.put(varName, activeFunctionContext.getVariableCount());
+        for (TIdentifier argIdentifier : activeFunctionCtx.declarationArguments) {
+            activeFunctionCtx.addVariable(argIdentifier, BasicType.Integer);
         }
 
-        List<TIdentifier> reversed = new ArrayList<>(activeFunctionContext.declarationArguments);
+        List<TIdentifier> reversed = new ArrayList<>(activeFunctionCtx.declarationArguments);
         Collections.reverse(reversed);
         
-        long argPos = activeFunctionContext.declarationArguments.size();
+        long argPos = activeFunctionCtx.declarationArguments.size();
         
         for(TIdentifier argIdentifier: reversed) {
             argPos--;
@@ -89,61 +83,54 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     
     public void outAFuncDecl(AFuncDecl node) {
-        FunctionDefinition newFunc = new FunctionDefinition(activeFunctionContext.instructions, (int)activeFunctionContext.getVariableCount(), Arrays.asList(), Arrays.asList(BaseType.INTEGER));
-        if (!activeFunctionContext.hasReturn) {
+        FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.instructions, (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(BaseType.INTEGER));
+        if (!activeFunctionCtx.hasReturn) {
             throw new RuntimeException("function missing return statement");
         }
-        programContext.functionDefinitions.add(newFunc);
-        activeFunctionContext = null;
+        programCtx.functionDefinitions.add(newFunc);
+        activeFunctionCtx = null;
     }
     
     public void inADeclarationStatement(ADeclarationStatement node) {
-        declarationStatementContext = new DeclarationStatementContext();
+        declarationStatementCtx = new DeclarationStatementContext();
     }
     
     public void inAVarDeclType(AVarDeclType node) {
         String declaredType = node.getIdentifier().getText();
-        BasicType varType; 
         if (declaredType.equals("int")) {
-
+            declarationStatementCtx.basicType = BasicType.Integer;
         }
         else if (declaredType.equals("string")) {
-            
+            declarationStatementCtx.basicType = BasicType.String;
         } else {
             throw new RuntimeException("int is the only valid variable type at the moment.");
         }
     }
     
     public void inAVarDeclName(AVarDeclName node) {
-        declarationStatementContext.varIdentifier = node.getIdentifier();
+        declarationStatementCtx.varIdentifier = node.getIdentifier();
     }
     
     public void outADeclarationStatement(ADeclarationStatement node) {
-        String varName = declarationStatementContext.varIdentifier.getText();
-        if (activeFunctionContext.localVariables.containsKey(varName)) {
-            String location = declarationStatementContext.varIdentifier.getLine() 
-                    + ":" + declarationStatementContext.varIdentifier.getPos();
-            throw new RuntimeException("Duplicate Variable name: " 
-                    + varName + " at " + location);
-        }
-        long varPos = activeFunctionContext.getVariableCount();
-        activeFunctionContext.localVariables.put(varName, varPos);
+        long varPos = activeFunctionCtx.addVariable(declarationStatementCtx.varIdentifier, BasicType.Integer);
         
         addInstruction(InstructionCode.INTEGER_TO_STACK, 0L);
         addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
         
-        declarationStatementContext = null;
+        declarationStatementCtx = null;
     }
     
     public void inAAssignmentStatement(AAssignmentStatement node) {
-        assignmentStatementContext = new AssignmentStatementContext();
+        assignmentStatementCtx = new AssignmentStatementContext();
+        pushEtfContext();
     }
     
     public void inAVarAssignName(AVarAssignName node) {
         TIdentifier identifier = node.getIdentifier();
         String varNameToAssign = identifier.getText();
-        if (activeFunctionContext.localVariables.containsKey(varNameToAssign)) {
-            assignmentStatementContext.varPosition = activeFunctionContext.localVariables.get(varNameToAssign);
+        VariableDefinition varDef = activeFunctionCtx.getVariable(varNameToAssign);
+        if (varDef != null) {
+            assignmentStatementCtx.varPosition = varDef.variablePosition;
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Assignment to unknown variable or before variable declaration: " + varNameToAssign + " at " + location);
@@ -151,18 +138,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAAssignmentStatement(AAssignmentStatement node) {
-        addInstruction(InstructionCode.STACK_TO_VARIABLE, (long)assignmentStatementContext.varPosition);
-        assignmentStatementContext = null;
+        addInstruction(InstructionCode.STACK_TO_VARIABLE, (long)assignmentStatementCtx.varPosition);
+        assignmentStatementCtx = null;
+        popEtfContext();
     }
     
     public void inAReturnStatement(AReturnStatement node) {
-        returnStatementContext = new ReturnStatementContext();
+        returnStatementCtx = new ReturnStatementContext();
+        pushEtfContext();
     }
     
     public void outAReturnStatement(AReturnStatement node) {
-        activeFunctionContext.hasReturn = true;
+        activeFunctionCtx.hasReturn = true;
         addInstruction(InstructionCode.EXIT_FUNCTION);
-        returnStatementContext = null;
+        returnStatementCtx = null;
+        popEtfContext();
     }
     
     public void outAAddExpr(AAddExpr node) {
@@ -187,18 +177,18 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void inAFuncCallFactor(AFuncCallFactor node) {
-        functionCallContext.push(new FunctionCallContext());
+        functionCallCtxStack.push(new FunctionCallContext());
     }
     
     public void outAFuncCallName(AFuncCallName node) {
-        functionCallContext.peek().callIdentifier = node.getIdentifier();
+        functionCallCtxStack.peek().callIdentifier = node.getIdentifier();
     }
     
     public void outAFuncCallFactor(AFuncCallFactor node) {
-        FunctionCallContext currentFunctionCallContext = functionCallContext.pop();
+        FunctionCallContext currentFunctionCallContext = functionCallCtxStack.pop();
         String funcToCall = currentFunctionCallContext.callIdentifier.getText();
-        if (programContext.localFunctions.containsKey(funcToCall)) {
-            long functionNumber = programContext.localFunctions.get(funcToCall);
+        if (programCtx.localFunctions.containsKey(funcToCall)) {
+            long functionNumber = programCtx.localFunctions.get(funcToCall);
             addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
         } else {
             String location = currentFunctionCallContext.callIdentifier.getLine() + ":" + currentFunctionCallContext.callIdentifier.getPos();
@@ -209,8 +199,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     public void inAVarFetchName(AVarFetchName node) {
         TIdentifier identifier = node.getIdentifier();
         String varNameToFetch = identifier.getText();
-        if (activeFunctionContext.localVariables.containsKey(varNameToFetch)) {
-            long varPos = activeFunctionContext.localVariables.get(varNameToFetch);
+        VariableDefinition varDef = activeFunctionCtx.getVariable(varNameToFetch);
+        if (varDef != null) {
+            long varPos = varDef.variablePosition;
             addInstruction(InstructionCode.VARIABLE_TO_STACK, varPos);
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
@@ -218,13 +209,24 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
     }
     
+//    public void in(AExpression node) {
+//    
+//    }
     /**********************  HELPER METHODS  *********************/
+    private void pushEtfContext() {
+        Map<Node,EtfContext> etfCtx = new HashMap<>();
+        etfCtxStack.push(etfCtx);
+    }
+    
+    private Map<Node,EtfContext> popEtfContext() {
+        return etfCtxStack.pop();
+    }
     private void addInstruction(InstructionCode instructionCode) {
-        activeFunctionContext.instructions.add(new Instruction(instructionCode));
+        activeFunctionCtx.instructions.add(new Instruction(instructionCode));
     }
     
     private void addInstruction(InstructionCode instructionCode, Object val) {
-        activeFunctionContext.instructions.add(new Instruction(instructionCode, val));
+        activeFunctionCtx.instructions.add(new Instruction(instructionCode, val));
     }
     
     
