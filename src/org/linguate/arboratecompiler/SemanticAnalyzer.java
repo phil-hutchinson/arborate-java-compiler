@@ -103,7 +103,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         else if (declaredType.equals("string")) {
             declarationStatementCtx.basicType = BasicType.String;
         } else {
-            throw new RuntimeException("int is the only valid variable type at the moment.");
+            throw new RuntimeException("int and string are the only valid variable type at the moment.");
         }
     }
     
@@ -156,24 +156,97 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAAddExpr(AAddExpr node) {
-        addInstruction(InstructionCode.INTEGER_ADD);
+        PExpr exprNode = node.getExpr();
+        PTerm termNode = node.getTerm();
+        
+        EtfContext exprCtx = getEtfContext(exprNode);
+        EtfContext termCtx = getEtfContext(termNode);
+        if (exprCtx.naturalType == BasicType.Integer && termCtx.naturalType == BasicType.Integer) {
+            EtfContext currCtx = new EtfContext(BasicType.Integer);
+            addEtfContext(node, currCtx);
+            addInstruction(InstructionCode.INTEGER_ADD);
+        } else if (exprCtx.naturalType == BasicType.String && termCtx.naturalType == BasicType.String) {
+            EtfContext currCtx = new EtfContext(BasicType.String);
+            addEtfContext(node, currCtx);
+            addInstruction(InstructionCode.STRING_CONCATENATE);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Addition operation not valid for types: " + exprCtx.naturalType.name() + ", " + termCtx.naturalType.name());
+        }
     }
 
     public void outASubtractExpr(ASubtractExpr node) {
-        addInstruction(InstructionCode.INTEGER_SUBTRACT);
+        PExpr exprNode = node.getExpr();
+        PTerm termNode = node.getTerm();
+        
+        EtfContext exprCtx = getEtfContext(exprNode);
+        EtfContext termCtx = getEtfContext(termNode);
+        if (exprCtx.naturalType == BasicType.Integer && termCtx.naturalType == BasicType.Integer) {
+            EtfContext currCtx = new EtfContext(BasicType.Integer);
+            addEtfContext(node, currCtx);
+            addInstruction(InstructionCode.INTEGER_SUBTRACT);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Addition operation not valid for types: " + exprCtx.naturalType.name() + ", " + termCtx.naturalType.name());
+        }
     }
 
+    public void outAOnlyTermExpr(AOnlyTermExpr node) {
+        PTerm termNode = node.getTerm();
+        EtfContext termCtx = getEtfContext(termNode);
+        
+        EtfContext currCtx = new EtfContext(termCtx.naturalType);
+        addEtfContext(node, currCtx);
+    }
+    
     public void outAMultiplyTerm(AMultiplyTerm node) {
-        addInstruction(InstructionCode.INTEGER_MULTIPLY);
+        PTerm termNode = node.getTerm();
+        PFactor factorNode = node.getFactor();
+        
+        EtfContext termCtx = getEtfContext(termNode);
+        EtfContext factorCtx = getEtfContext(factorNode);
+        if (termCtx.naturalType == BasicType.Integer && factorCtx.naturalType == BasicType.Integer) {
+            EtfContext currCtx = new EtfContext(BasicType.Integer);
+            addEtfContext(node, currCtx);
+            addInstruction(InstructionCode.INTEGER_MULTIPLY);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Addition operation not valid for types: " + termCtx.naturalType.name() + ", " + factorCtx.naturalType.name());
+        }
     }
 
     public void outADivideTerm(ADivideTerm node) {
-        addInstruction(InstructionCode.INTEGER_DIVIDE);
+        PTerm termNode = node.getTerm();
+        PFactor factorNode = node.getFactor();
+        
+        EtfContext termCtx = getEtfContext(termNode);
+        EtfContext factorCtx = getEtfContext(factorNode);
+        if (termCtx.naturalType == BasicType.Integer && factorCtx.naturalType == BasicType.Integer) {
+            EtfContext currCtx = new EtfContext(BasicType.Integer);
+            addEtfContext(node, currCtx);
+            addInstruction(InstructionCode.INTEGER_DIVIDE);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Addition operation not valid for types: " + termCtx.naturalType.name() + ", " + factorCtx.naturalType.name());
+        }
     }
 
+    public void outAOnlyFactorTerm(AOnlyFactorTerm node) {
+        PFactor factorNode = node.getFactor();
+        EtfContext factorCtx = getEtfContext(factorNode);
+        
+        EtfContext currCtx = new EtfContext(factorCtx.naturalType);
+        addEtfContext(node, currCtx);
+    }
+    
     public void inAIntLitFactor(AIntLitFactor node) {
         long val = Long.parseLong(node.getIntString().getText());
         addInstruction(InstructionCode.INTEGER_TO_STACK, val);
+    }
+    
+    public void outAIntLitFactor(AIntLitFactor node) {
+        EtfContext currCtx = new EtfContext(BasicType.Integer);
+        addEtfContext(node, currCtx);
     }
     
     public void inAFuncCallFactor(AFuncCallFactor node) {
@@ -189,6 +262,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         String funcToCall = currentFunctionCallContext.callIdentifier.getText();
         if (programCtx.localFunctions.containsKey(funcToCall)) {
             long functionNumber = programCtx.localFunctions.get(funcToCall);
+            EtfContext currCtx = new EtfContext(BasicType.Integer);
+            addEtfContext(node, currCtx);
             addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
         } else {
             String location = currentFunctionCallContext.callIdentifier.getLine() + ":" + currentFunctionCallContext.callIdentifier.getPos();
@@ -202,6 +277,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         VariableDefinition varDef = activeFunctionCtx.getVariable(varNameToFetch);
         if (varDef != null) {
             long varPos = varDef.variablePosition;
+            EtfContext currCtx = new EtfContext(BasicType.Integer);
+            addEtfContext(node, currCtx);
             addInstruction(InstructionCode.VARIABLE_TO_STACK, varPos);
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
@@ -209,6 +286,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
     }
     
+    public void outAVarFetchFactor(AVarFetchFactor node) {
+        PVarFetchName fetchNode = node.getVarFetchName();
+        EtfContext fetchCtx = getEtfContext(fetchNode);
+        
+        EtfContext currCtx = new EtfContext(fetchCtx.naturalType);
+        addEtfContext(node, currCtx);
+    }
+    
+    public void outABracketedExprFactor(ABracketedExprFactor node) {
+        PExpr exprNode = node.getExpr();
+        EtfContext fetchCtx = getEtfContext(exprNode);
+        
+        EtfContext currCtx = new EtfContext(fetchCtx.naturalType);
+        addEtfContext(node, currCtx);
+    }
 //    public void in(AExpression node) {
 //    
 //    }
@@ -221,6 +313,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     private Map<Node,EtfContext> popEtfContext() {
         return etfCtxStack.pop();
     }
+    
+    private EtfContext getEtfContext(Node node) {
+        Map<Node,EtfContext> currentMap = etfCtxStack.peek();
+        if (currentMap.containsKey(node)) {
+            return currentMap.get(node);
+        } else {
+            return null;
+        }
+    }
+    
+    private void addEtfContext(Node node, EtfContext etfContext) {
+        Map<Node,EtfContext> currentMap = etfCtxStack.peek();
+        currentMap.put(node, etfContext);
+    }
+    
     private void addInstruction(InstructionCode instructionCode) {
         activeFunctionCtx.instructions.add(new Instruction(instructionCode));
     }

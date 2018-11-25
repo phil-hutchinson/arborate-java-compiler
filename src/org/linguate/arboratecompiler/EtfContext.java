@@ -11,4 +11,8 @@ package org.linguate.arboratecompiler;
  */
 public class EtfContext {
     BasicType naturalType;
+
+    public EtfContext(BasicType naturalType) {
+        this.naturalType = naturalType;
+    }
 }
