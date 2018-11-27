@@ -399,4 +399,41 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(99L, result.getValue());
     }
+    
+    @Test
+    public void testAddStrings() throws Exception {
+        // can't return a string yet, so just test that it compiles/executes
+        List<FunctionDefinition> functions = Compiler.compile("function stringAdd() {string a; string b; string c; c = a + b; return 14;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(14L, result.getValue());
+    }
+
+    @Test
+    public void testStringSubtractThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function stringSubtract() {string a; string b; string c; c = a - b; return 14;} ");
+    }
+    
+    @Test
+    public void testStringMultiplyThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function stringSubtract() {string a; string b; string c; c = a * b; return 14;} ");
+    }
+
+    @Test
+    public void testStringDivideThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function stringSubtract() {string a; string b; string c; c = a / b; return 14;} ");
+    }
+
+    @Test
+    public void testStringPlusIntegerThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function stringSubtract() {string a; int b; string c; c = a + b; return 14;} ");
+    }
 }

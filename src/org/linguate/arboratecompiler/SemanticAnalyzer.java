@@ -112,11 +112,15 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outADeclarationStatement(ADeclarationStatement node) {
-        long varPos = activeFunctionCtx.addVariable(declarationStatementCtx.varIdentifier, BasicType.Integer);
+        long varPos = activeFunctionCtx.addVariable(declarationStatementCtx.varIdentifier, declarationStatementCtx.basicType);
         
-        addInstruction(InstructionCode.INTEGER_TO_STACK, 0L);
-        addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
-        
+        if (declarationStatementCtx.basicType == BasicType.Integer) {
+            addInstruction(InstructionCode.INTEGER_TO_STACK, 0L);
+            addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
+        } else if (declarationStatementCtx.basicType == BasicType.String) {
+            addInstruction(InstructionCode.STRING_TO_STACK, "");
+            addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
+        }
         declarationStatementCtx = null;
     }
     
@@ -277,7 +281,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         VariableDefinition varDef = activeFunctionCtx.getVariable(varNameToFetch);
         if (varDef != null) {
             long varPos = varDef.variablePosition;
-            EtfContext currCtx = new EtfContext(BasicType.Integer);
+            EtfContext currCtx = new EtfContext(varDef.basicType);
             addEtfContext(node, currCtx);
             addInstruction(InstructionCode.VARIABLE_TO_STACK, varPos);
         } else {
