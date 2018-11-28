@@ -253,6 +253,20 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         addEtfContext(node, currCtx);
     }
     
+    public void inAStringLitFactor(AStringLitFactor node) {
+        String val = node.getQuotedString().getText();
+        if (val.length() < 2) {
+            throw new RuntimeException("delimited string literals should always have at least 2 chars (for delimiters");
+        }
+        String valContents = val.substring(1, val.length() - 1);
+        addInstruction(InstructionCode.STRING_TO_STACK, valContents);
+    }
+    
+    public void outAStringLitFactor(AStringLitFactor node) {
+        EtfContext currCtx = new EtfContext(BasicType.String);
+        addEtfContext(node, currCtx);
+    }
+    
     public void inAFuncCallFactor(AFuncCallFactor node) {
         functionCallCtxStack.push(new FunctionCallContext());
     }

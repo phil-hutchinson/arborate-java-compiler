@@ -403,7 +403,7 @@ public class CompilerTest {
     @Test
     public void testAddStrings() throws Exception {
         // can't return a string yet, so just test that it compiles/executes
-        List<FunctionDefinition> functions = Compiler.compile("function stringAdd() {string a; string b; string c; c = a + b; return 14;} ");
+        List<FunctionDefinition> functions = Compiler.compile("function stringAdd() {string a; string b; string c; a = \"some\"; c = a + b; return 14;} ");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 

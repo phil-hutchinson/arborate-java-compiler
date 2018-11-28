@@ -159,6 +159,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAStringLitFactor(AStringLitFactor node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFuncCallFactor(AFuncCallFactor node)
     {
         defaultCase(node);
@@ -316,6 +322,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTIntString(TIntString node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTQuotedString(TQuotedString node)
     {
         defaultCase(node);
     }

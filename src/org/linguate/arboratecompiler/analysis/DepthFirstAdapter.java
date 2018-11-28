@@ -375,6 +375,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAIntLitFactor(node);
     }
 
+    public void inAStringLitFactor(AStringLitFactor node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAStringLitFactor(AStringLitFactor node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAStringLitFactor(AStringLitFactor node)
+    {
+        inAStringLitFactor(node);
+        if(node.getQuotedString() != null)
+        {
+            node.getQuotedString().apply(this);
+        }
+        outAStringLitFactor(node);
+    }
+
     public void inAFuncCallFactor(AFuncCallFactor node)
     {
         defaultIn(node);

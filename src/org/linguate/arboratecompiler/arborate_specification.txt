@@ -17,6 +17,7 @@ Helpers
     lf = 10;
     eol = cr lf | cr | lf;        // This takes care of different platforms
 
+    doublequote = '"';
     blank = (' ' | tab | eol)+;
 
 States
@@ -42,6 +43,8 @@ Tokens
     semicolon = ';';
 
     int_string = non_zero_digit digit* | zero;
+    quoted_string = doublequote (' ' | alphanumeric*) doublequote;
+
     identifier = alpha alphanumeric*;
 
     blank = blank;
@@ -114,6 +117,7 @@ Productions
 
     factor {-> factor} =
         {int_lit} int_string { -> New factor.int_lit(int_string) }
+        | {string_lit} quoted_string { -> New factor.string_lit(quoted_string) }
         | {func_call} func_call_name left_round func_call_arg_list right_round
             { -> New factor.func_call(func_call_name, func_call_arg_list) }
         | {var_fetch} var_fetch_name { -> New factor.var_fetch(var_fetch_name)}
@@ -179,6 +183,7 @@ Abstract Syntax Tree
 
     factor =
         {int_lit} int_string
+        | {string_lit} quoted_string
         | {func_call} func_call_name func_call_arg_list
         | {var_fetch} var_fetch_name
         | {bracketed_expr} expr;

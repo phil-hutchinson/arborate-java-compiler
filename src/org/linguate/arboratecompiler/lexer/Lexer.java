@@ -337,6 +337,17 @@ public class Lexer
                             this.line = accept_line;
                             return token;
                         }
+                    case 16:
+                        {
+                            @SuppressWarnings("hiding") Token token = new16(
+                                getText(accept_length),
+                                start_line + 1,
+                                start_pos + 1);
+                            pushBack(accept_length);
+                            this.pos = accept_pos;
+                            this.line = accept_line;
+                            return token;
+                        }
                     }
                 }
                 else
@@ -372,8 +383,9 @@ public class Lexer
     Token new11(@SuppressWarnings("hiding") int line, @SuppressWarnings("hiding") int pos) { return new TComma(line, pos); }
     Token new12(@SuppressWarnings("hiding") int line, @SuppressWarnings("hiding") int pos) { return new TSemicolon(line, pos); }
     Token new13(@SuppressWarnings("hiding") String text, @SuppressWarnings("hiding") int line, @SuppressWarnings("hiding") int pos) { return new TIntString(text, line, pos); }
-    Token new14(@SuppressWarnings("hiding") String text, @SuppressWarnings("hiding") int line, @SuppressWarnings("hiding") int pos) { return new TIdentifier(text, line, pos); }
-    Token new15(@SuppressWarnings("hiding") String text, @SuppressWarnings("hiding") int line, @SuppressWarnings("hiding") int pos) { return new TBlank(text, line, pos); }
+    Token new14(@SuppressWarnings("hiding") String text, @SuppressWarnings("hiding") int line, @SuppressWarnings("hiding") int pos) { return new TQuotedString(text, line, pos); }
+    Token new15(@SuppressWarnings("hiding") String text, @SuppressWarnings("hiding") int line, @SuppressWarnings("hiding") int pos) { return new TIdentifier(text, line, pos); }
+    Token new16(@SuppressWarnings("hiding") String text, @SuppressWarnings("hiding") int line, @SuppressWarnings("hiding") int pos) { return new TBlank(text, line, pos); }
 
     private int getChar() throws IOException
     {
@@ -433,11 +445,12 @@ public class Lexer
     private static int[][][][] gotoTable;
 /*  {
         { // NORMAL
-            {{9, 9, 1}, {10, 10, 2}, {13, 13, 3}, {32, 32, 4}, {40, 40, 5}, {41, 41, 6}, {42, 42, 7}, {43, 43, 8}, {44, 44, 9}, {45, 45, 10}, {47, 47, 11}, {48, 48, 12}, {49, 57, 13}, {59, 59, 14}, {61, 61, 15}, {65, 90, 16}, {97, 101, 16}, {102, 102, 17}, {103, 113, 16}, {114, 114, 18}, {115, 122, 16}, {123, 123, 19}, {125, 125, 20}, },
+            {{9, 9, 1}, {10, 10, 2}, {13, 13, 3}, {32, 32, 4}, {34, 34, 5}, {40, 40, 6}, {41, 41, 7}, {42, 42, 8}, {43, 43, 9}, {44, 44, 10}, {45, 45, 11}, {47, 47, 12}, {48, 48, 13}, {49, 57, 14}, {59, 59, 15}, {61, 61, 16}, {65, 90, 17}, {97, 101, 17}, {102, 102, 18}, {103, 113, 17}, {114, 114, 19}, {115, 122, 17}, {123, 123, 20}, {125, 125, 21}, },
             {{9, 32, -2}, },
             {{9, 32, -2}, },
-            {{9, 9, 1}, {10, 10, 21}, {13, 32, -2}, },
+            {{9, 9, 1}, {10, 10, 22}, {13, 32, -2}, },
             {{9, 32, -2}, },
+            {{32, 32, 23}, {34, 34, 24}, {48, 57, 25}, {65, 90, 25}, {97, 122, 25}, },
             {},
             {},
             {},
@@ -446,36 +459,39 @@ public class Lexer
             {},
             {},
             {},
-            {{48, 57, 22}, },
+            {{48, 57, 26}, },
             {},
             {},
-            {{48, 57, 23}, {65, 90, 23}, {97, 122, 23}, },
-            {{48, 90, -18}, {97, 116, 23}, {117, 117, 24}, {118, 122, 23}, },
-            {{48, 90, -18}, {97, 100, 23}, {101, 101, 25}, {102, 122, 23}, },
+            {{48, 57, 27}, {65, 90, 27}, {97, 122, 27}, },
+            {{48, 90, -19}, {97, 116, 27}, {117, 117, 28}, {118, 122, 27}, },
+            {{48, 90, -19}, {97, 100, 27}, {101, 101, 29}, {102, 122, 27}, },
             {},
             {},
             {{9, 32, -2}, },
-            {{48, 57, 22}, },
-            {{48, 122, -18}, },
-            {{48, 90, -18}, {97, 109, 23}, {110, 110, 26}, {111, 122, 23}, },
-            {{48, 90, -18}, {97, 115, 23}, {116, 116, 27}, {117, 122, 23}, },
-            {{48, 90, -18}, {97, 98, 23}, {99, 99, 28}, {100, 122, 23}, },
-            {{48, 116, -19}, {117, 117, 29}, {118, 122, 23}, },
-            {{48, 115, -27}, {116, 116, 30}, {117, 122, 23}, },
-            {{48, 90, -18}, {97, 113, 23}, {114, 114, 31}, {115, 122, 23}, },
-            {{48, 90, -18}, {97, 104, 23}, {105, 105, 32}, {106, 122, 23}, },
-            {{48, 109, -26}, {110, 110, 33}, {111, 122, 23}, },
-            {{48, 90, -18}, {97, 110, 23}, {111, 111, 34}, {112, 122, 23}, },
-            {{48, 122, -18}, },
-            {{48, 109, -26}, {110, 110, 35}, {111, 122, 23}, },
-            {{48, 122, -18}, },
+            {{34, 34, 24}, },
+            {},
+            {{34, 122, -7}, },
+            {{48, 57, 26}, },
+            {{48, 122, -19}, },
+            {{48, 90, -19}, {97, 109, 27}, {110, 110, 30}, {111, 122, 27}, },
+            {{48, 90, -19}, {97, 115, 27}, {116, 116, 31}, {117, 122, 27}, },
+            {{48, 90, -19}, {97, 98, 27}, {99, 99, 32}, {100, 122, 27}, },
+            {{48, 116, -20}, {117, 117, 33}, {118, 122, 27}, },
+            {{48, 115, -31}, {116, 116, 34}, {117, 122, 27}, },
+            {{48, 90, -19}, {97, 113, 27}, {114, 114, 35}, {115, 122, 27}, },
+            {{48, 90, -19}, {97, 104, 27}, {105, 105, 36}, {106, 122, 27}, },
+            {{48, 109, -30}, {110, 110, 37}, {111, 122, 27}, },
+            {{48, 90, -19}, {97, 110, 27}, {111, 111, 38}, {112, 122, 27}, },
+            {{48, 122, -19}, },
+            {{48, 109, -30}, {110, 110, 39}, {111, 122, 27}, },
+            {{48, 122, -19}, },
         }
     };*/
 
     private static int[][] accept;
 /*  {
         // NORMAL
-        {-1, 15, 15, 15, 15, 4, 5, 8, 6, 11, 7, 9, 13, 13, 12, 10, 14, 14, 14, 2, 3, 15, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 1, 14, 0, },
+        {-1, 16, 16, 16, 16, -1, 4, 5, 8, 6, 11, 7, 9, 13, 13, 12, 10, 15, 15, 15, 2, 3, 16, -1, 14, -1, 13, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 1, 15, 0, },
 
     };*/
 

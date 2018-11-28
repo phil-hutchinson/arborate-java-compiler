@@ -26,6 +26,7 @@ public interface Analysis extends Switch
     void caseADivideTerm(ADivideTerm node);
     void caseAOnlyFactorTerm(AOnlyFactorTerm node);
     void caseAIntLitFactor(AIntLitFactor node);
+    void caseAStringLitFactor(AStringLitFactor node);
     void caseAFuncCallFactor(AFuncCallFactor node);
     void caseAVarFetchFactor(AVarFetchFactor node);
     void caseABracketedExprFactor(ABracketedExprFactor node);
@@ -54,6 +55,7 @@ public interface Analysis extends Switch
     void caseTComma(TComma node);
     void caseTSemicolon(TSemicolon node);
     void caseTIntString(TIntString node);
+    void caseTQuotedString(TQuotedString node);
     void caseTIdentifier(TIdentifier node);
     void caseTBlank(TBlank node);
     void caseEOF(EOF node);
