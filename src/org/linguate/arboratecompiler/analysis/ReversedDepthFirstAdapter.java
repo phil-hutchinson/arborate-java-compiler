@@ -91,6 +91,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getFuncDeclName().apply(this);
         }
+        if(node.getFuncDeclRetType() != null)
+        {
+            node.getFuncDeclRetType().apply(this);
+        }
         outAFuncDecl(node);
     }
 
@@ -510,6 +514,27 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getExpr().apply(this);
         }
         outAFuncCallArg(node);
+    }
+
+    public void inAFuncDeclRetType(AFuncDeclRetType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncDeclRetType(AFuncDeclRetType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncDeclRetType(AFuncDeclRetType node)
+    {
+        inAFuncDeclRetType(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAFuncDeclRetType(node);
     }
 
     public void inAFuncDeclName(AFuncDeclName node)

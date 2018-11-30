@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.linguate.arborate.vm.BaseType;
 import org.linguate.arborate.vm.Instruction;
 import org.linguate.arboratecompiler.node.TIdentifier;
 
@@ -17,6 +18,7 @@ import org.linguate.arboratecompiler.node.TIdentifier;
  * @author Phil Hutchinson
  */
 public class FunctionContext {
+    BaseType returnType;
     List<Instruction> instructions = new ArrayList<>();
     
     private Map<String, VariableDefinition> localVariables = new HashMap<>();

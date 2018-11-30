@@ -41,6 +41,19 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         activeFunctionCtx = new FunctionContext();
     }
     
+    public void outAFuncDeclRetType(AFuncDeclRetType node) {
+        TIdentifier identifier = node.getIdentifier();
+        String returnType = identifier.getText();
+        if (returnType.equals("int")) {
+            activeFunctionCtx.returnType = BaseType.INTEGER;
+        } else if (returnType.equals("string")) {
+            activeFunctionCtx.returnType = BaseType.STRING;
+        } else {
+            String location = identifier.getLine() + ":" + identifier.getPos();
+            throw new RuntimeException("Unknown return type for function at " + location);
+        }
+    }
+    
     public void inAFuncDeclName(AFuncDeclName node) {
         TIdentifier identifier = node.getIdentifier();
         String funcName = identifier.getText();
@@ -83,7 +96,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     
     public void outAFuncDecl(AFuncDecl node) {
-        FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.instructions, (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(BaseType.INTEGER));
+        FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.instructions, (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(activeFunctionCtx.returnType));
         if (!activeFunctionCtx.hasReturn) {
             throw new RuntimeException("function missing return statement");
         }
@@ -153,6 +166,20 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAReturnStatement(AReturnStatement node) {
+        PExpr exprNode = node.getExpr();
+        EtfContext exprCtx = getEtfContext(exprNode);
+        boolean isValid = false;
+        if (exprCtx.naturalType == BasicType.Integer && activeFunctionCtx.returnType == BaseType.INTEGER) {
+            isValid = true;
+        } else if (exprCtx.naturalType == BasicType.String && activeFunctionCtx.returnType == BaseType.STRING) {
+            isValid = true;
+        }
+
+        if (!isValid) {
+            // TODO LOCATION
+            throw new RuntimeException("Invalid return type");
+        }
+            
         activeFunctionCtx.hasReturn = true;
         addInstruction(InstructionCode.EXIT_FUNCTION);
         returnStatementCtx = null;
@@ -280,7 +307,18 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         String funcToCall = currentFunctionCallContext.callIdentifier.getText();
         if (programCtx.localFunctions.containsKey(funcToCall)) {
             long functionNumber = programCtx.localFunctions.get(funcToCall);
-            EtfContext currCtx = new EtfContext(BasicType.Integer);
+            FunctionDefinition functionDef = programCtx.functionDefinitions.get((int)functionNumber);
+            BaseType firstParam = functionDef.getOutParams().get(0);
+            BasicType funcType;
+            if (firstParam == BaseType.INTEGER) {
+                funcType = BasicType.Integer;
+            } else if (firstParam == BaseType.STRING) {
+                funcType = BasicType.String;
+            } else {
+                // TODO LOCATION
+                throw new RuntimeException("Unknown function return type");
+            }
+            EtfContext currCtx = new EtfContext(funcType);
             addEtfContext(node, currCtx);
             addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
         } else {

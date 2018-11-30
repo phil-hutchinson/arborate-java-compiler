@@ -32,6 +32,7 @@ public interface Analysis extends Switch
     void caseABracketedExprFactor(ABracketedExprFactor node);
     void caseAFuncCallArgList(AFuncCallArgList node);
     void caseAFuncCallArg(AFuncCallArg node);
+    void caseAFuncDeclRetType(AFuncDeclRetType node);
     void caseAFuncDeclName(AFuncDeclName node);
     void caseAFuncDeclArgType(AFuncDeclArgType node);
     void caseAFuncDeclArgName(AFuncDeclArgName node);

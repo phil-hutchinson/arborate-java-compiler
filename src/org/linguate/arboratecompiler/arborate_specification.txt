@@ -43,7 +43,7 @@ Tokens
     semicolon = ';';
 
     int_string = non_zero_digit digit* | zero;
-    quoted_string = doublequote (' ' | alphanumeric*) doublequote;
+    quoted_string = doublequote (' ' | alphanumeric)* doublequote;
 
     identifier = alpha alphanumeric*;
 
@@ -62,8 +62,8 @@ Productions
         | {multiple} [function]:func_decl [rest]:func_decl_list { -> [function.func_decl, rest.func_decl] };
 
     func_decl {-> func_decl} = 
-        kw_function func_decl_name left_round func_decl_arg_list right_round left_curly func_body right_curly 
-            { -> New func_decl(func_decl_name, func_decl_arg_list, [func_body.statement]) };
+        kw_function func_decl_ret_type func_decl_name left_round func_decl_arg_list right_round left_curly func_body right_curly 
+            { -> New func_decl(func_decl_ret_type, func_decl_name, func_decl_arg_list, [func_body.statement]) };
 
     func_decl_arg_list {-> func_decl_arg_list} =
          func_decl_arg_list_helper { -> New func_decl_arg_list([func_decl_arg_list_helper.func_decl_arg]) };
@@ -137,6 +137,7 @@ Productions
     func_call_arg {-> func_call_arg} =
         expr;
 
+    func_decl_ret_type = identifier;
     func_decl_name = identifier;
     func_decl_arg_type = identifier;
     func_decl_arg_name = identifier;
@@ -152,7 +153,7 @@ Productions
 Abstract Syntax Tree
     program = [functions]:func_decl*;
 
-    func_decl = func_decl_name func_decl_arg_list statement*;
+    func_decl = func_decl_ret_type func_decl_name func_decl_arg_list statement*;
 
     func_decl_arg_list = func_decl_arg*;
 
@@ -192,6 +193,7 @@ Abstract Syntax Tree
 
     func_call_arg = expr;
 
+    func_decl_ret_type = identifier;
     func_decl_name = identifier;
     func_decl_arg_type = identifier; 
     func_decl_arg_name = identifier;

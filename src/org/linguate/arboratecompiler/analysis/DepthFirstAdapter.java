@@ -74,6 +74,10 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAFuncDecl(AFuncDecl node)
     {
         inAFuncDecl(node);
+        if(node.getFuncDeclRetType() != null)
+        {
+            node.getFuncDeclRetType().apply(this);
+        }
         if(node.getFuncDeclName() != null)
         {
             node.getFuncDeclName().apply(this);
@@ -506,6 +510,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getExpr().apply(this);
         }
         outAFuncCallArg(node);
+    }
+
+    public void inAFuncDeclRetType(AFuncDeclRetType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFuncDeclRetType(AFuncDeclRetType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFuncDeclRetType(AFuncDeclRetType node)
+    {
+        inAFuncDeclRetType(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAFuncDeclRetType(node);
     }
 
     public void inAFuncDeclName(AFuncDeclName node)

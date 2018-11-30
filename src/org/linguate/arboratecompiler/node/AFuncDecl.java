@@ -8,6 +8,7 @@ import org.linguate.arboratecompiler.analysis.*;
 @SuppressWarnings("nls")
 public final class AFuncDecl extends PFuncDecl
 {
+    private PFuncDeclRetType _funcDeclRetType_;
     private PFuncDeclName _funcDeclName_;
     private PFuncDeclArgList _funcDeclArgList_;
     private final LinkedList<PStatement> _statement_ = new LinkedList<PStatement>();
@@ -18,11 +19,14 @@ public final class AFuncDecl extends PFuncDecl
     }
 
     public AFuncDecl(
+        @SuppressWarnings("hiding") PFuncDeclRetType _funcDeclRetType_,
         @SuppressWarnings("hiding") PFuncDeclName _funcDeclName_,
         @SuppressWarnings("hiding") PFuncDeclArgList _funcDeclArgList_,
         @SuppressWarnings("hiding") List<?> _statement_)
     {
         // Constructor
+        setFuncDeclRetType(_funcDeclRetType_);
+
         setFuncDeclName(_funcDeclName_);
 
         setFuncDeclArgList(_funcDeclArgList_);
@@ -35,6 +39,7 @@ public final class AFuncDecl extends PFuncDecl
     public Object clone()
     {
         return new AFuncDecl(
+            cloneNode(this._funcDeclRetType_),
             cloneNode(this._funcDeclName_),
             cloneNode(this._funcDeclArgList_),
             cloneList(this._statement_));
@@ -44,6 +49,31 @@ public final class AFuncDecl extends PFuncDecl
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFuncDecl(this);
+    }
+
+    public PFuncDeclRetType getFuncDeclRetType()
+    {
+        return this._funcDeclRetType_;
+    }
+
+    public void setFuncDeclRetType(PFuncDeclRetType node)
+    {
+        if(this._funcDeclRetType_ != null)
+        {
+            this._funcDeclRetType_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._funcDeclRetType_ = node;
     }
 
     public PFuncDeclName getFuncDeclName()
@@ -126,6 +156,7 @@ public final class AFuncDecl extends PFuncDecl
     public String toString()
     {
         return ""
+            + toString(this._funcDeclRetType_)
             + toString(this._funcDeclName_)
             + toString(this._funcDeclArgList_)
             + toString(this._statement_);
@@ -135,6 +166,12 @@ public final class AFuncDecl extends PFuncDecl
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
+        if(this._funcDeclRetType_ == child)
+        {
+            this._funcDeclRetType_ = null;
+            return;
+        }
+
         if(this._funcDeclName_ == child)
         {
             this._funcDeclName_ = null;
@@ -159,6 +196,12 @@ public final class AFuncDecl extends PFuncDecl
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
+        if(this._funcDeclRetType_ == oldChild)
+        {
+            setFuncDeclRetType((PFuncDeclRetType) newChild);
+            return;
+        }
+
         if(this._funcDeclName_ == oldChild)
         {
             setFuncDeclName((PFuncDeclName) newChild);
