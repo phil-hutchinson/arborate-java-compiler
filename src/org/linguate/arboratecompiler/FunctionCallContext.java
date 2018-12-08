@@ -5,6 +5,8 @@
  */
 package org.linguate.arboratecompiler;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.linguate.arboratecompiler.node.TIdentifier;
 
 /**
@@ -13,4 +15,5 @@ import org.linguate.arboratecompiler.node.TIdentifier;
  */
 public class FunctionCallContext {
     TIdentifier callIdentifier = null;
+    List<BasicType> paramTypes = new ArrayList<>();
 }

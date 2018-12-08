@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.linguate.arborate.vm.BaseType;
 import org.linguate.arborate.vm.FunctionDefinition;
 import org.linguate.arborate.vm.Instruction;
@@ -36,7 +37,7 @@ public class Compiler {
         SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
         ast.apply(semanticAnalyzer);
         
-        return semanticAnalyzer.programCtx.functionDefinitions;
+        return semanticAnalyzer.programCtx.allFunctionCtx.stream().map(functionCtx -> functionCtx.def).collect(Collectors.toList());
     }
 }
 

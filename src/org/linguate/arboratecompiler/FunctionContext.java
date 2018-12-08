@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.linguate.arborate.vm.BaseType;
+import org.linguate.arborate.vm.FunctionDefinition;
 import org.linguate.arborate.vm.Instruction;
 import org.linguate.arboratecompiler.node.TIdentifier;
 
@@ -18,6 +19,7 @@ import org.linguate.arboratecompiler.node.TIdentifier;
  * @author Phil Hutchinson
  */
 public class FunctionContext {
+    FunctionDefinition def;
     BaseType returnType;
     List<Instruction> instructions = new ArrayList<>();
     
@@ -51,7 +53,9 @@ public class FunctionContext {
     }
 
     
-    List<TIdentifier> declarationArguments = new ArrayList<>();
-
+    BasicType pendingArgumentType;
+    
+    long inParameterCount; // will always be the first variables in localVariables
+    
     boolean hasReturn = false;
 }

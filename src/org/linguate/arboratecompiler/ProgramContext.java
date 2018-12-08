@@ -21,5 +21,5 @@ class ProgramContext {
         return localFunctions.size();
     }
     
-    List<FunctionDefinition> functionDefinitions = new ArrayList<>();
+    List<FunctionContext> allFunctionCtx = new ArrayList<>();
 }

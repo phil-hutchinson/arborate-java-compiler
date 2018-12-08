@@ -469,6 +469,21 @@ public class CompilerTest {
         assertEquals("simpletest", result.getValue());
     }
 
-    
+    @Test
+    public void testStringArguments() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function string test(string abc) {return \"test\" + abc;  } function string testCall() {return test(\"stuff\");}");
 
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateString result = (ArborateString) actualValue.get(0);
+        assertEquals("teststuff", result.getValue());
+    }
+
+    @Test
+    public void testIncorrectArgCountThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function int addSimple(int a, int b) {return a + b;} function int test() { return addSimple(2); }");
+    }
 }

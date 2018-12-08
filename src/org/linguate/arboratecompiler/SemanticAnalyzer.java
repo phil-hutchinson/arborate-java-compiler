@@ -69,26 +69,26 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void inAFuncDeclArgType(AFuncDeclArgType node) {
         String varType = node.getIdentifier().getText();
-        if (!varType.equals("int")) {
-            throw new RuntimeException("int is the only valid argument type at the moment.");
+        if (varType.equals("int")) {
+            activeFunctionCtx.pendingArgumentType = BasicType.Integer;
+        } else if (varType.equals("string")) {
+            activeFunctionCtx.pendingArgumentType = BasicType.String;
+        } else {
+            // TODO LOCATION
+            throw new RuntimeException("Unrecognized type in function parameter.");
         }
     }
     
     public void inAFuncDeclArgName(AFuncDeclArgName node) {
-        activeFunctionCtx.declarationArguments.add(node.getIdentifier());
+        activeFunctionCtx.addVariable(node.getIdentifier(), activeFunctionCtx.pendingArgumentType);
     }
     
     public void outAFuncDeclArgList(AFuncDeclArgList node) {
-        for (TIdentifier argIdentifier : activeFunctionCtx.declarationArguments) {
-            activeFunctionCtx.addVariable(argIdentifier, BasicType.Integer);
-        }
 
-        List<TIdentifier> reversed = new ArrayList<>(activeFunctionCtx.declarationArguments);
-        Collections.reverse(reversed);
+        activeFunctionCtx.inParameterCount = activeFunctionCtx.getVariableCount();
         
-        long argPos = activeFunctionCtx.declarationArguments.size();
-        
-        for(TIdentifier argIdentifier: reversed) {
+        long argPos = activeFunctionCtx.inParameterCount; 
+        while(argPos > 0) {
             argPos--;
             addInstruction(InstructionCode.STACK_TO_VARIABLE, argPos);
         }
@@ -100,7 +100,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         if (!activeFunctionCtx.hasReturn) {
             throw new RuntimeException("function missing return statement");
         }
-        programCtx.functionDefinitions.add(newFunc);
+        activeFunctionCtx.def = newFunc;
+        programCtx.allFunctionCtx.add(activeFunctionCtx);
         activeFunctionCtx = null;
     }
     
@@ -302,13 +303,32 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         functionCallCtxStack.peek().callIdentifier = node.getIdentifier();
     }
     
+    public void outAFuncCallArg(AFuncCallArg node) {
+        PExpr exprNode = node.getExpr();
+        EtfContext exprCtx = getEtfContext(exprNode);
+        
+        BasicType argType = exprCtx.naturalType;
+        functionCallCtxStack.peek().paramTypes.add(argType);
+    }
+    
     public void outAFuncCallFactor(AFuncCallFactor node) {
         FunctionCallContext currentFunctionCallContext = functionCallCtxStack.pop();
         String funcToCall = currentFunctionCallContext.callIdentifier.getText();
         if (programCtx.localFunctions.containsKey(funcToCall)) {
             long functionNumber = programCtx.localFunctions.get(funcToCall);
-            FunctionDefinition functionDef = programCtx.functionDefinitions.get((int)functionNumber);
-            BaseType firstParam = functionDef.getOutParams().get(0);
+            FunctionContext functionDef = programCtx.allFunctionCtx.get((int)functionNumber);
+            
+            if (functionDef.inParameterCount != currentFunctionCallContext.paramTypes.size()) {
+                // TODO LOCATION
+                throw new RuntimeException("Attempt to call function: number of arguments does not match.");
+            }
+                  
+            if (functionDef.inParameterCount > 0) {
+                //functionDef.
+            }
+            
+            
+            BaseType firstParam = functionDef.def.getOutParams().get(0);
             BasicType funcType;
             if (firstParam == BaseType.INTEGER) {
                 funcType = BasicType.Integer;
