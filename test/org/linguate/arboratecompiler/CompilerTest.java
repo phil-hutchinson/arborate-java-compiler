@@ -486,4 +486,17 @@ public class CompilerTest {
         expectedException.expect(Exception.class);
         Compiler.compile("function int addSimple(int a, int b) {return a + b;} function int test() { return addSimple(2); }");
     }
+
+    @Test
+    public void testIncorrectArgTypeThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function int addSimple(int a) {return a + 5;} function int test() { string a; a = \"something\"; return addSimple(a); }");
+    }
+
+    @Test
+    public void testIncorrectArgTypeOrderThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function int addSimple(int a, string b) {return a + 2;} function int test() { string str; int num; str = \"something\"; num = 3; return addSimple(str, num); }");
+    }
+
 }

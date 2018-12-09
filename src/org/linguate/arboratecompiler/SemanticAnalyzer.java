@@ -316,19 +316,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         String funcToCall = currentFunctionCallContext.callIdentifier.getText();
         if (programCtx.localFunctions.containsKey(funcToCall)) {
             long functionNumber = programCtx.localFunctions.get(funcToCall);
-            FunctionContext functionDef = programCtx.allFunctionCtx.get((int)functionNumber);
+            FunctionContext functionCtx = programCtx.allFunctionCtx.get((int)functionNumber);
             
-            if (functionDef.inParameterCount != currentFunctionCallContext.paramTypes.size()) {
+            if (functionCtx.inParameterCount != currentFunctionCallContext.paramTypes.size()) {
                 // TODO LOCATION
                 throw new RuntimeException("Attempt to call function: number of arguments does not match.");
             }
-                  
-            if (functionDef.inParameterCount > 0) {
-                //functionDef.
+            
+            for (long paramPos = 0; paramPos < functionCtx.inParameterCount; paramPos++) {
+                if (functionCtx.getVariable(paramPos).basicType != currentFunctionCallContext.paramTypes.get((int)paramPos)) {
+                    // TODO Location
+                    throw new RuntimeException("Attempt to call function: argument type does not match.");
+                }
             }
-            
-            
-            BaseType firstParam = functionDef.def.getOutParams().get(0);
+                  
+            BaseType firstParam = functionCtx.def.getOutParams().get(0);
             BasicType funcType;
             if (firstParam == BaseType.INTEGER) {
                 funcType = BasicType.Integer;

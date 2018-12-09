@@ -24,6 +24,7 @@ public class FunctionContext {
     List<Instruction> instructions = new ArrayList<>();
     
     private Map<String, VariableDefinition> localVariables = new HashMap<>();
+    private List<VariableDefinition> localVariableList = new ArrayList<>();
 
     long addVariable(TIdentifier identifier, BasicType basicType) {
         String variableName = identifier.getText();
@@ -34,8 +35,11 @@ public class FunctionContext {
                     + variableName + " at " + location);
         }
         long varPos = getVariableCount();
+        
         VariableDefinition varDef = new VariableDefinition(varPos, basicType);
         localVariables.put(variableName, varDef);
+        localVariableList.add(varDef);
+        
         return varPos;
     }
     
@@ -45,10 +49,22 @@ public class FunctionContext {
         } else {
             return null;
         }
-        
     }
 
+    VariableDefinition getVariable(long pos) {
+        if (localVariableList.size() <= pos) {
+            // TODO LOCATION
+            throw new RuntimeException("Invalid variable counter)");
+        } else {
+            return localVariableList.get((int) pos);
+        }
+    }
+    
     long getVariableCount() {
+        if (localVariables.size() != localVariableList.size()) {
+            // TODO internal error
+            throw new RuntimeException("Internal error tracking variables for function.");
+        }
         return localVariables.size();
     }
 
