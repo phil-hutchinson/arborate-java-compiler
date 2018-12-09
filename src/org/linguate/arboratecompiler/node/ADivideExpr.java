@@ -5,51 +5,51 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AMultiplyTerm extends PTerm
+public final class ADivideExpr extends PExpr
 {
-    private PTerm _term_;
-    private PFactor _factor_;
+    private PExpr _left_;
+    private PExpr _right_;
 
-    public AMultiplyTerm()
+    public ADivideExpr()
     {
         // Constructor
     }
 
-    public AMultiplyTerm(
-        @SuppressWarnings("hiding") PTerm _term_,
-        @SuppressWarnings("hiding") PFactor _factor_)
+    public ADivideExpr(
+        @SuppressWarnings("hiding") PExpr _left_,
+        @SuppressWarnings("hiding") PExpr _right_)
     {
         // Constructor
-        setTerm(_term_);
+        setLeft(_left_);
 
-        setFactor(_factor_);
+        setRight(_right_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AMultiplyTerm(
-            cloneNode(this._term_),
-            cloneNode(this._factor_));
+        return new ADivideExpr(
+            cloneNode(this._left_),
+            cloneNode(this._right_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAMultiplyTerm(this);
+        ((Analysis) sw).caseADivideExpr(this);
     }
 
-    public PTerm getTerm()
+    public PExpr getLeft()
     {
-        return this._term_;
+        return this._left_;
     }
 
-    public void setTerm(PTerm node)
+    public void setLeft(PExpr node)
     {
-        if(this._term_ != null)
+        if(this._left_ != null)
         {
-            this._term_.parent(null);
+            this._left_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +62,19 @@ public final class AMultiplyTerm extends PTerm
             node.parent(this);
         }
 
-        this._term_ = node;
+        this._left_ = node;
     }
 
-    public PFactor getFactor()
+    public PExpr getRight()
     {
-        return this._factor_;
+        return this._right_;
     }
 
-    public void setFactor(PFactor node)
+    public void setRight(PExpr node)
     {
-        if(this._factor_ != null)
+        if(this._right_ != null)
         {
-            this._factor_.parent(null);
+            this._right_.parent(null);
         }
 
         if(node != null)
@@ -87,30 +87,30 @@ public final class AMultiplyTerm extends PTerm
             node.parent(this);
         }
 
-        this._factor_ = node;
+        this._right_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._term_)
-            + toString(this._factor_);
+            + toString(this._left_)
+            + toString(this._right_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._term_ == child)
+        if(this._left_ == child)
         {
-            this._term_ = null;
+            this._left_ = null;
             return;
         }
 
-        if(this._factor_ == child)
+        if(this._right_ == child)
         {
-            this._factor_ = null;
+            this._right_ = null;
             return;
         }
 
@@ -121,15 +121,15 @@ public final class AMultiplyTerm extends PTerm
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._term_ == oldChild)
+        if(this._left_ == oldChild)
         {
-            setTerm((PTerm) newChild);
+            setLeft((PExpr) newChild);
             return;
         }
 
-        if(this._factor_ == oldChild)
+        if(this._right_ == oldChild)
         {
-            setFactor((PFactor) newChild);
+            setRight((PExpr) newChild);
             return;
         }
 

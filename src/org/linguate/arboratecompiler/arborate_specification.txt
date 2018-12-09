@@ -91,38 +91,24 @@ Productions
         | {return} kw_return expr
             { -> New statement.return(expr) };
 
-    /*
     expr {-> expr} =
-        {add} [op1]:value plus [op2]:value { -> New expr.add(op1.value, op2.value)}
-        | {subtract} [op1]:value minus [op2]:value { -> New expr.subtract(op1.value, op2.value)}
-        | {multiply} [op1]:value star [op2]:value { -> New expr.multiply(op1.value, op2.value)}
-        | {divide} [op1]:value slash [op2]:value { -> New expr.divide(op1.value, op2.value)};
+        {add} [left]:expr plus [right]:term { -> New expr.add(left.expr, right.expr) }
+        | {subtract} [left]:expr minus [right]:term { -> New expr.subtract(left.expr, right.expr) }
+        | {only_term} term { -> term.expr };
 
-    value {-> value} =
-        {int_lit} int_string { -> New value.int_lit(int_string) }
+    term {-> expr} = 
+        {multiply} [left]:term star [right]:factor { -> New expr.multiply(left.expr, right.expr) }
+        | {divide} [left]:term slash [right]:factor { -> New expr.divide(left.expr, right.expr) }
+        | {only_factor} factor { -> factor.expr };
+
+    factor {-> expr} =
+        {int_lit} int_string { -> New expr.int_lit(int_string) }
+        | {string_lit} quoted_string { -> New expr.string_lit(quoted_string) }
         | {func_call} func_call_name left_round func_call_arg_list right_round
-            { -> New value.func_call(func_call_name, func_call_arg_list) }
-        | {var_fetch} var_fetch_name { -> New value.var_fetch(var_fetch_name)};
-    */
-
-    expr {-> expr} =
-        {add} expr plus term { -> New expr.add(expr, term) }
-        | {subtract} expr minus term { -> New expr.subtract(expr, term) }
-        | {only_term} term { -> New expr.only_term(term) };
-
-    term = 
-        {multiply} term star factor { -> New term.multiply(term, factor) }
-        | {divide} term slash factor { -> New term.divide(term, factor) }
-        | {only_factor} factor { -> New term.only_factor(factor) };
-
-    factor {-> factor} =
-        {int_lit} int_string { -> New factor.int_lit(int_string) }
-        | {string_lit} quoted_string { -> New factor.string_lit(quoted_string) }
-        | {func_call} func_call_name left_round func_call_arg_list right_round
-            { -> New factor.func_call(func_call_name, func_call_arg_list) }
-        | {var_fetch} var_fetch_name { -> New factor.var_fetch(var_fetch_name)}
-        | {bracketed_expr} left_round expr right_round 
-            { -> New factor.bracketed_expr(expr) };
+            { -> New expr.func_call(func_call_name, func_call_arg_list) }
+        | {var_fetch} var_fetch_name { -> New expr.var_fetch(var_fetch_name)}
+        | {bracketed_expr} left_round [content]:expr right_round 
+            { -> New expr.bracketed_expr(content.expr) };
     
         
     func_call_arg_list {-> func_call_arg_list} =
@@ -164,33 +150,18 @@ Abstract Syntax Tree
         | {assignment} var_assign_name expr
         | {return} expr;
 
-    /*
-    expr = 
-        {add} [op1]:value [op2]:value
-        | {subtract} [op1]:value [op2]:value
-        | {multiply} [op1]:value [op2]:value
-        | {divide} [op1]:value [op2]:value;
-    */
-
     expr =
-        {add} expr term
-        | {subtract} expr term
-        | {only_term} term;
-
-    term = 
-        {multiply} term factor
-        | {divide} term factor
-        | {only_factor} factor;
-
-    factor =
-        {int_lit} int_string
+        {add} [left]:expr [right]:expr
+        | {subtract} [left]:expr [right]:expr
+        | {multiply} [left]:expr [right]:expr
+        | {divide} [left]:expr [right]:expr
+        | {int_lit} int_string
         | {string_lit} quoted_string
         | {func_call} func_call_name func_call_arg_list
         | {var_fetch} var_fetch_name
         | {bracketed_expr} expr;
 
     func_call_arg_list = func_call_arg*;
-
     func_call_arg = expr;
 
     func_decl_ret_type = identifier;

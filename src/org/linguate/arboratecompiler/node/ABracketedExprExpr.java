@@ -5,46 +5,46 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AIntLitFactor extends PFactor
+public final class ABracketedExprExpr extends PExpr
 {
-    private TIntString _intString_;
+    private PExpr _expr_;
 
-    public AIntLitFactor()
+    public ABracketedExprExpr()
     {
         // Constructor
     }
 
-    public AIntLitFactor(
-        @SuppressWarnings("hiding") TIntString _intString_)
+    public ABracketedExprExpr(
+        @SuppressWarnings("hiding") PExpr _expr_)
     {
         // Constructor
-        setIntString(_intString_);
+        setExpr(_expr_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AIntLitFactor(
-            cloneNode(this._intString_));
+        return new ABracketedExprExpr(
+            cloneNode(this._expr_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAIntLitFactor(this);
+        ((Analysis) sw).caseABracketedExprExpr(this);
     }
 
-    public TIntString getIntString()
+    public PExpr getExpr()
     {
-        return this._intString_;
+        return this._expr_;
     }
 
-    public void setIntString(TIntString node)
+    public void setExpr(PExpr node)
     {
-        if(this._intString_ != null)
+        if(this._expr_ != null)
         {
-            this._intString_.parent(null);
+            this._expr_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class AIntLitFactor extends PFactor
             node.parent(this);
         }
 
-        this._intString_ = node;
+        this._expr_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._intString_);
+            + toString(this._expr_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._intString_ == child)
+        if(this._expr_ == child)
         {
-            this._intString_ = null;
+            this._expr_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class AIntLitFactor extends PFactor
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._intString_ == oldChild)
+        if(this._expr_ == oldChild)
         {
-            setIntString((TIntString) newChild);
+            setExpr((PExpr) newChild);
             return;
         }
 

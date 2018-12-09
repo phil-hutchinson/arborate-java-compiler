@@ -5,46 +5,46 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AVarFetchFactor extends PFactor
+public final class AIntLitExpr extends PExpr
 {
-    private PVarFetchName _varFetchName_;
+    private TIntString _intString_;
 
-    public AVarFetchFactor()
+    public AIntLitExpr()
     {
         // Constructor
     }
 
-    public AVarFetchFactor(
-        @SuppressWarnings("hiding") PVarFetchName _varFetchName_)
+    public AIntLitExpr(
+        @SuppressWarnings("hiding") TIntString _intString_)
     {
         // Constructor
-        setVarFetchName(_varFetchName_);
+        setIntString(_intString_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AVarFetchFactor(
-            cloneNode(this._varFetchName_));
+        return new AIntLitExpr(
+            cloneNode(this._intString_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAVarFetchFactor(this);
+        ((Analysis) sw).caseAIntLitExpr(this);
     }
 
-    public PVarFetchName getVarFetchName()
+    public TIntString getIntString()
     {
-        return this._varFetchName_;
+        return this._intString_;
     }
 
-    public void setVarFetchName(PVarFetchName node)
+    public void setIntString(TIntString node)
     {
-        if(this._varFetchName_ != null)
+        if(this._intString_ != null)
         {
-            this._varFetchName_.parent(null);
+            this._intString_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class AVarFetchFactor extends PFactor
             node.parent(this);
         }
 
-        this._varFetchName_ = node;
+        this._intString_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._varFetchName_);
+            + toString(this._intString_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._varFetchName_ == child)
+        if(this._intString_ == child)
         {
-            this._varFetchName_ = null;
+            this._intString_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class AVarFetchFactor extends PFactor
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._varFetchName_ == oldChild)
+        if(this._intString_ == oldChild)
         {
-            setVarFetchName((PVarFetchName) newChild);
+            setIntString((TIntString) newChild);
             return;
         }
 

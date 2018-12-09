@@ -5,46 +5,46 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ABracketedExprFactor extends PFactor
+public final class AVarFetchExpr extends PExpr
 {
-    private PExpr _expr_;
+    private PVarFetchName _varFetchName_;
 
-    public ABracketedExprFactor()
+    public AVarFetchExpr()
     {
         // Constructor
     }
 
-    public ABracketedExprFactor(
-        @SuppressWarnings("hiding") PExpr _expr_)
+    public AVarFetchExpr(
+        @SuppressWarnings("hiding") PVarFetchName _varFetchName_)
     {
         // Constructor
-        setExpr(_expr_);
+        setVarFetchName(_varFetchName_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ABracketedExprFactor(
-            cloneNode(this._expr_));
+        return new AVarFetchExpr(
+            cloneNode(this._varFetchName_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseABracketedExprFactor(this);
+        ((Analysis) sw).caseAVarFetchExpr(this);
     }
 
-    public PExpr getExpr()
+    public PVarFetchName getVarFetchName()
     {
-        return this._expr_;
+        return this._varFetchName_;
     }
 
-    public void setExpr(PExpr node)
+    public void setVarFetchName(PVarFetchName node)
     {
-        if(this._expr_ != null)
+        if(this._varFetchName_ != null)
         {
-            this._expr_.parent(null);
+            this._varFetchName_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ABracketedExprFactor extends PFactor
             node.parent(this);
         }
 
-        this._expr_ = node;
+        this._varFetchName_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._expr_);
+            + toString(this._varFetchName_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._expr_ == child)
+        if(this._varFetchName_ == child)
         {
-            this._expr_ = null;
+            this._varFetchName_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ABracketedExprFactor extends PFactor
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._expr_ == oldChild)
+        if(this._varFetchName_ == oldChild)
         {
-            setExpr((PExpr) newChild);
+            setVarFetchName((PVarFetchName) newChild);
             return;
         }
 

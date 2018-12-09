@@ -5,16 +5,16 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AStringLitFactor extends PFactor
+public final class AStringLitExpr extends PExpr
 {
     private TQuotedString _quotedString_;
 
-    public AStringLitFactor()
+    public AStringLitExpr()
     {
         // Constructor
     }
 
-    public AStringLitFactor(
+    public AStringLitExpr(
         @SuppressWarnings("hiding") TQuotedString _quotedString_)
     {
         // Constructor
@@ -25,14 +25,14 @@ public final class AStringLitFactor extends PFactor
     @Override
     public Object clone()
     {
-        return new AStringLitFactor(
+        return new AStringLitExpr(
             cloneNode(this._quotedString_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAStringLitFactor(this);
+        ((Analysis) sw).caseAStringLitExpr(this);
     }
 
     public TQuotedString getQuotedString()

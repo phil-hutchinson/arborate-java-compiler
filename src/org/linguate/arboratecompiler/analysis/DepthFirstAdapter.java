@@ -230,13 +230,13 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAAddExpr(AAddExpr node)
     {
         inAAddExpr(node);
-        if(node.getExpr() != null)
+        if(node.getLeft() != null)
         {
-            node.getExpr().apply(this);
+            node.getLeft().apply(this);
         }
-        if(node.getTerm() != null)
+        if(node.getRight() != null)
         {
-            node.getTerm().apply(this);
+            node.getRight().apply(this);
         }
         outAAddExpr(node);
     }
@@ -255,165 +255,123 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseASubtractExpr(ASubtractExpr node)
     {
         inASubtractExpr(node);
-        if(node.getExpr() != null)
+        if(node.getLeft() != null)
         {
-            node.getExpr().apply(this);
+            node.getLeft().apply(this);
         }
-        if(node.getTerm() != null)
+        if(node.getRight() != null)
         {
-            node.getTerm().apply(this);
+            node.getRight().apply(this);
         }
         outASubtractExpr(node);
     }
 
-    public void inAOnlyTermExpr(AOnlyTermExpr node)
+    public void inAMultiplyExpr(AMultiplyExpr node)
     {
         defaultIn(node);
     }
 
-    public void outAOnlyTermExpr(AOnlyTermExpr node)
+    public void outAMultiplyExpr(AMultiplyExpr node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAOnlyTermExpr(AOnlyTermExpr node)
+    public void caseAMultiplyExpr(AMultiplyExpr node)
     {
-        inAOnlyTermExpr(node);
-        if(node.getTerm() != null)
+        inAMultiplyExpr(node);
+        if(node.getLeft() != null)
         {
-            node.getTerm().apply(this);
+            node.getLeft().apply(this);
         }
-        outAOnlyTermExpr(node);
+        if(node.getRight() != null)
+        {
+            node.getRight().apply(this);
+        }
+        outAMultiplyExpr(node);
     }
 
-    public void inAMultiplyTerm(AMultiplyTerm node)
+    public void inADivideExpr(ADivideExpr node)
     {
         defaultIn(node);
     }
 
-    public void outAMultiplyTerm(AMultiplyTerm node)
+    public void outADivideExpr(ADivideExpr node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAMultiplyTerm(AMultiplyTerm node)
+    public void caseADivideExpr(ADivideExpr node)
     {
-        inAMultiplyTerm(node);
-        if(node.getTerm() != null)
+        inADivideExpr(node);
+        if(node.getLeft() != null)
         {
-            node.getTerm().apply(this);
+            node.getLeft().apply(this);
         }
-        if(node.getFactor() != null)
+        if(node.getRight() != null)
         {
-            node.getFactor().apply(this);
+            node.getRight().apply(this);
         }
-        outAMultiplyTerm(node);
+        outADivideExpr(node);
     }
 
-    public void inADivideTerm(ADivideTerm node)
+    public void inAIntLitExpr(AIntLitExpr node)
     {
         defaultIn(node);
     }
 
-    public void outADivideTerm(ADivideTerm node)
+    public void outAIntLitExpr(AIntLitExpr node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseADivideTerm(ADivideTerm node)
+    public void caseAIntLitExpr(AIntLitExpr node)
     {
-        inADivideTerm(node);
-        if(node.getTerm() != null)
-        {
-            node.getTerm().apply(this);
-        }
-        if(node.getFactor() != null)
-        {
-            node.getFactor().apply(this);
-        }
-        outADivideTerm(node);
-    }
-
-    public void inAOnlyFactorTerm(AOnlyFactorTerm node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAOnlyFactorTerm(AOnlyFactorTerm node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAOnlyFactorTerm(AOnlyFactorTerm node)
-    {
-        inAOnlyFactorTerm(node);
-        if(node.getFactor() != null)
-        {
-            node.getFactor().apply(this);
-        }
-        outAOnlyFactorTerm(node);
-    }
-
-    public void inAIntLitFactor(AIntLitFactor node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAIntLitFactor(AIntLitFactor node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAIntLitFactor(AIntLitFactor node)
-    {
-        inAIntLitFactor(node);
+        inAIntLitExpr(node);
         if(node.getIntString() != null)
         {
             node.getIntString().apply(this);
         }
-        outAIntLitFactor(node);
+        outAIntLitExpr(node);
     }
 
-    public void inAStringLitFactor(AStringLitFactor node)
+    public void inAStringLitExpr(AStringLitExpr node)
     {
         defaultIn(node);
     }
 
-    public void outAStringLitFactor(AStringLitFactor node)
+    public void outAStringLitExpr(AStringLitExpr node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAStringLitFactor(AStringLitFactor node)
+    public void caseAStringLitExpr(AStringLitExpr node)
     {
-        inAStringLitFactor(node);
+        inAStringLitExpr(node);
         if(node.getQuotedString() != null)
         {
             node.getQuotedString().apply(this);
         }
-        outAStringLitFactor(node);
+        outAStringLitExpr(node);
     }
 
-    public void inAFuncCallFactor(AFuncCallFactor node)
+    public void inAFuncCallExpr(AFuncCallExpr node)
     {
         defaultIn(node);
     }
 
-    public void outAFuncCallFactor(AFuncCallFactor node)
+    public void outAFuncCallExpr(AFuncCallExpr node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAFuncCallFactor(AFuncCallFactor node)
+    public void caseAFuncCallExpr(AFuncCallExpr node)
     {
-        inAFuncCallFactor(node);
+        inAFuncCallExpr(node);
         if(node.getFuncCallName() != null)
         {
             node.getFuncCallName().apply(this);
@@ -422,49 +380,49 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getFuncCallArgList().apply(this);
         }
-        outAFuncCallFactor(node);
+        outAFuncCallExpr(node);
     }
 
-    public void inAVarFetchFactor(AVarFetchFactor node)
+    public void inAVarFetchExpr(AVarFetchExpr node)
     {
         defaultIn(node);
     }
 
-    public void outAVarFetchFactor(AVarFetchFactor node)
+    public void outAVarFetchExpr(AVarFetchExpr node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAVarFetchFactor(AVarFetchFactor node)
+    public void caseAVarFetchExpr(AVarFetchExpr node)
     {
-        inAVarFetchFactor(node);
+        inAVarFetchExpr(node);
         if(node.getVarFetchName() != null)
         {
             node.getVarFetchName().apply(this);
         }
-        outAVarFetchFactor(node);
+        outAVarFetchExpr(node);
     }
 
-    public void inABracketedExprFactor(ABracketedExprFactor node)
+    public void inABracketedExprExpr(ABracketedExprExpr node)
     {
         defaultIn(node);
     }
 
-    public void outABracketedExprFactor(ABracketedExprFactor node)
+    public void outABracketedExprExpr(ABracketedExprExpr node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseABracketedExprFactor(ABracketedExprFactor node)
+    public void caseABracketedExprExpr(ABracketedExprExpr node)
     {
-        inABracketedExprFactor(node);
+        inABracketedExprExpr(node);
         if(node.getExpr() != null)
         {
             node.getExpr().apply(this);
         }
-        outABracketedExprFactor(node);
+        outABracketedExprExpr(node);
     }
 
     public void inAFuncCallArgList(AFuncCallArgList node)

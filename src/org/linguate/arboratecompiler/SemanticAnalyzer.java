@@ -188,100 +188,100 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAAddExpr(AAddExpr node) {
-        PExpr exprNode = node.getExpr();
-        PTerm termNode = node.getTerm();
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
         
-        EtfContext exprCtx = getEtfContext(exprNode);
-        EtfContext termCtx = getEtfContext(termNode);
-        if (exprCtx.naturalType == BasicType.Integer && termCtx.naturalType == BasicType.Integer) {
+        EtfContext leftCtx = getEtfContext(leftNode);
+        EtfContext rightCtx = getEtfContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
             EtfContext currCtx = new EtfContext(BasicType.Integer);
             addEtfContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_ADD);
-        } else if (exprCtx.naturalType == BasicType.String && termCtx.naturalType == BasicType.String) {
+        } else if (leftCtx.naturalType == BasicType.String && rightCtx.naturalType == BasicType.String) {
             EtfContext currCtx = new EtfContext(BasicType.String);
             addEtfContext(node, currCtx);
             addInstruction(InstructionCode.STRING_CONCATENATE);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Addition operation not valid for types: " + exprCtx.naturalType.name() + ", " + termCtx.naturalType.name());
+            throw new RuntimeException("Addition operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
         }
     }
 
     public void outASubtractExpr(ASubtractExpr node) {
-        PExpr exprNode = node.getExpr();
-        PTerm termNode = node.getTerm();
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
         
-        EtfContext exprCtx = getEtfContext(exprNode);
-        EtfContext termCtx = getEtfContext(termNode);
-        if (exprCtx.naturalType == BasicType.Integer && termCtx.naturalType == BasicType.Integer) {
+        EtfContext leftCtx = getEtfContext(leftNode);
+        EtfContext rightCtx = getEtfContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
             EtfContext currCtx = new EtfContext(BasicType.Integer);
             addEtfContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_SUBTRACT);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Addition operation not valid for types: " + exprCtx.naturalType.name() + ", " + termCtx.naturalType.name());
+            throw new RuntimeException("Subtraction operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
         }
     }
 
-    public void outAOnlyTermExpr(AOnlyTermExpr node) {
-        PTerm termNode = node.getTerm();
-        EtfContext termCtx = getEtfContext(termNode);
-        
-        EtfContext currCtx = new EtfContext(termCtx.naturalType);
-        addEtfContext(node, currCtx);
-    }
+//    public void outAOnlyTermExpr(AOnlyTermExpr node) {
+//        PTerm termNode = node.getTerm();
+//        EtfContext termCtx = getEtfContext(termNode);
+//        
+//        EtfContext currCtx = new EtfContext(termCtx.naturalType);
+//        addEtfContext(node, currCtx);
+//    }
     
-    public void outAMultiplyTerm(AMultiplyTerm node) {
-        PTerm termNode = node.getTerm();
-        PFactor factorNode = node.getFactor();
+    public void outAMultiplyExpr(AMultiplyExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
         
-        EtfContext termCtx = getEtfContext(termNode);
-        EtfContext factorCtx = getEtfContext(factorNode);
-        if (termCtx.naturalType == BasicType.Integer && factorCtx.naturalType == BasicType.Integer) {
+        EtfContext leftCtx = getEtfContext(leftNode);
+        EtfContext rightCtx = getEtfContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
             EtfContext currCtx = new EtfContext(BasicType.Integer);
             addEtfContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_MULTIPLY);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Addition operation not valid for types: " + termCtx.naturalType.name() + ", " + factorCtx.naturalType.name());
+            throw new RuntimeException("Multiplication operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
         }
     }
 
-    public void outADivideTerm(ADivideTerm node) {
-        PTerm termNode = node.getTerm();
-        PFactor factorNode = node.getFactor();
+    public void outADivideExpr(ADivideExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
         
-        EtfContext termCtx = getEtfContext(termNode);
-        EtfContext factorCtx = getEtfContext(factorNode);
-        if (termCtx.naturalType == BasicType.Integer && factorCtx.naturalType == BasicType.Integer) {
+        EtfContext leftCtx = getEtfContext(leftNode);
+        EtfContext rightCtx = getEtfContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
             EtfContext currCtx = new EtfContext(BasicType.Integer);
             addEtfContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_DIVIDE);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Addition operation not valid for types: " + termCtx.naturalType.name() + ", " + factorCtx.naturalType.name());
+            throw new RuntimeException("Division operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
         }
     }
 
-    public void outAOnlyFactorTerm(AOnlyFactorTerm node) {
-        PFactor factorNode = node.getFactor();
-        EtfContext factorCtx = getEtfContext(factorNode);
-        
-        EtfContext currCtx = new EtfContext(factorCtx.naturalType);
-        addEtfContext(node, currCtx);
-    }
+//    public void outAOnlyFactorTerm(AOnlyFactorTerm node) {
+//        PFactor factorNode = node.getFactor();
+//        EtfContext factorCtx = getEtfContext(factorNode);
+//        
+//        EtfContext currCtx = new EtfContext(factorCtx.naturalType);
+//        addEtfContext(node, currCtx);
+//    }
     
-    public void inAIntLitFactor(AIntLitFactor node) {
+    public void inAIntLitExpr(AIntLitExpr node) {
         long val = Long.parseLong(node.getIntString().getText());
         addInstruction(InstructionCode.INTEGER_TO_STACK, val);
     }
     
-    public void outAIntLitFactor(AIntLitFactor node) {
+    public void outAIntLitExpr(AIntLitExpr node) {
         EtfContext currCtx = new EtfContext(BasicType.Integer);
         addEtfContext(node, currCtx);
     }
     
-    public void inAStringLitFactor(AStringLitFactor node) {
+    public void inAStringLitExpr(AStringLitExpr node) {
         String val = node.getQuotedString().getText();
         if (val.length() < 2) {
             throw new RuntimeException("delimited string literals should always have at least 2 chars (for delimiters");
@@ -290,12 +290,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         addInstruction(InstructionCode.STRING_TO_STACK, valContents);
     }
     
-    public void outAStringLitFactor(AStringLitFactor node) {
+    public void outAStringLitExpr(AStringLitExpr node) {
         EtfContext currCtx = new EtfContext(BasicType.String);
         addEtfContext(node, currCtx);
     }
     
-    public void inAFuncCallFactor(AFuncCallFactor node) {
+    public void inAFuncCallExpr(AFuncCallExpr node) {
         functionCallCtxStack.push(new FunctionCallContext());
     }
     
@@ -311,7 +311,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         functionCallCtxStack.peek().paramTypes.add(argType);
     }
     
-    public void outAFuncCallFactor(AFuncCallFactor node) {
+    public void outAFuncCallExpr(AFuncCallExpr node) {
         FunctionCallContext currentFunctionCallContext = functionCallCtxStack.pop();
         String funcToCall = currentFunctionCallContext.callIdentifier.getText();
         if (programCtx.localFunctions.containsKey(funcToCall)) {
@@ -364,7 +364,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
     }
     
-    public void outAVarFetchFactor(AVarFetchFactor node) {
+    public void outAVarFetchExpr(AVarFetchExpr node) {
         PVarFetchName fetchNode = node.getVarFetchName();
         EtfContext fetchCtx = getEtfContext(fetchNode);
         
@@ -372,7 +372,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         addEtfContext(node, currCtx);
     }
     
-    public void outABracketedExprFactor(ABracketedExprFactor node) {
+    public void outABracketedExprExpr(ABracketedExprExpr node) {
         PExpr exprNode = node.getExpr();
         EtfContext fetchCtx = getEtfContext(exprNode);
         
