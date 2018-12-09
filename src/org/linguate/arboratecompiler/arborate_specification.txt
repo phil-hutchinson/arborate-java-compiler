@@ -91,24 +91,27 @@ Productions
         | {return} kw_return expr
             { -> New statement.return(expr) };
 
-    expr {-> expr} =
-        {add} [left]:expr plus [right]:term { -> New expr.add(left.expr, right.expr) }
-        | {subtract} [left]:expr minus [right]:term { -> New expr.subtract(left.expr, right.expr) }
-        | {only_term} term { -> term.expr };
+    expr {-> expr } = 
+        precedence_add { -> precedence_add.expr };
 
-    term {-> expr} = 
-        {multiply} [left]:term star [right]:factor { -> New expr.multiply(left.expr, right.expr) }
-        | {divide} [left]:term slash [right]:factor { -> New expr.divide(left.expr, right.expr) }
-        | {only_factor} factor { -> factor.expr };
+    precedence_add {-> expr} =
+        {add} [left]:precedence_add plus [right]:precedence_mult { -> New expr.add(left.expr, right.expr) }
+        | {subtract} [left]:precedence_add minus [right]:precedence_mult { -> New expr.subtract(left.expr, right.expr) }
+        | {fall_through} precedence_mult { -> precedence_mult.expr };
 
-    factor {-> expr} =
+    precedence_mult {-> expr} = 
+        {multiply} [left]:precedence_mult star [right]:element { -> New expr.multiply(left.expr, right.expr) }
+        | {divide} [left]:precedence_mult slash [right]:element { -> New expr.divide(left.expr, right.expr) }
+        | {fall_through} element { -> element.expr };
+
+    element {-> expr} =
         {int_lit} int_string { -> New expr.int_lit(int_string) }
         | {string_lit} quoted_string { -> New expr.string_lit(quoted_string) }
         | {func_call} func_call_name left_round func_call_arg_list right_round
             { -> New expr.func_call(func_call_name, func_call_arg_list) }
         | {var_fetch} var_fetch_name { -> New expr.var_fetch(var_fetch_name)}
         | {bracketed_expr} left_round [content]:expr right_round 
-            { -> New expr.bracketed_expr(content.expr) };
+            { ->  content.expr };
     
         
     func_call_arg_list {-> func_call_arg_list} =
@@ -158,8 +161,7 @@ Abstract Syntax Tree
         | {int_lit} int_string
         | {string_lit} quoted_string
         | {func_call} func_call_name func_call_arg_list
-        | {var_fetch} var_fetch_name
-        | {bracketed_expr} expr;
+        | {var_fetch} var_fetch_name;
 
     func_call_arg_list = func_call_arg*;
     func_call_arg = expr;

@@ -223,14 +223,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
     }
 
-//    public void outAOnlyTermExpr(AOnlyTermExpr node) {
-//        PTerm termNode = node.getTerm();
-//        EtfContext termCtx = getEtfContext(termNode);
-//        
-//        EtfContext currCtx = new EtfContext(termCtx.naturalType);
-//        addEtfContext(node, currCtx);
-//    }
-    
     public void outAMultiplyExpr(AMultiplyExpr node) {
         PExpr leftNode = node.getLeft();
         PExpr rightNode = node.getRight();
@@ -263,14 +255,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
     }
 
-//    public void outAOnlyFactorTerm(AOnlyFactorTerm node) {
-//        PFactor factorNode = node.getFactor();
-//        EtfContext factorCtx = getEtfContext(factorNode);
-//        
-//        EtfContext currCtx = new EtfContext(factorCtx.naturalType);
-//        addEtfContext(node, currCtx);
-//    }
-    
     public void inAIntLitExpr(AIntLitExpr node) {
         long val = Long.parseLong(node.getIntString().getText());
         addInstruction(InstructionCode.INTEGER_TO_STACK, val);
@@ -372,16 +356,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         addEtfContext(node, currCtx);
     }
     
-    public void outABracketedExprExpr(ABracketedExprExpr node) {
-        PExpr exprNode = node.getExpr();
-        EtfContext fetchCtx = getEtfContext(exprNode);
-        
-        EtfContext currCtx = new EtfContext(fetchCtx.naturalType);
-        addEtfContext(node, currCtx);
-    }
-//    public void in(AExpression node) {
-//    
-//    }
     /**********************  HELPER METHODS  *********************/
     private void pushEtfContext() {
         Map<Node,EtfContext> etfCtx = new HashMap<>();

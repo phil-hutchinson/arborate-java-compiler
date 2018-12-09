@@ -165,12 +165,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseABracketedExprExpr(ABracketedExprExpr node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
     public void caseAFuncCallArgList(AFuncCallArgList node)
     {
         defaultCase(node);

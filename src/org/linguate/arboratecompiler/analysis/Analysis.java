@@ -27,7 +27,6 @@ public interface Analysis extends Switch
     void caseAStringLitExpr(AStringLitExpr node);
     void caseAFuncCallExpr(AFuncCallExpr node);
     void caseAVarFetchExpr(AVarFetchExpr node);
-    void caseABracketedExprExpr(ABracketedExprExpr node);
     void caseAFuncCallArgList(AFuncCallArgList node);
     void caseAFuncCallArg(AFuncCallArg node);
     void caseAFuncDeclRetType(AFuncDeclRetType node);

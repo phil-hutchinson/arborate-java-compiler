@@ -404,27 +404,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAVarFetchExpr(node);
     }
 
-    public void inABracketedExprExpr(ABracketedExprExpr node)
-    {
-        defaultIn(node);
-    }
-
-    public void outABracketedExprExpr(ABracketedExprExpr node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseABracketedExprExpr(ABracketedExprExpr node)
-    {
-        inABracketedExprExpr(node);
-        if(node.getExpr() != null)
-        {
-            node.getExpr().apply(this);
-        }
-        outABracketedExprExpr(node);
-    }
-
     public void inAFuncCallArgList(AFuncCallArgList node)
     {
         defaultIn(node);
