@@ -37,7 +37,10 @@ Tokens
     star = '*';
     slash = '/';
 
+    less = '<';
+    greater = '>';
     equals = '=';
+    exclamation = '!';
 
     comma = ',';
     semicolon = ';';
@@ -92,7 +95,19 @@ Productions
             { -> New statement.return(expr) };
 
     expr {-> expr } = 
-        precedence_add { -> precedence_add.expr };
+        precedence_equal { -> precedence_equal.expr };
+
+    precedence_equal { -> expr } =
+        {equal} [left]:precedence_equal [a]:equals [b]:equals [right]:precedence_comp { -> New expr.equal(left.expr, right.expr) }
+        | {not_equal} [left]:precedence_equal exclamation equals [right]:precedence_comp { -> New expr.not_equal(left.expr, right.expr) }
+        | {fall_through} precedence_comp { -> precedence_comp.expr };
+
+    precedence_comp {-> expr} =
+        {less_than} [left]:precedence_comp less [right]:precedence_add { -> New expr.less_than(left.expr, right.expr) }
+        | {greater_than} [left]:precedence_comp greater [right]:precedence_add { -> New expr.greater_than(left.expr, right.expr) }
+        | {less_equal} [left]:precedence_comp less equals [right]:precedence_add { -> New expr.less_equal(left.expr, right.expr) }
+        | {greater_equal} [left]:precedence_comp greater equals [right]:precedence_add { -> New expr.greater_equal(left.expr, right.expr) }
+        | {fall_through} precedence_add { -> precedence_add.expr };
 
     precedence_add {-> expr} =
         {add} [left]:precedence_add plus [right]:precedence_mult { -> New expr.add(left.expr, right.expr) }
@@ -154,10 +169,20 @@ Abstract Syntax Tree
         | {return} expr;
 
     expr =
-        {add} [left]:expr [right]:expr
+        {equal} [left]:expr [right]:expr
+        | {not_equal} [left]:expr [right]:expr
+
+        | {less_than} [left]:expr [right]:expr
+        | {greater_than} [left]:expr [right]:expr
+        | {less_equal} [left]:expr [right]:expr
+        | {greater_equal} [left]:expr [right]:expr
+        
+        | {add} [left]:expr [right]:expr
         | {subtract} [left]:expr [right]:expr
+
         | {multiply} [left]:expr [right]:expr
         | {divide} [left]:expr [right]:expr
+
         | {int_lit} int_string
         | {string_lit} quoted_string
         | {func_call} func_call_name func_call_arg_list

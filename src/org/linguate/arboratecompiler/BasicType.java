@@ -12,4 +12,5 @@ package org.linguate.arboratecompiler;
 public enum BasicType {
     Integer,
     String,
+    Boolean,
 }

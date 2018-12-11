@@ -117,6 +117,42 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAEqualExpr(AEqualExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseANotEqualExpr(ANotEqualExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALessThanExpr(ALessThanExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAGreaterThanExpr(AGreaterThanExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALessEqualExpr(ALessEqualExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAGreaterEqualExpr(AGreaterEqualExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAAddExpr(AAddExpr node)
     {
         defaultCase(node);
@@ -291,7 +327,25 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTLess(TLess node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTGreater(TGreater node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTEquals(TEquals node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTExclamation(TExclamation node)
     {
         defaultCase(node);
     }

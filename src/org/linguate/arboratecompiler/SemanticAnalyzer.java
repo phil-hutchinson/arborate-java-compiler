@@ -30,7 +30,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     AssignmentStatementContext assignmentStatementCtx;
     ReturnStatementContext returnStatementCtx;
     Stack<FunctionCallContext> functionCallCtxStack = new Stack<>();
-    Stack<Map<Node,EtfContext>> etfCtxStack = new Stack<>();
+    Stack<Map<Node,ExpressionContext>> expressionCtxStack = new Stack<>();
             
     /*****************  NODE DEFINITIONS  *****************/
     public void inAProgram(AProgram node) {
@@ -140,7 +140,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void inAAssignmentStatement(AAssignmentStatement node) {
         assignmentStatementCtx = new AssignmentStatementContext();
-        pushEtfContext();
+        pushExpressionContextStack();
     }
     
     public void inAVarAssignName(AVarAssignName node) {
@@ -158,17 +158,17 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     public void outAAssignmentStatement(AAssignmentStatement node) {
         addInstruction(InstructionCode.STACK_TO_VARIABLE, (long)assignmentStatementCtx.varPosition);
         assignmentStatementCtx = null;
-        popEtfContext();
+        popExpressionContextStack();
     }
     
     public void inAReturnStatement(AReturnStatement node) {
         returnStatementCtx = new ReturnStatementContext();
-        pushEtfContext();
+        pushExpressionContextStack();
     }
     
     public void outAReturnStatement(AReturnStatement node) {
         PExpr exprNode = node.getExpr();
-        EtfContext exprCtx = getEtfContext(exprNode);
+        ExpressionContext exprCtx = getExpressionContext(exprNode);
         boolean isValid = false;
         if (exprCtx.naturalType == BasicType.Integer && activeFunctionCtx.returnType == BaseType.INTEGER) {
             isValid = true;
@@ -184,22 +184,22 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         activeFunctionCtx.hasReturn = true;
         addInstruction(InstructionCode.EXIT_FUNCTION);
         returnStatementCtx = null;
-        popEtfContext();
+        popExpressionContextStack();
     }
     
     public void outAAddExpr(AAddExpr node) {
         PExpr leftNode = node.getLeft();
         PExpr rightNode = node.getRight();
         
-        EtfContext leftCtx = getEtfContext(leftNode);
-        EtfContext rightCtx = getEtfContext(rightNode);
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
         if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            EtfContext currCtx = new EtfContext(BasicType.Integer);
-            addEtfContext(node, currCtx);
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+            addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_ADD);
         } else if (leftCtx.naturalType == BasicType.String && rightCtx.naturalType == BasicType.String) {
-            EtfContext currCtx = new EtfContext(BasicType.String);
-            addEtfContext(node, currCtx);
+            ExpressionContext currCtx = new ExpressionContext(BasicType.String);
+            addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.STRING_CONCATENATE);
         } else {
             // TODO ERRORLOCATION
@@ -211,11 +211,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         PExpr leftNode = node.getLeft();
         PExpr rightNode = node.getRight();
         
-        EtfContext leftCtx = getEtfContext(leftNode);
-        EtfContext rightCtx = getEtfContext(rightNode);
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
         if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            EtfContext currCtx = new EtfContext(BasicType.Integer);
-            addEtfContext(node, currCtx);
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+            addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_SUBTRACT);
         } else {
             // TODO ERRORLOCATION
@@ -227,11 +227,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         PExpr leftNode = node.getLeft();
         PExpr rightNode = node.getRight();
         
-        EtfContext leftCtx = getEtfContext(leftNode);
-        EtfContext rightCtx = getEtfContext(rightNode);
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
         if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            EtfContext currCtx = new EtfContext(BasicType.Integer);
-            addEtfContext(node, currCtx);
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+            addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_MULTIPLY);
         } else {
             // TODO ERRORLOCATION
@@ -243,11 +243,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         PExpr leftNode = node.getLeft();
         PExpr rightNode = node.getRight();
         
-        EtfContext leftCtx = getEtfContext(leftNode);
-        EtfContext rightCtx = getEtfContext(rightNode);
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
         if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            EtfContext currCtx = new EtfContext(BasicType.Integer);
-            addEtfContext(node, currCtx);
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+            addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_DIVIDE);
         } else {
             // TODO ERRORLOCATION
@@ -255,14 +255,134 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
     }
 
+    public void outAEqualExpr(AEqualExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == rightCtx.naturalType) {
+            addExpressionContext(node, new ExpressionContext(BasicType.Boolean));
+            switch(leftCtx.naturalType) {
+                case Integer:
+                    addInstruction(InstructionCode.INTEGER_EQUAL);
+                    break;
+                    
+                case String:
+                    addInstruction(InstructionCode.STRING_EQUAL);
+                    break; 
+                    
+                default:
+                    // TODO ERRORLOCATION
+                    throw new RuntimeException("Unknown type in equal comparison: " + leftCtx.naturalType.name());
+            }
+            
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Non-matching types in equal comparison: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+    
+    public void outANotEqualExpr(ANotEqualExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == rightCtx.naturalType) {
+            addExpressionContext(node, new ExpressionContext(BasicType.Boolean));
+            switch(leftCtx.naturalType) {
+                case Integer:
+                    addInstruction(InstructionCode.INTEGER_NOT_EQUAL);
+                    break;
+                    
+                case String:
+                    addInstruction(InstructionCode.STRING_NOT_EQUAL);
+                    break; 
+                    
+                default:
+                    // TODO ERRORLOCATION
+                    throw new RuntimeException("Unknown type in not equal comparison: " + leftCtx.naturalType.name());
+            }
+            
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Non-matching types in not equal comparison: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+
+    public void outALessThanExpr(ALessThanExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+            addExpressionContext(node, currCtx);
+            addInstruction(InstructionCode.INTEGER_LESS_THAN);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Less Than operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+    
+    public void outALessEqualExpr(ALessEqualExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+            addExpressionContext(node, currCtx);
+            addInstruction(InstructionCode.INTEGER_LESS_EQUAL);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Less Than Or Equal operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+    
+    public void outAGreaterThanExpr(AGreaterThanExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+            addExpressionContext(node, currCtx);
+            addInstruction(InstructionCode.INTEGER_GREATER_THAN);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Greater Than operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+    
+    public void outAGreaterEqualExpr(AGreaterEqualExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+            addExpressionContext(node, currCtx);
+            addInstruction(InstructionCode.INTEGER_GREATER_EQUAL);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Greater Than Or Equal operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+    
     public void inAIntLitExpr(AIntLitExpr node) {
         long val = Long.parseLong(node.getIntString().getText());
         addInstruction(InstructionCode.INTEGER_TO_STACK, val);
     }
     
     public void outAIntLitExpr(AIntLitExpr node) {
-        EtfContext currCtx = new EtfContext(BasicType.Integer);
-        addEtfContext(node, currCtx);
+        ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+        addExpressionContext(node, currCtx);
     }
     
     public void inAStringLitExpr(AStringLitExpr node) {
@@ -275,8 +395,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAStringLitExpr(AStringLitExpr node) {
-        EtfContext currCtx = new EtfContext(BasicType.String);
-        addEtfContext(node, currCtx);
+        ExpressionContext currCtx = new ExpressionContext(BasicType.String);
+        addExpressionContext(node, currCtx);
     }
     
     public void inAFuncCallExpr(AFuncCallExpr node) {
@@ -289,7 +409,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAFuncCallArg(AFuncCallArg node) {
         PExpr exprNode = node.getExpr();
-        EtfContext exprCtx = getEtfContext(exprNode);
+        ExpressionContext exprCtx = getExpressionContext(exprNode);
         
         BasicType argType = exprCtx.naturalType;
         functionCallCtxStack.peek().paramTypes.add(argType);
@@ -324,8 +444,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
                 // TODO LOCATION
                 throw new RuntimeException("Unknown function return type");
             }
-            EtfContext currCtx = new EtfContext(funcType);
-            addEtfContext(node, currCtx);
+            ExpressionContext currCtx = new ExpressionContext(funcType);
+            addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
         } else {
             String location = currentFunctionCallContext.callIdentifier.getLine() + ":" + currentFunctionCallContext.callIdentifier.getPos();
@@ -339,8 +459,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         VariableDefinition varDef = activeFunctionCtx.getVariable(varNameToFetch);
         if (varDef != null) {
             long varPos = varDef.variablePosition;
-            EtfContext currCtx = new EtfContext(varDef.basicType);
-            addEtfContext(node, currCtx);
+            ExpressionContext currCtx = new ExpressionContext(varDef.basicType);
+            addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.VARIABLE_TO_STACK, varPos);
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
@@ -350,24 +470,24 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAVarFetchExpr(AVarFetchExpr node) {
         PVarFetchName fetchNode = node.getVarFetchName();
-        EtfContext fetchCtx = getEtfContext(fetchNode);
+        ExpressionContext fetchCtx = getExpressionContext(fetchNode);
         
-        EtfContext currCtx = new EtfContext(fetchCtx.naturalType);
-        addEtfContext(node, currCtx);
+        ExpressionContext currCtx = new ExpressionContext(fetchCtx.naturalType);
+        addExpressionContext(node, currCtx);
     }
     
     /**********************  HELPER METHODS  *********************/
-    private void pushEtfContext() {
-        Map<Node,EtfContext> etfCtx = new HashMap<>();
-        etfCtxStack.push(etfCtx);
+    private void pushExpressionContextStack() {
+        Map<Node,ExpressionContext> expressionCtx = new HashMap<>();
+        expressionCtxStack.push(expressionCtx);
     }
     
-    private Map<Node,EtfContext> popEtfContext() {
-        return etfCtxStack.pop();
+    private Map<Node,ExpressionContext> popExpressionContextStack() {
+        return expressionCtxStack.pop();
     }
     
-    private EtfContext getEtfContext(Node node) {
-        Map<Node,EtfContext> currentMap = etfCtxStack.peek();
+    private ExpressionContext getExpressionContext(Node node) {
+        Map<Node,ExpressionContext> currentMap = expressionCtxStack.peek();
         if (currentMap.containsKey(node)) {
             return currentMap.get(node);
         } else {
@@ -375,9 +495,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
     }
     
-    private void addEtfContext(Node node, EtfContext etfContext) {
-        Map<Node,EtfContext> currentMap = etfCtxStack.peek();
-        currentMap.put(node, etfContext);
+    private void addExpressionContext(Node node, ExpressionContext expressionContext) {
+        Map<Node,ExpressionContext> currentMap = expressionCtxStack.peek();
+        currentMap.put(node, expressionContext);
     }
     
     private void addInstruction(InstructionCode instructionCode) {
