@@ -189,6 +189,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseABoolLitExpr(ABoolLitExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFuncCallExpr(AFuncCallExpr node)
     {
         defaultCase(node);
@@ -370,6 +376,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTQuotedString(TQuotedString node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTBoolString(TBoolString node)
     {
         defaultCase(node);
     }

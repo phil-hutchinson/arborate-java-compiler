@@ -511,6 +511,27 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAStringLitExpr(node);
     }
 
+    public void inABoolLitExpr(ABoolLitExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outABoolLitExpr(ABoolLitExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseABoolLitExpr(ABoolLitExpr node)
+    {
+        inABoolLitExpr(node);
+        if(node.getBoolString() != null)
+        {
+            node.getBoolString().apply(this);
+        }
+        outABoolLitExpr(node);
+    }
+
     public void inAFuncCallExpr(AFuncCallExpr node)
     {
         defaultIn(node);

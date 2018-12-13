@@ -47,6 +47,7 @@ Tokens
 
     int_string = non_zero_digit digit* | zero;
     quoted_string = doublequote (' ' | alphanumeric)* doublequote;
+    bool_string = 'true' | 'false';
 
     identifier = alpha alphanumeric*;
 
@@ -122,6 +123,7 @@ Productions
     element {-> expr} =
         {int_lit} int_string { -> New expr.int_lit(int_string) }
         | {string_lit} quoted_string { -> New expr.string_lit(quoted_string) }
+        | {bool_lit} bool_string { -> New expr.bool_lit(bool_string) }
         | {func_call} func_call_name left_round func_call_arg_list right_round
             { -> New expr.func_call(func_call_name, func_call_arg_list) }
         | {var_fetch} var_fetch_name { -> New expr.var_fetch(var_fetch_name)}
@@ -185,6 +187,7 @@ Abstract Syntax Tree
 
         | {int_lit} int_string
         | {string_lit} quoted_string
+        | {bool_lit} bool_string
         | {func_call} func_call_name func_call_arg_list
         | {var_fetch} var_fetch_name;
 

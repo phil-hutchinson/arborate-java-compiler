@@ -17,6 +17,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+import org.linguate.arborate.vm.ArborateBoolean;
 import org.linguate.arborate.vm.ArborateInteger;
 import org.linguate.arborate.vm.ArborateString;
 import org.linguate.arborate.vm.BaseType;
@@ -499,4 +500,27 @@ public class CompilerTest {
         Compiler.compile("function int addSimple(int a, string b) {return a + 2;} function int test() { string str; int num; str = \"something\"; num = 3; return addSimple(str, num); }");
     }
 
+    @Test
+    public void testSimpleBooleanTrue() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() {return true; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testSimpleBooleanFalse() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() {return false; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
 }

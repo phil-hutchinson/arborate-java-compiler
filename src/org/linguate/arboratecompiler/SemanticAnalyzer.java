@@ -48,6 +48,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             activeFunctionCtx.returnType = BaseType.INTEGER;
         } else if (returnType.equals("string")) {
             activeFunctionCtx.returnType = BaseType.STRING;
+        } else if (returnType.equals("boolean")) {
+            activeFunctionCtx.returnType = BaseType.BOOLEAN;
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Unknown return type for function at " + location);
@@ -173,6 +175,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         if (exprCtx.naturalType == BasicType.Integer && activeFunctionCtx.returnType == BaseType.INTEGER) {
             isValid = true;
         } else if (exprCtx.naturalType == BasicType.String && activeFunctionCtx.returnType == BaseType.STRING) {
+            isValid = true;
+        } else if (exprCtx.naturalType == BasicType.Boolean && activeFunctionCtx.returnType == BaseType.BOOLEAN) {
             isValid = true;
         }
 
@@ -396,6 +400,27 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAStringLitExpr(AStringLitExpr node) {
         ExpressionContext currCtx = new ExpressionContext(BasicType.String);
+        addExpressionContext(node, currCtx);
+    }
+    
+    public void inABoolLitExpr(ABoolLitExpr node) {
+        switch (node.getBoolString().getText()) {
+            case "true":
+                addInstruction(InstructionCode.BOOLEAN_TO_STACK, true);
+                break;
+
+            case "false":
+                addInstruction(InstructionCode.BOOLEAN_TO_STACK, false);
+                break;
+                
+            default:
+                // unexpected error
+                throw new RuntimeException("Unexpected boolean literal");
+        }
+    }
+    
+    public void outABoolLitExpr(ABoolLitExpr node) {
+        ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
         addExpressionContext(node, currCtx);
     }
     

@@ -31,6 +31,7 @@ public interface Analysis extends Switch
     void caseADivideExpr(ADivideExpr node);
     void caseAIntLitExpr(AIntLitExpr node);
     void caseAStringLitExpr(AStringLitExpr node);
+    void caseABoolLitExpr(ABoolLitExpr node);
     void caseAFuncCallExpr(AFuncCallExpr node);
     void caseAVarFetchExpr(AVarFetchExpr node);
     void caseAFuncCallArgList(AFuncCallArgList node);
@@ -63,6 +64,7 @@ public interface Analysis extends Switch
     void caseTSemicolon(TSemicolon node);
     void caseTIntString(TIntString node);
     void caseTQuotedString(TQuotedString node);
+    void caseTBoolString(TBoolString node);
     void caseTIdentifier(TIdentifier node);
     void caseTBlank(TBlank node);
     void caseEOF(EOF node);
