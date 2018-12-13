@@ -76,7 +76,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         } else if (varType.equals("string")) {
             activeFunctionCtx.pendingArgumentType = BasicType.String;
         } else {
-            // TODO LOCATION
+            // TODO ERRORLOCATION
             throw new RuntimeException("Unrecognized type in function parameter.");
         }
     }
@@ -115,11 +115,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         String declaredType = node.getIdentifier().getText();
         if (declaredType.equals("int")) {
             declarationStatementCtx.basicType = BasicType.Integer;
-        }
-        else if (declaredType.equals("string")) {
+        } else if (declaredType.equals("string")) {
             declarationStatementCtx.basicType = BasicType.String;
+        } else if (declaredType.equals("boolean")) {
+            declarationStatementCtx.basicType = BasicType.Boolean;
         } else {
-            throw new RuntimeException("int and string are the only valid variable type at the moment.");
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Unrecognized variable type: " + declaredType);
         }
     }
     
@@ -181,7 +183,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
 
         if (!isValid) {
-            // TODO LOCATION
+            // TODO ERRORLOCATION
             throw new RuntimeException("Invalid return type");
         }
             
@@ -448,13 +450,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             FunctionContext functionCtx = programCtx.allFunctionCtx.get((int)functionNumber);
             
             if (functionCtx.inParameterCount != currentFunctionCallContext.paramTypes.size()) {
-                // TODO LOCATION
+                // TODO ERRORLOCATION
                 throw new RuntimeException("Attempt to call function: number of arguments does not match.");
             }
             
             for (long paramPos = 0; paramPos < functionCtx.inParameterCount; paramPos++) {
                 if (functionCtx.getVariable(paramPos).basicType != currentFunctionCallContext.paramTypes.get((int)paramPos)) {
-                    // TODO Location
+                    // TODO ERRORLOCATION
                     throw new RuntimeException("Attempt to call function: argument type does not match.");
                 }
             }
@@ -466,7 +468,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             } else if (firstParam == BaseType.STRING) {
                 funcType = BasicType.String;
             } else {
-                // TODO LOCATION
+                // TODO ERRORLOCATION
                 throw new RuntimeException("Unknown function return type");
             }
             ExpressionContext currCtx = new ExpressionContext(funcType);

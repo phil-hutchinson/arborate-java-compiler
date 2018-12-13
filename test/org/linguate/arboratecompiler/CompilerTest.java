@@ -523,4 +523,16 @@ public class CompilerTest {
         ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
         assertEquals(false, result.getValue());
     }
+    
+    @Test 
+    public void testBooleanVar() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() {boolean a; a = false; return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
 }
