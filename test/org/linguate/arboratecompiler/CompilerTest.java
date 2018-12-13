@@ -524,7 +524,7 @@ public class CompilerTest {
         assertEquals(false, result.getValue());
     }
     
-    @Test 
+    @Test
     public void testBooleanVar() throws Exception {
         List<FunctionDefinition> functions = Compiler.compile("function boolean test() {boolean a; a = false; return a; }");
 
@@ -534,5 +534,17 @@ public class CompilerTest {
         assertEquals(1, actualValue.size());
         ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
         assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testBooleanParameter() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean testParam(boolean a) {return a; } function boolean test() { boolean a; a = 3 > 3 - 1; return testParam(a);}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.executeByNumber(1);
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
     }
 }

@@ -75,9 +75,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             activeFunctionCtx.pendingArgumentType = BasicType.Integer;
         } else if (varType.equals("string")) {
             activeFunctionCtx.pendingArgumentType = BasicType.String;
+        } else if (varType.equals("boolean")) {
+            activeFunctionCtx.pendingArgumentType = BasicType.Boolean;
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Unrecognized type in function parameter.");
+            throw new RuntimeException("Unrecognized type in function parameter: " + varType);
         }
     }
     
@@ -138,6 +140,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         } else if (declarationStatementCtx.basicType == BasicType.String) {
             addInstruction(InstructionCode.STRING_TO_STACK, "");
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
+        } else if (declarationStatementCtx.basicType == BasicType.Boolean) {
+            addInstruction(InstructionCode.BOOLEAN_TO_STACK, false);
+            addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
+        } else {
+            // TODO UNEXPECTED ERROR
+            throw new RuntimeException("Unrecognized type initializing stack for declaration statement: " + declarationStatementCtx.basicType.toString());
         }
         declarationStatementCtx = null;
     }
@@ -467,9 +475,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
                 funcType = BasicType.Integer;
             } else if (firstParam == BaseType.STRING) {
                 funcType = BasicType.String;
+            } else if (firstParam == BaseType.BOOLEAN) {
+                funcType = BasicType.Boolean;
             } else {
                 // TODO ERRORLOCATION
-                throw new RuntimeException("Unknown function return type");
+                throw new RuntimeException("Unknown function return type: " + firstParam);
             }
             ExpressionContext currCtx = new ExpressionContext(funcType);
             addExpressionContext(node, currCtx);
