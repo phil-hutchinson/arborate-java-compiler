@@ -286,6 +286,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
                     addInstruction(InstructionCode.STRING_EQUAL);
                     break; 
                     
+                case Boolean:
+                    addInstruction(InstructionCode.BOOLEAN_EQUAL);
+                    break; 
+                    
                 default:
                     // TODO ERRORLOCATION
                     throw new RuntimeException("Unknown type in equal comparison: " + leftCtx.naturalType.name());
@@ -312,6 +316,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
                     
                 case String:
                     addInstruction(InstructionCode.STRING_NOT_EQUAL);
+                    break; 
+                    
+                case Boolean:
+                    addInstruction(InstructionCode.BOOLEAN_NOT_EQUAL);
                     break; 
                     
                 default:

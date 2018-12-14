@@ -547,4 +547,148 @@ public class CompilerTest {
         ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
         assertEquals(true, result.getValue());
     }
+
+    @Test
+    public void testIntEqualsTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { int a; a = 3; return a == (7 - 4);} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testIntEqualsFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { int a; a = 3; return a == 2;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testStringEqualsTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { string a; a = \"how\"; return a + \"dy\" == \"howdy\";} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testStringEqualsFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return \"Hey\" == \"hey\";} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testBooleanEqualsTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { boolean a; a = 3 == 3; return a == true;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testBooleanEqualsFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return false == true;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testIntNotEqualsTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { int a; a = 3; return a != (7 - 3);} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testIntNotEqualsFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { int a; a = 3; return a != 3;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testStringNotEqualsTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { string a; a = \"how\"; return a + \"die\" != \"howdy\";} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testStringNotEqualsFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return \"hay\" != \"hay\";} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testBooleanNotEqualsTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { boolean a; a = 3 == 3; return a != false;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testBooleanNotEqualsFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return false != false;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
 }
