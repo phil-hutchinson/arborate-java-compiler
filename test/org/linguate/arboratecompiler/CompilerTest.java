@@ -691,4 +691,148 @@ public class CompilerTest {
         ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
         assertEquals(false, result.getValue());
     }
+
+    @Test
+    public void testIntegerLessThanTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 < 8;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testIntegerLessEqualTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 <= 8;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testIntegerGreaterThanTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 > 2;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testIntegerGreaterEqualTrue () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 >= 2;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testIntegerLessThanFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 < 2;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testIntegerLessEqualFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 <= 2;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testIntegerGreaterThanFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 > 12;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testIntegerGreaterEqualFalse () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 >= 12;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testIntegerLessThanFalseWhenEqual () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 < 4;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testIntegerLessEqualTrueWhenEqual () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 <= 4;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testIntegerGreaterThanFalseWhenEqual () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 > 4;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testIntegerGreaterEqualTrueWhenEqual () throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 >= 4;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
 }
