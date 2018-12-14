@@ -19,6 +19,9 @@ public interface Analysis extends Switch
     void caseADeclarationStatement(ADeclarationStatement node);
     void caseAAssignmentStatement(AAssignmentStatement node);
     void caseAReturnStatement(AReturnStatement node);
+    void caseALogicalOrExpr(ALogicalOrExpr node);
+    void caseALogicalXorExpr(ALogicalXorExpr node);
+    void caseALogicalAndExpr(ALogicalAndExpr node);
     void caseAEqualExpr(AEqualExpr node);
     void caseANotEqualExpr(ANotEqualExpr node);
     void caseALessThanExpr(ALessThanExpr node);
@@ -29,6 +32,7 @@ public interface Analysis extends Switch
     void caseASubtractExpr(ASubtractExpr node);
     void caseAMultiplyExpr(AMultiplyExpr node);
     void caseADivideExpr(ADivideExpr node);
+    void caseALogicalNotExpr(ALogicalNotExpr node);
     void caseAIntLitExpr(AIntLitExpr node);
     void caseAStringLitExpr(AStringLitExpr node);
     void caseABoolLitExpr(ABoolLitExpr node);
@@ -60,6 +64,9 @@ public interface Analysis extends Switch
     void caseTGreater(TGreater node);
     void caseTEquals(TEquals node);
     void caseTExclamation(TExclamation node);
+    void caseTBar(TBar node);
+    void caseTCaret(TCaret node);
+    void caseTAmpersand(TAmpersand node);
     void caseTComma(TComma node);
     void caseTSemicolon(TSemicolon node);
     void caseTIntString(TIntString node);

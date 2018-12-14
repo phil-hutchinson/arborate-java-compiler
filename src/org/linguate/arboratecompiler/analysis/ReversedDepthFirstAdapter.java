@@ -219,6 +219,81 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAReturnStatement(node);
     }
 
+    public void inALogicalOrExpr(ALogicalOrExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALogicalOrExpr(ALogicalOrExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseALogicalOrExpr(ALogicalOrExpr node)
+    {
+        inALogicalOrExpr(node);
+        if(node.getRight() != null)
+        {
+            node.getRight().apply(this);
+        }
+        if(node.getLeft() != null)
+        {
+            node.getLeft().apply(this);
+        }
+        outALogicalOrExpr(node);
+    }
+
+    public void inALogicalXorExpr(ALogicalXorExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALogicalXorExpr(ALogicalXorExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseALogicalXorExpr(ALogicalXorExpr node)
+    {
+        inALogicalXorExpr(node);
+        if(node.getRight() != null)
+        {
+            node.getRight().apply(this);
+        }
+        if(node.getLeft() != null)
+        {
+            node.getLeft().apply(this);
+        }
+        outALogicalXorExpr(node);
+    }
+
+    public void inALogicalAndExpr(ALogicalAndExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALogicalAndExpr(ALogicalAndExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseALogicalAndExpr(ALogicalAndExpr node)
+    {
+        inALogicalAndExpr(node);
+        if(node.getRight() != null)
+        {
+            node.getRight().apply(this);
+        }
+        if(node.getLeft() != null)
+        {
+            node.getLeft().apply(this);
+        }
+        outALogicalAndExpr(node);
+    }
+
     public void inAEqualExpr(AEqualExpr node)
     {
         defaultIn(node);
@@ -467,6 +542,27 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getLeft().apply(this);
         }
         outADivideExpr(node);
+    }
+
+    public void inALogicalNotExpr(ALogicalNotExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALogicalNotExpr(ALogicalNotExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseALogicalNotExpr(ALogicalNotExpr node)
+    {
+        inALogicalNotExpr(node);
+        if(node.getOperand() != null)
+        {
+            node.getOperand().apply(this);
+        }
+        outALogicalNotExpr(node);
     }
 
     public void inAIntLitExpr(AIntLitExpr node)

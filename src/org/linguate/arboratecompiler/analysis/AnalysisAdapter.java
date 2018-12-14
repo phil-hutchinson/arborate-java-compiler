@@ -117,6 +117,24 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseALogicalOrExpr(ALogicalOrExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALogicalXorExpr(ALogicalXorExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALogicalAndExpr(ALogicalAndExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAEqualExpr(AEqualExpr node)
     {
         defaultCase(node);
@@ -172,6 +190,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseADivideExpr(ADivideExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseALogicalNotExpr(ALogicalNotExpr node)
     {
         defaultCase(node);
     }
@@ -352,6 +376,24 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTExclamation(TExclamation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTBar(TBar node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTCaret(TCaret node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTAmpersand(TAmpersand node)
     {
         defaultCase(node);
     }

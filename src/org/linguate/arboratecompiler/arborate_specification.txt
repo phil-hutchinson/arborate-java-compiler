@@ -42,6 +42,10 @@ Tokens
     equals = '=';
     exclamation = '!';
 
+    bar = '|';
+    caret = '^';
+    ampersand = '&';
+
     comma = ',';
     semicolon = ';';
 
@@ -96,7 +100,19 @@ Productions
             { -> New statement.return(expr) };
 
     expr {-> expr } = 
-        precedence_equal { -> precedence_equal.expr };
+        precedence_logor { -> precedence_logor.expr };
+
+    precedence_logor { -> expr } =
+        {logor} [left]:precedence_logor [a]:bar [b]:bar [right]:precedence_logxor { -> New expr.logical_or(left.expr, right.expr) }
+        | {fall_through} precedence_logxor { -> precedence_logxor.expr };
+
+    precedence_logxor { -> expr } =
+        {logxor} [left]:precedence_logxor [a]:caret [b]:caret [right]:precedence_logand { -> New expr.logical_xor(left.expr, right.expr) }
+        | {fall_through} precedence_logand { -> precedence_logand.expr };
+
+    precedence_logand { -> expr } =
+        {logand} [left]:precedence_logand [a]:ampersand [b]:ampersand [right]:precedence_equal { -> New expr.logical_and(left.expr, right.expr) }
+        | {fall_through} precedence_equal { -> precedence_equal.expr };
 
     precedence_equal { -> expr } =
         {equal} [left]:precedence_equal [a]:equals [b]:equals [right]:precedence_comp { -> New expr.equal(left.expr, right.expr) }
@@ -116,8 +132,12 @@ Productions
         | {fall_through} precedence_mult { -> precedence_mult.expr };
 
     precedence_mult {-> expr} = 
-        {multiply} [left]:precedence_mult star [right]:element { -> New expr.multiply(left.expr, right.expr) }
-        | {divide} [left]:precedence_mult slash [right]:element { -> New expr.divide(left.expr, right.expr) }
+        {multiply} [left]:precedence_mult star [right]:precedence_unary { -> New expr.multiply(left.expr, right.expr) }
+        | {divide} [left]:precedence_mult slash [right]:precedence_unary { -> New expr.divide(left.expr, right.expr) }
+        | {fall_through} precedence_unary { -> precedence_unary.expr };
+
+    precedence_unary {-> expr} =
+        {logical_not} exclamation [operand]:precedence_unary { -> New expr.logical_not(operand.expr) }
         | {fall_through} element { -> element.expr };
 
     element {-> expr} =
@@ -171,7 +191,13 @@ Abstract Syntax Tree
         | {return} expr;
 
     expr =
-        {equal} [left]:expr [right]:expr
+        {logical_or} [left]:expr [right]:expr
+
+        | {logical_xor} [left]:expr [right]:expr
+
+        | {logical_and} [left]:expr [right]:expr
+
+        | {equal} [left]:expr [right]:expr
         | {not_equal} [left]:expr [right]:expr
 
         | {less_than} [left]:expr [right]:expr
@@ -184,6 +210,8 @@ Abstract Syntax Tree
 
         | {multiply} [left]:expr [right]:expr
         | {divide} [left]:expr [right]:expr
+
+        | {logical_not} [operand]:expr
 
         | {int_lit} int_string
         | {string_lit} quoted_string

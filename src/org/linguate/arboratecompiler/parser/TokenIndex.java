@@ -94,44 +94,62 @@ class TokenIndex extends AnalysisAdapter
     }
 
     @Override
-    public void caseTComma(@SuppressWarnings("unused") TComma node)
+    public void caseTBar(@SuppressWarnings("unused") TBar node)
     {
         this.index = 14;
     }
 
     @Override
-    public void caseTSemicolon(@SuppressWarnings("unused") TSemicolon node)
+    public void caseTCaret(@SuppressWarnings("unused") TCaret node)
     {
         this.index = 15;
     }
 
     @Override
-    public void caseTIntString(@SuppressWarnings("unused") TIntString node)
+    public void caseTAmpersand(@SuppressWarnings("unused") TAmpersand node)
     {
         this.index = 16;
     }
 
     @Override
-    public void caseTQuotedString(@SuppressWarnings("unused") TQuotedString node)
+    public void caseTComma(@SuppressWarnings("unused") TComma node)
     {
         this.index = 17;
     }
 
     @Override
-    public void caseTBoolString(@SuppressWarnings("unused") TBoolString node)
+    public void caseTSemicolon(@SuppressWarnings("unused") TSemicolon node)
     {
         this.index = 18;
     }
 
     @Override
-    public void caseTIdentifier(@SuppressWarnings("unused") TIdentifier node)
+    public void caseTIntString(@SuppressWarnings("unused") TIntString node)
     {
         this.index = 19;
     }
 
     @Override
-    public void caseEOF(@SuppressWarnings("unused") EOF node)
+    public void caseTQuotedString(@SuppressWarnings("unused") TQuotedString node)
     {
         this.index = 20;
+    }
+
+    @Override
+    public void caseTBoolString(@SuppressWarnings("unused") TBoolString node)
+    {
+        this.index = 21;
+    }
+
+    @Override
+    public void caseTIdentifier(@SuppressWarnings("unused") TIdentifier node)
+    {
+        this.index = 22;
+    }
+
+    @Override
+    public void caseEOF(@SuppressWarnings("unused") EOF node)
+    {
+        this.index = 23;
     }
 }

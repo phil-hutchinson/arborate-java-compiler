@@ -397,6 +397,69 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         }
     }
     
+    public void outALogicalNotExpr(ALogicalNotExpr node) {
+        PExpr subNode = node.getOperand();
+        
+        ExpressionContext subCtx = getExpressionContext(subNode);
+
+        if (subCtx.naturalType == BasicType.Boolean) {
+            addExpressionContext(node, new ExpressionContext(BasicType.Boolean));
+            addInstruction(InstructionCode.BOOLEAN_NOT);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Logical NOT not valid for type: " + subCtx.naturalType.name());
+        }
+    }
+    
+    public void outALogicalAndExpr(ALogicalAndExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Boolean && rightCtx.naturalType == BasicType.Boolean) {
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+            addExpressionContext(node, currCtx);
+            addInstruction(InstructionCode.BOOLEAN_AND);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Logical AND operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+    
+    public void outALogicalOrExpr(ALogicalOrExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Boolean && rightCtx.naturalType == BasicType.Boolean) {
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+            addExpressionContext(node, currCtx);
+            addInstruction(InstructionCode.BOOLEAN_OR);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Logical OR operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+    
+    public void outALogicalXorExpr(ALogicalXorExpr node) {
+        PExpr leftNode = node.getLeft();
+        PExpr rightNode = node.getRight();
+        
+        ExpressionContext leftCtx = getExpressionContext(leftNode);
+        ExpressionContext rightCtx = getExpressionContext(rightNode);
+        if (leftCtx.naturalType == BasicType.Boolean && rightCtx.naturalType == BasicType.Boolean) {
+            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+            addExpressionContext(node, currCtx);
+            addInstruction(InstructionCode.BOOLEAN_XOR);
+        } else {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Logical XOR operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+        }
+    }
+    
+    
     public void inAIntLitExpr(AIntLitExpr node) {
         long val = Long.parseLong(node.getIntString().getText());
         addInstruction(InstructionCode.INTEGER_TO_STACK, val);

@@ -865,4 +865,78 @@ public class CompilerTest {
         expectedException.expect(Exception.class);
         Compiler.compile("function boolean test() {return true >= false;}");
     }
+    
+    @Test
+    public void testNotTrue() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return !true;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+
+    @Test
+    public void testNotFalse() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return !true;} ");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(false, result.getValue());
+    }
+    
+    private void testTruthTable(String initialFunction, boolean ffResult, boolean ftResult, boolean tfResult, boolean ttResult) throws Exception {
+        String program = initialFunction + 
+                "function boolean ffTest() { return test(false, false); }" +
+                "function boolean ftTest() { return test(false, true); }" +
+                "function boolean tfTest() { return test(true, false); }" +
+                "function boolean ttTest() { return test(true, true); }";
+        List<FunctionDefinition> functions = Compiler.compile(program);
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        boolean res1 = ((ArborateBoolean)virtualMachine.executeByNumber(1).get(0)).getValue();
+        boolean res2 = ((ArborateBoolean)virtualMachine.executeByNumber(2).get(0)).getValue();
+        boolean res3 = ((ArborateBoolean)virtualMachine.executeByNumber(3).get(0)).getValue();
+        boolean res4 = ((ArborateBoolean)virtualMachine.executeByNumber(4).get(0)).getValue();
+        
+        assertEquals(ffResult, res1);
+        assertEquals(ftResult, res2);
+        assertEquals(tfResult, res3);
+        assertEquals(ttResult, res4);
+    }
+
+    @Test
+    public void testOr() throws Exception {
+        String orFunction = "function boolean test(boolean a, boolean b) { return a || b; }";
+        testTruthTable(orFunction, false, true, true, true);
+    }
+
+    @Test
+    public void testAnd() throws Exception {
+        String andFunction = "function boolean test(boolean a, boolean b) { return a && b; }";
+        testTruthTable(andFunction, false, false, false, true);
+    }
+
+    @Test
+    public void testXor() throws Exception {
+        String xorFunction = "function boolean test(boolean a, boolean b) { return a ^^ b; }";
+        testTruthTable(xorFunction, false, true, true, false);
+    }
+
+    @Test
+    public void testCompoundLogical() throws Exception {
+        String xorFunction = "function boolean test(boolean a, boolean b) { return (a && a ^^ b) && (!a || a && b) ^^ !a; }";
+        // part 1: a && a ^^ b reduces to a ^^ b ---> (f t t f)
+        // part 2: !a || a && b ---> (t t f f) || (f f f t) ----> (t t f t)
+        // part 1 && part 2: (f t f f)
+        // (part 1+2) ^^ !a ---> (f t f f) ^^ (t, t, f, f) ---> (t f f f)
+        
+        testTruthTable(xorFunction, true, false, false, false);
+    }
 }
