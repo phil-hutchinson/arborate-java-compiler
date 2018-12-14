@@ -835,4 +835,34 @@ public class CompilerTest {
         ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
         assertEquals(true, result.getValue());
     }
+
+    @Test
+    public void testEqualsNotMatchingTypesThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function boolean test() {return 3 == true;}");
+    }
+
+    @Test
+    public void testNotEqualsNotMatchingTypesThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function boolean test() {return false == \"false\";}");
+    }
+
+    @Test
+    public void testComparisonNotMatchingTypesThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function boolean test() {return false < 12;}");
+    }
+
+    @Test
+    public void testComparisonStringThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function boolean test() {return \"a\" < \"b\";}");
+    }
+
+    @Test
+    public void testComparisonBooleanThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function boolean test() {return true >= false;}");
+    }
 }
