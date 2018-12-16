@@ -13,7 +13,6 @@ import org.linguate.arborate.vm.BaseType;
 import org.linguate.arborate.vm.FunctionDefinition;
 import org.linguate.arborate.vm.Instruction;
 import org.linguate.arboratecompiler.node.TIdentifier;
-
 /**
  *
  * @author Phil Hutchinson
@@ -23,32 +22,45 @@ public class FunctionContext {
     BaseType returnType;
     List<Instruction> instructions = new ArrayList<>();
     
-    private Map<String, VariableDefinition> localVariables = new HashMap<>();
+    private List<ScopeContext> scopeStack = new ArrayList<>();
     private List<VariableDefinition> localVariableList = new ArrayList<>();
 
+    void pushScope() {
+        scopeStack.add(new ScopeContext());
+    }
+    
+    void popScope() {
+        scopeStack.remove(scopeStack.size() - 1);
+    }
+    
     long addVariable(TIdentifier identifier, BasicType basicType) {
         String variableName = identifier.getText();
-        if (localVariables.containsKey(variableName)) {
-            String location = identifier.getLine() 
-                    + ":" + identifier.getPos();
-            throw new RuntimeException("Duplicate argument name: " 
-                    + variableName + " at " + location);
+        for (int scopePosition = scopeStack.size() - 1; scopePosition >= 0; scopePosition--) {
+            ScopeContext scope = scopeStack.get(scopePosition);
+            if (scope.localVariables.containsKey(variableName)) {
+                String location = identifier.getLine() 
+                        + ":" + identifier.getPos();
+                throw new RuntimeException("Duplicate argument name: " 
+                        + variableName + " at " + location);
+            }
         }
-        long varPos = getVariableCount();
         
+        long varPos = getVariableCount();
         VariableDefinition varDef = new VariableDefinition(varPos, basicType);
-        localVariables.put(variableName, varDef);
+        scopeStack.get(scopeStack.size() - 1).localVariables.put(variableName, varDef);
         localVariableList.add(varDef);
         
         return varPos;
     }
     
     VariableDefinition getVariable(String variableName) {
-        if (localVariables.containsKey(variableName)) {
-            return localVariables.get(variableName);
-        } else {
-            return null;
+        for (int scopePosition = scopeStack.size() - 1; scopePosition >= 0; scopePosition--) {
+            ScopeContext scope = scopeStack.get(scopePosition);
+            if (scope.localVariables.containsKey(variableName)) {
+                return scope.localVariables.get(variableName);
+            }
         }
+        return null;
     }
 
     VariableDefinition getVariable(long pos) {
@@ -61,11 +73,7 @@ public class FunctionContext {
     }
     
     long getVariableCount() {
-        if (localVariables.size() != localVariableList.size()) {
-            // TODO internal error
-            throw new RuntimeException("Internal error tracking variables for function.");
-        }
-        return localVariables.size();
+        return localVariableList.size();
     }
 
     

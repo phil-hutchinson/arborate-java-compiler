@@ -148,6 +148,31 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAFuncDeclArg(node);
     }
 
+    public void inACodeBlockStatement(ACodeBlockStatement node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACodeBlockStatement(ACodeBlockStatement node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseACodeBlockStatement(ACodeBlockStatement node)
+    {
+        inACodeBlockStatement(node);
+        {
+            List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
+            Collections.reverse(copy);
+            for(PStatement e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outACodeBlockStatement(node);
+    }
+
     public void inADeclarationStatement(ADeclarationStatement node)
     {
         defaultIn(node);

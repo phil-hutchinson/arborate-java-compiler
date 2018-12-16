@@ -939,4 +939,36 @@ public class CompilerTest {
         
         testTruthTable(xorFunction, true, false, false, false);
     }
+    
+    @Test
+    public void testVariableUsedFromParentScope() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { boolean a; { a = true; } return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateBoolean result = (ArborateBoolean) actualValue.get(0);
+        assertEquals(true, result.getValue());
+    }
+
+    @Test
+    public void testVariableUsedOutsideScopeThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function int test() {int a; a = 3; {int b; b = 6;} return a + b;}");
+    }
+    
+    @Test
+    public void testVariableReusedInScopes() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; { int b; b = 3; a = b + b; } { int b; b = 4; a = a + b; } return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(10, result.getValue());
+    }
+
+    
 }

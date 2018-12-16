@@ -99,6 +99,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseACodeBlockStatement(ACodeBlockStatement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseADeclarationStatement(ADeclarationStatement node)
     {
         defaultCase(node);

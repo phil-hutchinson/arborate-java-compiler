@@ -39,6 +39,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void inAFuncDecl(AFuncDecl node) {
         activeFunctionCtx = new FunctionContext();
+        activeFunctionCtx.pushScope();
     }
     
     public void outAFuncDeclRetType(AFuncDeclRetType node) {
@@ -100,6 +101,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     
     public void outAFuncDecl(AFuncDecl node) {
+        activeFunctionCtx.popScope();
         FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.instructions, (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(activeFunctionCtx.returnType));
         if (!activeFunctionCtx.hasReturn) {
             throw new RuntimeException("function missing return statement");
@@ -107,6 +109,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         activeFunctionCtx.def = newFunc;
         programCtx.allFunctionCtx.add(activeFunctionCtx);
         activeFunctionCtx = null;
+    }
+    
+    public void inACodeBlockStatement(ACodeBlockStatement node) {
+        activeFunctionCtx.pushScope();
+    }
+    
+    public void outACodeBlockStatement(ACodeBlockStatement node) {
+        activeFunctionCtx.popScope();
     }
     
     public void inADeclarationStatement(ADeclarationStatement node) {
