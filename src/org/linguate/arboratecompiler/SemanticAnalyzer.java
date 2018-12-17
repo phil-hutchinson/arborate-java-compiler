@@ -102,7 +102,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAFuncDecl(AFuncDecl node) {
         activeFunctionCtx.popScope();
-        FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.instructions, (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(activeFunctionCtx.returnType));
+        FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.prepareInstructions(), (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(activeFunctionCtx.returnType));
         if (!activeFunctionCtx.hasReturn) {
             throw new RuntimeException("function missing return statement");
         }
@@ -117,6 +117,41 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outACodeBlockStatement(ACodeBlockStatement node) {
         activeFunctionCtx.popScope();
+    }
+
+    public void inAIfStatement(AIfStatement node) {
+        activeFunctionCtx.ifStatementStack.push(new IfStatementContext());
+    }
+    
+    public void outAIfStatement(AIfStatement node) {
+        activeFunctionCtx.ifStatementStack.pop();
+    }
+    
+    public void inAConditionalIfSegment(AConditionalIfSegment node) {
+        pushExpressionContextStack();
+
+        IfStatementContext ctx = activeFunctionCtx.ifStatementStack.peek();
+        ctx.endOfCurrentBlock = new BranchTarget();
+    }
+    
+    public void outAIfCondition(AIfCondition node) {
+        ExpressionContext exprCtx = getExpressionContext(node.getExpr());
+        if (exprCtx.naturalType != BasicType.Boolean) {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("If condition must evaluate to boolean");
+        }
+        
+        IfStatementContext ctx = activeFunctionCtx.ifStatementStack.peek();
+        BranchTarget endOfBlock = ctx.endOfCurrentBlock;
+        addBranchPlaceholder(InstructionCode.BRANCH_FALSE, endOfBlock);
+    }
+    
+    public void outAConditionalIfSegment(AConditionalIfSegment node) {
+        popExpressionContextStack();
+        
+        IfStatementContext ctx = activeFunctionCtx.ifStatementStack.peek();
+        BranchTarget endOfBlock = ctx.endOfCurrentBlock;
+        addBranchTarget(endOfBlock);
     }
     
     public void inADeclarationStatement(ADeclarationStatement node) {
@@ -619,12 +654,19 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     private void addInstruction(InstructionCode instructionCode) {
-        activeFunctionCtx.instructions.add(new Instruction(instructionCode));
+        activeFunctionCtx.addInstruction(instructionCode);
     }
     
     private void addInstruction(InstructionCode instructionCode, Object val) {
-        activeFunctionCtx.instructions.add(new Instruction(instructionCode, val));
+        activeFunctionCtx.addInstruction(instructionCode, val);
     }
     
+    private void addBranchTarget(BranchTarget target) {
+        activeFunctionCtx.addBranchTarget(target);
+    }
+    
+    private void addBranchPlaceholder(InstructionCode instructionCode, BranchTarget target) {
+        activeFunctionCtx.addBranchPlaceholder(new BranchPlaceholder(instructionCode, target));
+    }
     
 }

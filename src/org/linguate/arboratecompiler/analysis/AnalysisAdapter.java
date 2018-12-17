@@ -105,6 +105,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAIfStatement(AIfStatement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseADeclarationStatement(ADeclarationStatement node)
     {
         defaultCase(node);
@@ -118,6 +124,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAReturnStatement(AReturnStatement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAConditionalIfSegment(AConditionalIfSegment node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAIfCondition(AIfCondition node)
     {
         defaultCase(node);
     }
@@ -310,6 +328,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTKwReturn(TKwReturn node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTKwIf(TKwIf node)
     {
         defaultCase(node);
     }

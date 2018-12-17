@@ -26,6 +26,7 @@ States
 Tokens
     kw_function = 'function';
     kw_return = 'return';
+    kw_if = 'if';
 
     left_curly = '{';
     right_curly = '}';
@@ -94,12 +95,18 @@ Productions
     statement {-> statement} =
         {code_block} left_curly code_block right_curly
             { -> New statement.code_block([code_block.statement]) }
+        | {if_statement} control_if
+            { -> New statement.if([control_if.if_segment]) }
         | {declaration} var_decl_type var_decl_name semicolon
             { -> New statement.declaration(var_decl_type, var_decl_name) }
         | {assignment} var_assign_name equals expr semicolon
             { -> New statement.assignment(var_assign_name, expr) }
         | {return} kw_return expr semicolon
             { -> New statement.return(expr) };
+
+    control_if {-> if_segment*} =
+        kw_if left_round expr right_round left_curly code_block right_curly
+        { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement])] };
 
     expr {-> expr } = 
         precedence_logor { -> precedence_logor.expr };
@@ -189,9 +196,15 @@ Abstract Syntax Tree
 
     statement =
         {code_block} statement*
+        | {if} if_segment*
         | {declaration} var_decl_type var_decl_name
         | {assignment} var_assign_name expr
         | {return} expr;
+
+    if_segment =
+        {conditional} if_condition statement*;
+
+    if_condition = expr;
 
     expr =
         {logical_or} [left]:expr [right]:expr

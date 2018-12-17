@@ -173,6 +173,31 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outACodeBlockStatement(node);
     }
 
+    public void inAIfStatement(AIfStatement node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIfStatement(AIfStatement node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAIfStatement(AIfStatement node)
+    {
+        inAIfStatement(node);
+        {
+            List<PIfSegment> copy = new ArrayList<PIfSegment>(node.getIfSegment());
+            Collections.reverse(copy);
+            for(PIfSegment e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAIfStatement(node);
+    }
+
     public void inADeclarationStatement(ADeclarationStatement node)
     {
         defaultIn(node);
@@ -242,6 +267,56 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getExpr().apply(this);
         }
         outAReturnStatement(node);
+    }
+
+    public void inAConditionalIfSegment(AConditionalIfSegment node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAConditionalIfSegment(AConditionalIfSegment node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAConditionalIfSegment(AConditionalIfSegment node)
+    {
+        inAConditionalIfSegment(node);
+        {
+            List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
+            Collections.reverse(copy);
+            for(PStatement e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        if(node.getIfCondition() != null)
+        {
+            node.getIfCondition().apply(this);
+        }
+        outAConditionalIfSegment(node);
+    }
+
+    public void inAIfCondition(AIfCondition node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIfCondition(AIfCondition node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAIfCondition(AIfCondition node)
+    {
+        inAIfCondition(node);
+        if(node.getExpr() != null)
+        {
+            node.getExpr().apply(this);
+        }
+        outAIfCondition(node);
     }
 
     public void inALogicalOrExpr(ALogicalOrExpr node)

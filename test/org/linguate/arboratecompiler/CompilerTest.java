@@ -970,5 +970,27 @@ public class CompilerTest {
         assertEquals(10, result.getValue());
     }
 
-    
+    @Test
+    public void testIfStatementExecuted() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) { a = a + 10;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(13, result.getValue());
+    }
+
+    @Test
+    public void testIfStatementBypassed() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 2; if (a > 2) { a = a + 10;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(2, result.getValue());
+    }
 }
