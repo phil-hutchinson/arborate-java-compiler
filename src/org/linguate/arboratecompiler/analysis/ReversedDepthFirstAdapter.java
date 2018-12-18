@@ -298,6 +298,31 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAConditionalIfSegment(node);
     }
 
+    public void inAOtherwiseIfSegment(AOtherwiseIfSegment node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAOtherwiseIfSegment(AOtherwiseIfSegment node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAOtherwiseIfSegment(AOtherwiseIfSegment node)
+    {
+        inAOtherwiseIfSegment(node);
+        {
+            List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
+            Collections.reverse(copy);
+            for(PStatement e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outAOtherwiseIfSegment(node);
+    }
+
     public void inAIfCondition(AIfCondition node)
     {
         defaultIn(node);

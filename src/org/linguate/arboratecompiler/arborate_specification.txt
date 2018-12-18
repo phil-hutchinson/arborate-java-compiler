@@ -27,6 +27,7 @@ Tokens
     kw_function = 'function';
     kw_return = 'return';
     kw_if = 'if';
+    kw_else = 'else';
 
     left_curly = '{';
     right_curly = '}';
@@ -105,9 +106,15 @@ Productions
             { -> New statement.return(expr) };
 
     control_if {-> if_segment*} =
-        kw_if left_round expr right_round left_curly code_block right_curly
-        { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement])] };
-
+        {if} kw_if left_round expr right_round left_curly code_block right_curly
+            { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement])] }
+        | {if_else} kw_if left_round expr right_round left_curly code_block right_curly control_else
+            { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement]), control_else.if_segment] };
+    
+    control_else {-> if_segment} =
+        kw_else left_curly code_block right_curly
+            { -> New if_segment.otherwise([code_block.statement])};
+    
     expr {-> expr } = 
         precedence_logor { -> precedence_logor.expr };
 
@@ -202,7 +209,8 @@ Abstract Syntax Tree
         | {return} expr;
 
     if_segment =
-        {conditional} if_condition statement*;
+        {conditional} if_condition statement*
+        | {otherwise} statement*;
 
     if_condition = expr;
 

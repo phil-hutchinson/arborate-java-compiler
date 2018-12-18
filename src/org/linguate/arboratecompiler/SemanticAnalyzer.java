@@ -39,7 +39,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void inAFuncDecl(AFuncDecl node) {
         activeFunctionCtx = new FunctionContext();
-        activeFunctionCtx.pushScope();
+        pushScope();
     }
     
     public void outAFuncDeclRetType(AFuncDeclRetType node) {
@@ -101,7 +101,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     
     public void outAFuncDecl(AFuncDecl node) {
-        activeFunctionCtx.popScope();
+        popScope();
         FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.prepareInstructions(), (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(activeFunctionCtx.returnType));
         if (!activeFunctionCtx.hasReturn) {
             throw new RuntimeException("function missing return statement");
@@ -112,11 +112,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void inACodeBlockStatement(ACodeBlockStatement node) {
-        activeFunctionCtx.pushScope();
+        pushScope();
     }
     
     public void outACodeBlockStatement(ACodeBlockStatement node) {
-        activeFunctionCtx.popScope();
+        popScope();
     }
 
     public void inAIfStatement(AIfStatement node) {
@@ -124,10 +124,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAIfStatement(AIfStatement node) {
-        activeFunctionCtx.ifStatementStack.pop();
+        IfStatementContext ctx = activeFunctionCtx.ifStatementStack.pop();
+        addBranchTarget(ctx.endOfStatement);
     }
     
     public void inAConditionalIfSegment(AConditionalIfSegment node) {
+        pushScope();
         pushExpressionContextStack();
 
         IfStatementContext ctx = activeFunctionCtx.ifStatementStack.peek();
@@ -148,10 +150,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAConditionalIfSegment(AConditionalIfSegment node) {
         popExpressionContextStack();
-        
+        popScope();
         IfStatementContext ctx = activeFunctionCtx.ifStatementStack.peek();
         BranchTarget endOfBlock = ctx.endOfCurrentBlock;
+        addBranchPlaceholder(InstructionCode.BRANCH, ctx.endOfStatement);
         addBranchTarget(endOfBlock);
+    }
+    
+    public void inAOtherwiseIfSegment(AOtherwiseIfSegment node) {
+        pushScope();
+        pushExpressionContextStack();
+    }
+    
+    public void outAOtherwiseIfSegment(AOtherwiseIfSegment node) {
+        popExpressionContextStack();
+        popScope();
     }
     
     public void inADeclarationStatement(ADeclarationStatement node) {
@@ -630,6 +643,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     /**********************  HELPER METHODS  *********************/
+    private void pushScope() {
+        activeFunctionCtx.pushScope();
+    }
+    
+    private void popScope() {
+        activeFunctionCtx.popScope();
+    }
+    
     private void pushExpressionContextStack() {
         Map<Node,ExpressionContext> expressionCtx = new HashMap<>();
         expressionCtxStack.push(expressionCtx);

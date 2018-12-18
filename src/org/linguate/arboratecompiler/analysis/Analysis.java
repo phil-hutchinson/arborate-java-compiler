@@ -22,6 +22,7 @@ public interface Analysis extends Switch
     void caseAAssignmentStatement(AAssignmentStatement node);
     void caseAReturnStatement(AReturnStatement node);
     void caseAConditionalIfSegment(AConditionalIfSegment node);
+    void caseAOtherwiseIfSegment(AOtherwiseIfSegment node);
     void caseAIfCondition(AIfCondition node);
     void caseALogicalOrExpr(ALogicalOrExpr node);
     void caseALogicalXorExpr(ALogicalXorExpr node);
@@ -57,6 +58,7 @@ public interface Analysis extends Switch
     void caseTKwFunction(TKwFunction node);
     void caseTKwReturn(TKwReturn node);
     void caseTKwIf(TKwIf node);
+    void caseTKwElse(TKwElse node);
     void caseTLeftCurly(TLeftCurly node);
     void caseTRightCurly(TRightCurly node);
     void caseTLeftRound(TLeftRound node);

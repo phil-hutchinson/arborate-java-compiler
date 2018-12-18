@@ -993,4 +993,58 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(2, result.getValue());
     }
+    
+    @Test
+    public void testIfStatementReuseVariable() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 5; if (a > 3) {int b; b = a; a = 10 + b;} if (a > 3) {int b; b = a; a = 20 + b;} return a;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(35, result.getValue());
+    }
+
+    @Test
+    public void testVariableUsedIfScopeThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("function int test() {int a; a = 3; if (a > 2){int b; b = 6;} return a + b;}");
+    }
+    
+    @Test
+    public void testSimpleIfElseWithIfExecuted() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) { a = a + 10;} else {a = a * 100;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(13, result.getValue());
+    }
+
+    @Test
+    public void testSimpleIfElseWithElseExecuted() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4) { a = a + 10;} else {a = a * 100;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(300, result.getValue());
+    }
+
+    @Test
+    public void testSimpleIfElseReusedVariable() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 100; if (a > 50) { int b; b = a / 5; a = a + b; } else {int b; b = a / 2; a = a + b;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(120, result.getValue());
+    }
 }
