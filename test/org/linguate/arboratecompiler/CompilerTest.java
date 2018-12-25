@@ -1050,7 +1050,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithIfExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) { a = a * 10;} else if (a > 5) {a = a + 100;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) { a = a * 10;} elseif (a > 5) {a = a + 100;} return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1062,7 +1062,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithElseifExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4) { a = a + 10;} else if (a < 4) {a = a * 1000;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4) { a = a + 10;} elseif (a < 4) {a = a * 1000;} return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1074,7 +1074,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithNeitherExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 4) { a = a + 10;} else if (a < 4) {a = a * 1000;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 4) { a = a + 10;} elseif (a < 4) {a = a * 1000;} return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1086,7 +1086,7 @@ public class CompilerTest {
 
     @Test
     public void testIfRepeatedElseif() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 23; if (a > 50) { a = a * 50; } else if (a > 40) {a = a * 40;} else if (a > 30) {a = a * 30;} else if (a > 20) {a = a * 20;} else if (a > 10) {a = a * 10;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 23; if (a > 50) { a = a * 50; } elseif (a > 40) {a = a * 40;} elseif (a > 30) {a = a * 30;} elseif (a > 20) {a = a * 20;} elseif (a > 10) {a = a * 10;} return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1098,7 +1098,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifReusedVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 20; if (a > 50) { int b; b = a / 5; a = a + b; } else if (a > 5) {int b; b = a / 2; a = a + b;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 20; if (a > 50) { int b; b = a / 5; a = a + b; } elseif (a > 5) {int b; b = a / 2; a = a + b;} return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1106,5 +1106,65 @@ public class CompilerTest {
         assertEquals(1, actualValue.size());
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(30, result.getValue());
+    }
+
+    @Test
+    public void testIfElseifElseWithIfExecuted() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 200; if (a > 100) { a = 1000 - a;} elseif (a > 10) {a = 100 - a;} else { a = 10 - a;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(800, result.getValue());
+    }
+
+    @Test
+    public void testIfElseifElseWithElseifExecuted() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 40; if (a > 100) { a = 1000 - a;} elseif (a > 10) {a = 100 - a;} else { a = 10 - a;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(60, result.getValue());
+    }
+
+    @Test
+    public void testIfElseifElseWithElseExecuted() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 100) { a = 1000 - a;} elseif (a > 10) {a = 100 - a;} else { a = 10 - a;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(6, result.getValue());
+    }
+
+    @Test
+    public void testIfRepeatedElseifElse() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 5; if (a > 50) { a = a * 50; } elseif (a > 40) {a = a * 40;} elseif (a > 30) {a = a * 30;} elseif (a > 20) {a = a * 20;} elseif (a > 10) {a = a * 10;} else {a = 0;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(0, result.getValue());
+    }
+
+    @Test
+    public void testIfElseifElseReusedVariable() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a > 50) { int b; b = a / 5; a = a + b; } elseif (a > 30) {int b; b = a / 3; a = a + b;} else {int b; b = a / 2; a = a + b;} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(13, result.getValue());
     }
 }

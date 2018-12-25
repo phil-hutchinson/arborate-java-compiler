@@ -351,6 +351,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTKwElseif(TKwElseif node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTLeftCurly(TLeftCurly node)
     {
         defaultCase(node);

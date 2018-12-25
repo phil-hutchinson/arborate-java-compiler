@@ -59,6 +59,7 @@ public interface Analysis extends Switch
     void caseTKwReturn(TKwReturn node);
     void caseTKwIf(TKwIf node);
     void caseTKwElse(TKwElse node);
+    void caseTKwElseif(TKwElseif node);
     void caseTLeftCurly(TLeftCurly node);
     void caseTRightCurly(TRightCurly node);
     void caseTLeftRound(TLeftRound node);

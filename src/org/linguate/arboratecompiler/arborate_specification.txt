@@ -28,6 +28,7 @@ Tokens
     kw_return = 'return';
     kw_if = 'if';
     kw_else = 'else';
+    kw_elseif = 'elseif';
 
     left_curly = '{';
     right_curly = '}';
@@ -106,23 +107,23 @@ Productions
             { -> New statement.return(expr) };
 
     control_if {-> if_segment*} =
-        {if} kw_if left_round expr right_round left_curly code_block right_curly
-            { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement])] }
-        | {if_else} kw_if left_round expr right_round left_curly code_block right_curly control_else
+        {if_else} kw_if left_round expr right_round left_curly code_block right_curly control_else
             { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement]), control_else.if_segment] }
-        | {if_elseif} kw_if left_round expr right_round left_curly code_block right_curly control_elseif_list
-            { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement]), control_elseif_list.if_segment] };
+        | {if_elseif_else} kw_if left_round expr right_round left_curly code_block right_curly control_elseif_list control_else
+            { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement]), control_elseif_list.if_segment, control_else.if_segment] };
     
     control_else {-> if_segment} =
-        kw_else left_curly code_block right_curly
-            { -> New if_segment.otherwise([code_block.statement])};
+        {else} kw_else left_curly code_block right_curly
+            { -> New if_segment.otherwise([code_block.statement])}
+        |{no_else} /* empty expression */
+            { -> New if_segment.otherwise([])};
 
     control_elseif_list {-> if_segment*} =
         {single} control_elseif { -> [control_elseif.if_segment] }
         | {multiple} control_elseif [rest]:control_elseif_list { -> [control_elseif.if_segment, rest.if_segment] };
     
     control_elseif { -> if_segment} =
-        kw_else kw_if left_round expr right_round left_curly code_block right_curly
+        kw_elseif left_round expr right_round left_curly code_block right_curly
             { -> New if_segment.conditional(New if_condition(expr), [code_block.statement]) };
 
     expr {-> expr } = 
