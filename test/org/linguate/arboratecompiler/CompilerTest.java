@@ -1167,4 +1167,28 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(13, result.getValue());
     }
+    
+    @Test
+    public void testForwardReferenceFunction() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = square(5); return a; } function int square(int inVal) { return inVal * inVal; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(25, result.getValue());
+    }
+    
+    @Test
+    public void testRecursiveFunction() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { return power(3, 4); } function int power(int base, int exponent) { if (exponent < 0) { return 0; } elseif (exponent == 0) { return 1; } else {return power(base, exponent - 1) * base;} }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(81, result.getValue());
+    }
 }

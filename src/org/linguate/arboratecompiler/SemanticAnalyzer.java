@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Stack;
 import org.linguate.arborate.vm.BaseType;
 import org.linguate.arborate.vm.FunctionDefinition;
-import org.linguate.arborate.vm.Instruction;
 import org.linguate.arborate.vm.InstructionCode;
 import org.linguate.arboratecompiler.analysis.DepthFirstAdapter;
 import org.linguate.arboratecompiler.node.*;
@@ -31,67 +30,35 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     ReturnStatementContext returnStatementCtx;
     Stack<FunctionCallContext> functionCallCtxStack = new Stack<>();
     Stack<Map<Node,ExpressionContext>> expressionCtxStack = new Stack<>();
-            
-    /*****************  NODE DEFINITIONS  *****************/
-    public void inAProgram(AProgram node) {
-        programCtx = new ProgramContext();
+    
+    public SemanticAnalyzer(ProgramContext programCtx) {
+        this.programCtx = programCtx;
     }
     
+    /*****************  NODE DEFINITIONS  *****************/
     public void inAFuncDecl(AFuncDecl node) {
-        activeFunctionCtx = new FunctionContext();
+        activeFunctionCtx = programCtx.getFunctionCtxByNode(node);
         pushScope();
     }
     
     public void outAFuncDeclRetType(AFuncDeclRetType node) {
-        TIdentifier identifier = node.getIdentifier();
-        String returnType = identifier.getText();
-        if (returnType.equals("int")) {
-            activeFunctionCtx.returnType = BaseType.INTEGER;
-        } else if (returnType.equals("string")) {
-            activeFunctionCtx.returnType = BaseType.STRING;
-        } else if (returnType.equals("boolean")) {
-            activeFunctionCtx.returnType = BaseType.BOOLEAN;
-        } else {
-            String location = identifier.getLine() + ":" + identifier.getPos();
-            throw new RuntimeException("Unknown return type for function at " + location);
-        }
     }
     
     public void inAFuncDeclName(AFuncDeclName node) {
-        TIdentifier identifier = node.getIdentifier();
-        String funcName = identifier.getText();
-        if (programCtx.localFunctions.containsKey(funcName)) {
-            String location = identifier.getLine() + ":" + identifier.getPos();
-            throw new RuntimeException("Duplicate Function name: " + funcName + " at " + location);
-        }
-        programCtx.localFunctions.put(funcName, programCtx.getFunctionCount());
     }
 
     public void inAFuncDeclArgList(AFuncDeclArgList node) {
     }
     
     public void inAFuncDeclArgType(AFuncDeclArgType node) {
-        String varType = node.getIdentifier().getText();
-        if (varType.equals("int")) {
-            activeFunctionCtx.pendingArgumentType = BasicType.Integer;
-        } else if (varType.equals("string")) {
-            activeFunctionCtx.pendingArgumentType = BasicType.String;
-        } else if (varType.equals("boolean")) {
-            activeFunctionCtx.pendingArgumentType = BasicType.Boolean;
-        } else {
-            // TODO ERRORLOCATION
-            throw new RuntimeException("Unrecognized type in function parameter: " + varType);
-        }
     }
     
     public void inAFuncDeclArgName(AFuncDeclArgName node) {
-        activeFunctionCtx.addVariable(node.getIdentifier(), activeFunctionCtx.pendingArgumentType);
     }
     
     public void outAFuncDeclArgList(AFuncDeclArgList node) {
+        activeFunctionCtx.addParameterVariables();
 
-        activeFunctionCtx.inParameterCount = activeFunctionCtx.getVariableCount();
-        
         long argPos = activeFunctionCtx.inParameterCount; 
         while(argPos > 0) {
             argPos--;
@@ -107,7 +74,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             throw new RuntimeException("function missing return statement");
         }
         activeFunctionCtx.def = newFunc;
-        programCtx.allFunctionCtx.add(activeFunctionCtx);
         activeFunctionCtx = null;
     }
     
@@ -582,9 +548,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     public void outAFuncCallExpr(AFuncCallExpr node) {
         FunctionCallContext currentFunctionCallContext = functionCallCtxStack.pop();
         String funcToCall = currentFunctionCallContext.callIdentifier.getText();
-        if (programCtx.localFunctions.containsKey(funcToCall)) {
-            long functionNumber = programCtx.localFunctions.get(funcToCall);
-            FunctionContext functionCtx = programCtx.allFunctionCtx.get((int)functionNumber);
+        if (programCtx.hasFunctionName(funcToCall)) {
+            long functionNumber = programCtx.getFunctionNumberByName(funcToCall);
+            FunctionContext functionCtx = programCtx.getFunctionCtxByNumber(functionNumber);
             
             if (functionCtx.inParameterCount != currentFunctionCallContext.paramTypes.size()) {
                 // TODO ERRORLOCATION
@@ -598,7 +564,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
                 }
             }
                   
-            BaseType firstParam = functionCtx.def.getOutParams().get(0);
+            BaseType firstParam = functionCtx.returnType;
             BasicType funcType;
             if (firstParam == BaseType.INTEGER) {
                 funcType = BasicType.Integer;

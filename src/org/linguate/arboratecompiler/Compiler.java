@@ -34,10 +34,15 @@ public class Compiler {
 
         Start ast = parser.parse();
 
-        SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
+        ProgramContext programCtx = new ProgramContext();
+                
+        FirstPassAnalyzer firstPassAnalyzer = new FirstPassAnalyzer(programCtx);
+        ast.apply(firstPassAnalyzer);
+        
+        SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(programCtx);
         ast.apply(semanticAnalyzer);
         
-        return semanticAnalyzer.programCtx.allFunctionCtx.stream().map(functionCtx -> functionCtx.def).collect(Collectors.toList());
+        return programCtx.getFunctionList();
     }
 }
 

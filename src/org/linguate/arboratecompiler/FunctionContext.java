@@ -81,6 +81,35 @@ public class FunctionContext {
         scopeStack.remove(scopeStack.size() - 1);
     }
     
+    // parameters are treated as the first variables of the function.
+    // e.g. if a function has two parameters, they will be variables 0 and 1.
+    // this is split into two parts - addParameter() and addParameterVariables()
+    // addParameter() is used by FirstPassAnalyzer to define the variable itself
+    // so that forward function references know what the required parameters are.
+    // addParameterVariables() is used by the main analyzer to add the variables
+    // to the appopriate scope.
+    long addParameter(TIdentifier identifier, BasicType basicType) {
+        String parameterName = identifier.getText();
+        if (localVariableList.stream().anyMatch(varDef -> varDef.name.equals(parameterName))) {
+            // TODO ERRORLOCATION
+            throw new RuntimeException("Duplicate parameter name: " + parameterName);
+        }
+        
+        long varPos = getVariableCount();
+        VariableDefinition varDef = new VariableDefinition(varPos, basicType, parameterName);
+        localVariableList.add(varDef);
+        
+        return varPos;
+    }
+    void addParameterVariables() {
+        ScopeContext scopeCtx = scopeStack.get(scopeStack.size() - 1);
+        for (int varPos = 0; varPos < getVariableCount(); varPos++) {
+            VariableDefinition varDef = localVariableList.get(varPos);
+            scopeCtx.localVariables.put(varDef.name, varDef);
+        }
+        
+    }
+    
     long addVariable(TIdentifier identifier, BasicType basicType) {
         String variableName = identifier.getText();
         for (int scopePosition = scopeStack.size() - 1; scopePosition >= 0; scopePosition--) {
@@ -94,7 +123,7 @@ public class FunctionContext {
         }
         
         long varPos = getVariableCount();
-        VariableDefinition varDef = new VariableDefinition(varPos, basicType);
+        VariableDefinition varDef = new VariableDefinition(varPos, basicType, variableName);
         scopeStack.get(scopeStack.size() - 1).localVariables.put(variableName, varDef);
         localVariableList.add(varDef);
         
