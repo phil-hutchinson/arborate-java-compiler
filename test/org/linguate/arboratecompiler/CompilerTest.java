@@ -1169,6 +1169,32 @@ public class CompilerTest {
     }
     
     @Test
+    public void testIfWithinIf() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a < 50) { a = a + 10; if (a < 50) { a = a + 15; }} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(34, result.getValue());
+    
+    }
+    
+    @Test
+    public void testIfWithinElseIf() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a < 5) { a = a + 10; } elseif (a < 50) { a = a + 15; if (a > 5) { a = a * 20; }} return a; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(480, result.getValue());
+    
+    }
+    
+    @Test
     public void testForwardReferenceFunction() throws Exception {
         List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = square(5); return a; } function int square(int inVal) { return inVal * inVal; }");
 
