@@ -29,6 +29,7 @@ Tokens
     kw_if = 'if';
     kw_else = 'else';
     kw_elseif = 'elseif';
+    kw_while = 'while';
 
     left_curly = '{';
     right_curly = '}';
@@ -99,6 +100,8 @@ Productions
             { -> New statement.code_block([code_block.statement]) }
         | {if_statement} control_if
             { -> New statement.if([control_if.if_segment]) }
+        | {while_statement} kw_while left_round expr right_round left_curly code_block right_curly
+            { -> New statement.while(New while_condition(expr), [code_block.statement])}
         | {declaration} var_decl_type var_decl_name semicolon
             { -> New statement.declaration(var_decl_type, var_decl_name) }
         | {assignment} var_assign_name equals expr semicolon
@@ -215,6 +218,7 @@ Abstract Syntax Tree
     statement =
         {code_block} statement*
         | {if} if_segment*
+        | {while} while_condition statement*
         | {declaration} var_decl_type var_decl_name
         | {assignment} var_assign_name expr
         | {return} expr;
@@ -224,6 +228,8 @@ Abstract Syntax Tree
         | {otherwise} statement*;
 
     if_condition = expr;
+
+    while_condition = expr;
 
     expr =
         {logical_or} [left]:expr [right]:expr

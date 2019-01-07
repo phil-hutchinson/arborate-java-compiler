@@ -198,6 +198,35 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAIfStatement(node);
     }
 
+    public void inAWhileStatement(AWhileStatement node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAWhileStatement(AWhileStatement node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAWhileStatement(AWhileStatement node)
+    {
+        inAWhileStatement(node);
+        {
+            List<PStatement> copy = new ArrayList<PStatement>(node.getStatement());
+            Collections.reverse(copy);
+            for(PStatement e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        if(node.getWhileCondition() != null)
+        {
+            node.getWhileCondition().apply(this);
+        }
+        outAWhileStatement(node);
+    }
+
     public void inADeclarationStatement(ADeclarationStatement node)
     {
         defaultIn(node);
@@ -342,6 +371,27 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getExpr().apply(this);
         }
         outAIfCondition(node);
+    }
+
+    public void inAWhileCondition(AWhileCondition node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAWhileCondition(AWhileCondition node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAWhileCondition(AWhileCondition node)
+    {
+        inAWhileCondition(node);
+        if(node.getExpr() != null)
+        {
+            node.getExpr().apply(this);
+        }
+        outAWhileCondition(node);
     }
 
     public void inALogicalOrExpr(ALogicalOrExpr node)

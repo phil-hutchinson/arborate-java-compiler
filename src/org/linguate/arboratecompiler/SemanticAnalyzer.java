@@ -5,11 +5,8 @@
  */
 package org.linguate.arboratecompiler;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.linguate.arborate.vm.BaseType;
@@ -131,6 +128,36 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     public void outAOtherwiseIfSegment(AOtherwiseIfSegment node) {
         popExpressionContextStack();
         popScope();
+    }
+    
+    public void inAWhileStatement(AWhileStatement node) {
+        WhileStatementContext ctx = new WhileStatementContext();
+        activeFunctionCtx.whileStatementStack.push(ctx);
+        addBranchTarget(ctx.topOfLoop);
+        pushScope();
+    }
+
+    public void inAWhileCondition(AWhileCondition node) {
+        pushExpressionContextStack();
+    }
+    
+    public void outAWhileCondition(AWhileCondition node) {
+        ExpressionContext exprCtx = getExpressionContext(node.getExpr());
+        if (exprCtx.naturalType != BasicType.Boolean) {
+            // TODO LOCATION
+            throw new RuntimeException("While condition must be a boolean.");
+        }
+        
+        WhileStatementContext ctx = activeFunctionCtx.whileStatementStack.peek();
+        addBranchPlaceholder(InstructionCode.BRANCH_FALSE, ctx.endOfStatement);
+        popExpressionContextStack();
+    }
+    
+    public void outAWhileStatement(AWhileStatement node) {
+        popScope();
+        WhileStatementContext ctx = activeFunctionCtx.whileStatementStack.pop();
+        addBranchPlaceholder(InstructionCode.BRANCH, ctx.topOfLoop);
+        addBranchTarget(ctx.endOfStatement);
     }
     
     public void inADeclarationStatement(ADeclarationStatement node) {

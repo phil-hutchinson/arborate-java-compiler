@@ -1217,4 +1217,90 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(81, result.getValue());
     }
+    
+    @Test
+    public void testWhileStatement() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { return factorial(6); } function int factorial(int inVal) { int result; result = 1; int currVal; currVal = 1; while (currVal <= inVal) {result = result * currVal; currVal = currVal + 1; } return result; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(720, result.getValue());
+    }
+    
+    @Test
+    public void testWhileStatementZeroRepetitions() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int result; result = 10; while (result < 5) {result = result + 1;} return result; }");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(10, result.getValue());
+    }
+    
+    @Test
+    public void testNestedWhileStatement() throws Exception {
+        String program = 
+                "function int test() { \n" +
+                "   return findPrime(9); \n" +
+                "}\n" +
+                "function int findPrime(int primeToFind) {\n" +
+                "   int intToCheck;\n" +
+                "   int primesFound;\n" +
+                "   int lastPrimeFound;\n" +
+                "   intToCheck = 2;\n" +
+                "   primesFound = 0;\n" +
+                "   while (primesFound < primeToFind) {\n" +
+                "       boolean factorFound;\n" +
+                "       int factorToCheck;\n" +
+                "       factorFound = false;\n" +
+                "       factorToCheck = 2;\n" +
+                "       while (factorToCheck * factorToCheck <= intToCheck && !factorFound) {\n" +
+                "           int quotient;\n" +
+                "           quotient = intToCheck / factorToCheck;\n" +
+                "           if (quotient * factorToCheck == intToCheck) {\n" +
+                "               factorFound = true;\n" +
+                "           }\n" +
+                "           factorToCheck = factorToCheck + 1;\n" +
+                "       }\n" +
+                "       if (!factorFound) {\n" +
+                "           primesFound = primesFound + 1;\n" +
+                "           lastPrimeFound = intToCheck;\n" +
+                "       }\n" +
+                "       intToCheck = intToCheck + 1;\n" +
+                "   }\n" +
+                "   return lastPrimeFound;\n" +
+                "}\n";
+        List<FunctionDefinition> functions = Compiler.compile(program);
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(23, result.getValue());
+    }
+
+    @Test
+    public void testWhileConditionBooleanLiteral() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (false) { a = 1;} return a;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(0, result.getValue());
+    }
+
+    @Test
+    public void testWhileConditionNotBoolean() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (1) { a = 1;} return a;}");
+    }
+    
 }

@@ -24,6 +24,7 @@ public class FunctionContext {
     BaseType returnType;
     
     final Stack<IfStatementContext> ifStatementStack = new Stack<>();
+    final Stack<WhileStatementContext> whileStatementStack = new Stack<>();
     
     private List<Object> instructions = new ArrayList<>();
     List<Instruction> prepareInstructions() {

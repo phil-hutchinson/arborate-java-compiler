@@ -111,6 +111,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAWhileStatement(AWhileStatement node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseADeclarationStatement(ADeclarationStatement node)
     {
         defaultCase(node);
@@ -142,6 +148,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAIfCondition(AIfCondition node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAWhileCondition(AWhileCondition node)
     {
         defaultCase(node);
     }
@@ -352,6 +364,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTKwElseif(TKwElseif node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTKwWhile(TKwWhile node)
     {
         defaultCase(node);
     }
