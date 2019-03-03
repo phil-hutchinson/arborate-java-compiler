@@ -42,11 +42,11 @@ public class FirstPassAnalyzer extends DepthFirstAdapter {
         TIdentifier identifier = node.getIdentifier();
         String returnType = identifier.getText();
         if (returnType.equals("int")) {
-            activeFunctionCtx.returnType = BaseType.INTEGER;
+            activeFunctionCtx.returnType = BuiltInType.INTEGER;
         } else if (returnType.equals("string")) {
-            activeFunctionCtx.returnType = BaseType.STRING;
+            activeFunctionCtx.returnType = BuiltInType.STRING;
         } else if (returnType.equals("boolean")) {
-            activeFunctionCtx.returnType = BaseType.BOOLEAN;
+            activeFunctionCtx.returnType = BuiltInType.BOOLEAN;
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Unknown return type for function at " + location);
@@ -65,11 +65,11 @@ public class FirstPassAnalyzer extends DepthFirstAdapter {
     public void inAFuncDeclArgType(AFuncDeclArgType node) {
         String varType = node.getIdentifier().getText();
         if (varType.equals("int")) {
-            activeFunctionCtx.pendingArgumentType = BasicType.Integer;
+            activeFunctionCtx.pendingArgumentType = BuiltInType.INTEGER;
         } else if (varType.equals("string")) {
-            activeFunctionCtx.pendingArgumentType = BasicType.String;
+            activeFunctionCtx.pendingArgumentType = BuiltInType.STRING;
         } else if (varType.equals("boolean")) {
-            activeFunctionCtx.pendingArgumentType = BasicType.Boolean;
+            activeFunctionCtx.pendingArgumentType = BuiltInType.BOOLEAN;
         } else {
             // TODO ERRORLOCATION
             throw new RuntimeException("Unrecognized type in function parameter: " + varType);

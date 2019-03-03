@@ -11,12 +11,12 @@ package org.linguate.arboratecompiler;
  */
 public class VariableDefinition {
     long variablePosition;
-    BasicType basicType;
+    ArborateType arborateType;
     String name;
 
-    public VariableDefinition(long variablePosition, BasicType basicType, String name) {
+    public VariableDefinition(long variablePosition, ArborateType arborateType, String name) {
         this.variablePosition = variablePosition;
-        this.basicType = basicType;
+        this.arborateType = arborateType;
         this.name = name;
     }
 }

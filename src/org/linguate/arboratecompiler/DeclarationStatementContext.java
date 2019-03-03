@@ -13,5 +13,5 @@ import org.linguate.arboratecompiler.node.TIdentifier;
  */
 public class DeclarationStatementContext extends StatementContext {
     TIdentifier varIdentifier = null;
-    BasicType basicType = null;
+    ArborateType arborateType = null;
 }

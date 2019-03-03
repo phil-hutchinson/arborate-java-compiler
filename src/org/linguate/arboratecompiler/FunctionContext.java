@@ -21,7 +21,7 @@ import org.linguate.arboratecompiler.node.TIdentifier;
  */
 public class FunctionContext {
     FunctionDefinition def;
-    BaseType returnType;
+    ArborateType returnType;
     
     final Stack<IfStatementContext> ifStatementStack = new Stack<>();
     final Stack<WhileStatementContext> whileStatementStack = new Stack<>();
@@ -89,7 +89,7 @@ public class FunctionContext {
     // so that forward function references know what the required parameters are.
     // addParameterVariables() is used by the main analyzer to add the variables
     // to the appopriate scope.
-    long addParameter(TIdentifier identifier, BasicType basicType) {
+    long addParameter(TIdentifier identifier, ArborateType arborateType) {
         String parameterName = identifier.getText();
         if (localVariableList.stream().anyMatch(varDef -> varDef.name.equals(parameterName))) {
             // TODO ERRORLOCATION
@@ -97,7 +97,7 @@ public class FunctionContext {
         }
         
         long varPos = getVariableCount();
-        VariableDefinition varDef = new VariableDefinition(varPos, basicType, parameterName);
+        VariableDefinition varDef = new VariableDefinition(varPos, arborateType, parameterName);
         localVariableList.add(varDef);
         
         return varPos;
@@ -111,7 +111,7 @@ public class FunctionContext {
         
     }
     
-    long addVariable(TIdentifier identifier, BasicType basicType) {
+    long addVariable(TIdentifier identifier, ArborateType arboateType) {
         String variableName = identifier.getText();
         for (int scopePosition = scopeStack.size() - 1; scopePosition >= 0; scopePosition--) {
             ScopeContext scope = scopeStack.get(scopePosition);
@@ -124,7 +124,7 @@ public class FunctionContext {
         }
         
         long varPos = getVariableCount();
-        VariableDefinition varDef = new VariableDefinition(varPos, basicType, variableName);
+        VariableDefinition varDef = new VariableDefinition(varPos, arboateType, variableName);
         scopeStack.get(scopeStack.size() - 1).localVariables.put(variableName, varDef);
         localVariableList.add(varDef);
         
@@ -154,7 +154,7 @@ public class FunctionContext {
         return localVariableList.size();
     }
 
-    BasicType pendingArgumentType;
+    ArborateType pendingArgumentType;
     
     long inParameterCount; // will always be the first variables in localVariables
     

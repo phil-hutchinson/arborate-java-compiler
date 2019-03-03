@@ -66,7 +66,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAFuncDecl(AFuncDecl node) {
         popScope();
-        FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.prepareInstructions(), (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(activeFunctionCtx.returnType));
+        FunctionDefinition newFunc = new FunctionDefinition(activeFunctionCtx.prepareInstructions(), (int)activeFunctionCtx.getVariableCount(), Arrays.asList(), Arrays.asList(activeFunctionCtx.returnType.getVmType()));
         if (!activeFunctionCtx.hasReturn) {
             throw new RuntimeException("function missing return statement");
         }
@@ -101,7 +101,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAIfCondition(AIfCondition node) {
         ExpressionContext exprCtx = getExpressionContext(node.getExpr());
-        if (exprCtx.naturalType != BasicType.Boolean) {
+        if (exprCtx.arborateType != BuiltInType.BOOLEAN) {
             // TODO ERRORLOCATION
             throw new RuntimeException("If condition must evaluate to boolean");
         }
@@ -143,7 +143,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void outAWhileCondition(AWhileCondition node) {
         ExpressionContext exprCtx = getExpressionContext(node.getExpr());
-        if (exprCtx.naturalType != BasicType.Boolean) {
+        if (exprCtx.arborateType != BuiltInType.BOOLEAN) {
             // TODO LOCATION
             throw new RuntimeException("While condition must be a boolean.");
         }
@@ -167,11 +167,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     public void inAVarDeclType(AVarDeclType node) {
         String declaredType = node.getIdentifier().getText();
         if (declaredType.equals("int")) {
-            declarationStatementCtx.basicType = BasicType.Integer;
+            declarationStatementCtx.arborateType = BuiltInType.INTEGER;
         } else if (declaredType.equals("string")) {
-            declarationStatementCtx.basicType = BasicType.String;
+            declarationStatementCtx.arborateType = BuiltInType.STRING;
         } else if (declaredType.equals("boolean")) {
-            declarationStatementCtx.basicType = BasicType.Boolean;
+            declarationStatementCtx.arborateType = BuiltInType.BOOLEAN;
         } else {
             // TODO ERRORLOCATION
             throw new RuntimeException("Unrecognized variable type: " + declaredType);
@@ -183,20 +183,20 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outADeclarationStatement(ADeclarationStatement node) {
-        long varPos = activeFunctionCtx.addVariable(declarationStatementCtx.varIdentifier, declarationStatementCtx.basicType);
+        long varPos = activeFunctionCtx.addVariable(declarationStatementCtx.varIdentifier, declarationStatementCtx.arborateType);
         
-        if (declarationStatementCtx.basicType == BasicType.Integer) {
+        if (declarationStatementCtx.arborateType == BuiltInType.INTEGER) {
             addInstruction(InstructionCode.INTEGER_TO_STACK, 0L);
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
-        } else if (declarationStatementCtx.basicType == BasicType.String) {
+        } else if (declarationStatementCtx.arborateType == BuiltInType.STRING) {
             addInstruction(InstructionCode.STRING_TO_STACK, "");
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
-        } else if (declarationStatementCtx.basicType == BasicType.Boolean) {
+        } else if (declarationStatementCtx.arborateType == BuiltInType.BOOLEAN) {
             addInstruction(InstructionCode.BOOLEAN_TO_STACK, false);
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
         } else {
             // TODO UNEXPECTED ERROR
-            throw new RuntimeException("Unrecognized type initializing stack for declaration statement: " + declarationStatementCtx.basicType.toString());
+            throw new RuntimeException("Unrecognized type initializing stack for declaration statement: " + declarationStatementCtx.arborateType.toString());
         }
         declarationStatementCtx = null;
     }
@@ -232,16 +232,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     public void outAReturnStatement(AReturnStatement node) {
         PExpr exprNode = node.getExpr();
         ExpressionContext exprCtx = getExpressionContext(exprNode);
-        boolean isValid = false;
-        if (exprCtx.naturalType == BasicType.Integer && activeFunctionCtx.returnType == BaseType.INTEGER) {
-            isValid = true;
-        } else if (exprCtx.naturalType == BasicType.String && activeFunctionCtx.returnType == BaseType.STRING) {
-            isValid = true;
-        } else if (exprCtx.naturalType == BasicType.Boolean && activeFunctionCtx.returnType == BaseType.BOOLEAN) {
-            isValid = true;
-        }
-
-        if (!isValid) {
+        if (exprCtx.arborateType != activeFunctionCtx.returnType) {
             // TODO ERRORLOCATION
             throw new RuntimeException("Invalid return type");
         }
@@ -258,17 +249,17 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+        if (leftCtx.arborateType == BuiltInType.INTEGER && rightCtx.arborateType == BuiltInType.INTEGER) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.INTEGER);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_ADD);
-        } else if (leftCtx.naturalType == BasicType.String && rightCtx.naturalType == BasicType.String) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.String);
+        } else if (leftCtx.arborateType == BuiltInType.STRING && rightCtx.arborateType == BuiltInType.STRING) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.STRING);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.STRING_CONCATENATE);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Addition operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Addition operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
 
@@ -278,13 +269,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+        if (leftCtx.arborateType == BuiltInType.INTEGER && rightCtx.arborateType == BuiltInType.INTEGER) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.INTEGER);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_SUBTRACT);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Subtraction operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Subtraction operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
 
@@ -294,13 +285,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+        if (leftCtx.arborateType == BuiltInType.INTEGER && rightCtx.arborateType == BuiltInType.INTEGER) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.INTEGER);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_MULTIPLY);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Multiplication operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Multiplication operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
 
@@ -310,13 +301,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+        if (leftCtx.arborateType == BuiltInType.INTEGER && rightCtx.arborateType == BuiltInType.INTEGER) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.INTEGER);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_DIVIDE);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Division operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Division operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
 
@@ -326,29 +317,22 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == rightCtx.naturalType) {
-            addExpressionContext(node, new ExpressionContext(BasicType.Boolean));
-            switch(leftCtx.naturalType) {
-                case Integer:
-                    addInstruction(InstructionCode.INTEGER_EQUAL);
-                    break;
-                    
-                case String:
-                    addInstruction(InstructionCode.STRING_EQUAL);
-                    break; 
-                    
-                case Boolean:
-                    addInstruction(InstructionCode.BOOLEAN_EQUAL);
-                    break; 
-                    
-                default:
-                    // TODO ERRORLOCATION
-                    throw new RuntimeException("Unknown type in equal comparison: " + leftCtx.naturalType.name());
+        if (leftCtx.arborateType == rightCtx.arborateType) {
+            addExpressionContext(node, new ExpressionContext(BuiltInType.BOOLEAN));
+            if (leftCtx.arborateType == BuiltInType.INTEGER) {
+                addInstruction(InstructionCode.INTEGER_EQUAL);
+            } else if (leftCtx.arborateType == BuiltInType.STRING) {
+                addInstruction(InstructionCode.STRING_EQUAL);
+            } else if (leftCtx.arborateType == BuiltInType.BOOLEAN) {
+                addInstruction(InstructionCode.BOOLEAN_EQUAL);
+            } else {
+                // TODO ERRORLOCATION
+                throw new RuntimeException("Unknown type in equal comparison: " + leftCtx.arborateType.getName());
             }
             
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Non-matching types in equal comparison: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Non-matching types in equal comparison: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
     
@@ -358,29 +342,22 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == rightCtx.naturalType) {
-            addExpressionContext(node, new ExpressionContext(BasicType.Boolean));
-            switch(leftCtx.naturalType) {
-                case Integer:
-                    addInstruction(InstructionCode.INTEGER_NOT_EQUAL);
-                    break;
-                    
-                case String:
-                    addInstruction(InstructionCode.STRING_NOT_EQUAL);
-                    break; 
-                    
-                case Boolean:
-                    addInstruction(InstructionCode.BOOLEAN_NOT_EQUAL);
-                    break; 
-                    
-                default:
-                    // TODO ERRORLOCATION
-                    throw new RuntimeException("Unknown type in not equal comparison: " + leftCtx.naturalType.name());
+        if (leftCtx.arborateType == rightCtx.arborateType) {
+            addExpressionContext(node, new ExpressionContext(BuiltInType.BOOLEAN));
+            if (leftCtx.arborateType == BuiltInType.INTEGER) {
+                addInstruction(InstructionCode.INTEGER_NOT_EQUAL);
+            } else if (leftCtx.arborateType == BuiltInType.STRING) {
+                addInstruction(InstructionCode.STRING_NOT_EQUAL);
+            } else if (leftCtx.arborateType == BuiltInType.BOOLEAN) {
+                addInstruction(InstructionCode.BOOLEAN_NOT_EQUAL);
+            } else {
+                // TODO ERRORLOCATION
+                throw new RuntimeException("Unknown type in not equal comparison: " + leftCtx.arborateType.getName());
             }
             
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Non-matching types in not equal comparison: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Non-matching types in not equal comparison: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
 
@@ -390,13 +367,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+        if (leftCtx.arborateType == BuiltInType.INTEGER && rightCtx.arborateType == BuiltInType.INTEGER) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.BOOLEAN);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_LESS_THAN);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Less Than operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Less Than operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
     
@@ -406,13 +383,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+        if (leftCtx.arborateType == BuiltInType.INTEGER && rightCtx.arborateType == BuiltInType.INTEGER) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.BOOLEAN);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_LESS_EQUAL);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Less Than Or Equal operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Less Than Or Equal operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
     
@@ -422,13 +399,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+        if (leftCtx.arborateType == BuiltInType.INTEGER && rightCtx.arborateType == BuiltInType.INTEGER) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.BOOLEAN);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_GREATER_THAN);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Greater Than operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Greater Than operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
     
@@ -438,13 +415,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Integer && rightCtx.naturalType == BasicType.Integer) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+        if (leftCtx.arborateType == BuiltInType.INTEGER && rightCtx.arborateType == BuiltInType.INTEGER) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.BOOLEAN);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.INTEGER_GREATER_EQUAL);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Greater Than Or Equal operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Greater Than Or Equal operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
     
@@ -453,12 +430,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext subCtx = getExpressionContext(subNode);
 
-        if (subCtx.naturalType == BasicType.Boolean) {
-            addExpressionContext(node, new ExpressionContext(BasicType.Boolean));
+        if (subCtx.arborateType == BuiltInType.BOOLEAN) {
+            addExpressionContext(node, new ExpressionContext(BuiltInType.BOOLEAN));
             addInstruction(InstructionCode.BOOLEAN_NOT);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Logical NOT not valid for type: " + subCtx.naturalType.name());
+            throw new RuntimeException("Logical NOT not valid for type: " + subCtx.arborateType.getName());
         }
     }
     
@@ -468,13 +445,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Boolean && rightCtx.naturalType == BasicType.Boolean) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+        if (leftCtx.arborateType == BuiltInType.BOOLEAN && rightCtx.arborateType == BuiltInType.BOOLEAN) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.BOOLEAN);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.BOOLEAN_AND);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Logical AND operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Logical AND operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
     
@@ -484,13 +461,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Boolean && rightCtx.naturalType == BasicType.Boolean) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+        if (leftCtx.arborateType == BuiltInType.BOOLEAN && rightCtx.arborateType == BuiltInType.BOOLEAN) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.BOOLEAN);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.BOOLEAN_OR);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Logical OR operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Logical OR operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
     
@@ -500,13 +477,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         
         ExpressionContext leftCtx = getExpressionContext(leftNode);
         ExpressionContext rightCtx = getExpressionContext(rightNode);
-        if (leftCtx.naturalType == BasicType.Boolean && rightCtx.naturalType == BasicType.Boolean) {
-            ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+        if (leftCtx.arborateType == BuiltInType.BOOLEAN && rightCtx.arborateType == BuiltInType.BOOLEAN) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.BOOLEAN);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.BOOLEAN_XOR);
         } else {
             // TODO ERRORLOCATION
-            throw new RuntimeException("Logical XOR operation not valid for types: " + leftCtx.naturalType.name() + ", " + rightCtx.naturalType.name());
+            throw new RuntimeException("Logical XOR operation not valid for types: " + leftCtx.arborateType.getName() + ", " + rightCtx.arborateType.getName());
         }
     }
     
@@ -517,7 +494,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAIntLitExpr(AIntLitExpr node) {
-        ExpressionContext currCtx = new ExpressionContext(BasicType.Integer);
+        ExpressionContext currCtx = new ExpressionContext(BuiltInType.INTEGER);
         addExpressionContext(node, currCtx);
     }
     
@@ -531,7 +508,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outAStringLitExpr(AStringLitExpr node) {
-        ExpressionContext currCtx = new ExpressionContext(BasicType.String);
+        ExpressionContext currCtx = new ExpressionContext(BuiltInType.STRING);
         addExpressionContext(node, currCtx);
     }
     
@@ -552,7 +529,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void outABoolLitExpr(ABoolLitExpr node) {
-        ExpressionContext currCtx = new ExpressionContext(BasicType.Boolean);
+        ExpressionContext currCtx = new ExpressionContext(BuiltInType.BOOLEAN);
         addExpressionContext(node, currCtx);
     }
     
@@ -568,7 +545,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         PExpr exprNode = node.getExpr();
         ExpressionContext exprCtx = getExpressionContext(exprNode);
         
-        BasicType argType = exprCtx.naturalType;
+        ArborateType argType = exprCtx.arborateType;
         functionCallCtxStack.peek().paramTypes.add(argType);
     }
     
@@ -585,24 +562,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             }
             
             for (long paramPos = 0; paramPos < functionCtx.inParameterCount; paramPos++) {
-                if (functionCtx.getVariable(paramPos).basicType != currentFunctionCallContext.paramTypes.get((int)paramPos)) {
+                if (functionCtx.getVariable(paramPos).arborateType != currentFunctionCallContext.paramTypes.get((int)paramPos)) {
                     // TODO ERRORLOCATION
                     throw new RuntimeException("Attempt to call function: argument type does not match.");
                 }
             }
                   
-            BaseType firstParam = functionCtx.returnType;
-            BasicType funcType;
-            if (firstParam == BaseType.INTEGER) {
-                funcType = BasicType.Integer;
-            } else if (firstParam == BaseType.STRING) {
-                funcType = BasicType.String;
-            } else if (firstParam == BaseType.BOOLEAN) {
-                funcType = BasicType.Boolean;
-            } else {
-                // TODO ERRORLOCATION
-                throw new RuntimeException("Unknown function return type: " + firstParam);
-            }
+            ArborateType funcType = functionCtx.returnType;
             ExpressionContext currCtx = new ExpressionContext(funcType);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.CALL_FUNCTION, functionNumber);
@@ -618,7 +584,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         VariableDefinition varDef = activeFunctionCtx.getVariable(varNameToFetch);
         if (varDef != null) {
             long varPos = varDef.variablePosition;
-            ExpressionContext currCtx = new ExpressionContext(varDef.basicType);
+            ExpressionContext currCtx = new ExpressionContext(varDef.arborateType);
             addExpressionContext(node, currCtx);
             addInstruction(InstructionCode.VARIABLE_TO_STACK, varPos);
         } else {
@@ -631,7 +597,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         PVarFetchName fetchNode = node.getVarFetchName();
         ExpressionContext fetchCtx = getExpressionContext(fetchNode);
         
-        ExpressionContext currCtx = new ExpressionContext(fetchCtx.naturalType);
+        ExpressionContext currCtx = new ExpressionContext(fetchCtx.arborateType);
         addExpressionContext(node, currCtx);
     }
     

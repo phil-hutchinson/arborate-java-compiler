@@ -15,5 +15,5 @@ import org.linguate.arboratecompiler.node.TIdentifier;
  */
 public class FunctionCallContext {
     TIdentifier callIdentifier = null;
-    List<BasicType> paramTypes = new ArrayList<>();
+    List<ArborateType> paramTypes = new ArrayList<>();
 }

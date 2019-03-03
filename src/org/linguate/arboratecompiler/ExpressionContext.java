@@ -10,9 +10,9 @@ package org.linguate.arboratecompiler;
  * @author Phil Hutchinson
  */
 public class ExpressionContext {
-    BasicType naturalType;
+    ArborateType arborateType;
 
-    public ExpressionContext(BasicType naturalType) {
-        this.naturalType = naturalType;
+    public ExpressionContext(ArborateType arborateType) {
+        this.arborateType = arborateType;
     }
 }
