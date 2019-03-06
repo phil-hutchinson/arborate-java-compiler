@@ -15,4 +15,5 @@ public class BuiltInType {
     public static final ArborateType INTEGER = new ArborateType("int", BaseType.INTEGER);
     public static final ArborateType STRING = new ArborateType("string", BaseType.STRING);
     public static final ArborateType BOOLEAN = new ArborateType("boolean", BaseType.BOOLEAN);
+    public static final ArborateType NODE = new ArborateType("node", BaseType.DICTIONARY);
 }

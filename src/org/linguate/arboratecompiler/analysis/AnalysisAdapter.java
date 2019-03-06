@@ -273,6 +273,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseANewVarExpr(ANewVarExpr node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFuncCallArgList(AFuncCallArgList node)
     {
         defaultCase(node);
@@ -370,6 +376,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTKwWhile(TKwWhile node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTKwNew(TKwNew node)
     {
         defaultCase(node);
     }

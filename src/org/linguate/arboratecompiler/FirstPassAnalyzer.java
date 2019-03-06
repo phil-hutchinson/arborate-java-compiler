@@ -41,12 +41,14 @@ public class FirstPassAnalyzer extends DepthFirstAdapter {
     public void outAFuncDeclRetType(AFuncDeclRetType node) {
         TIdentifier identifier = node.getIdentifier();
         String returnType = identifier.getText();
-        if (returnType.equals("int")) {
+        if (returnType.equals(BuiltInType.INTEGER.getName())) {
             activeFunctionCtx.returnType = BuiltInType.INTEGER;
-        } else if (returnType.equals("string")) {
+        } else if (returnType.equals(BuiltInType.STRING.getName())) {
             activeFunctionCtx.returnType = BuiltInType.STRING;
-        } else if (returnType.equals("boolean")) {
+        } else if (returnType.equals(BuiltInType.BOOLEAN.getName())) {
             activeFunctionCtx.returnType = BuiltInType.BOOLEAN;
+        } else if (returnType.equals(BuiltInType.NODE.getName())) {
+            activeFunctionCtx.returnType = BuiltInType.NODE;
         } else {
             String location = identifier.getLine() + ":" + identifier.getPos();
             throw new RuntimeException("Unknown return type for function at " + location);

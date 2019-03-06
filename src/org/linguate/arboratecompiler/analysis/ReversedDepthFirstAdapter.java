@@ -849,6 +849,27 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAVarFetchExpr(node);
     }
 
+    public void inANewVarExpr(ANewVarExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outANewVarExpr(ANewVarExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseANewVarExpr(ANewVarExpr node)
+    {
+        inANewVarExpr(node);
+        if(node.getNewVarType() != null)
+        {
+            node.getNewVarType().apply(this);
+        }
+        outANewVarExpr(node);
+    }
+
     public void inAFuncCallArgList(AFuncCallArgList node)
     {
         defaultIn(node);

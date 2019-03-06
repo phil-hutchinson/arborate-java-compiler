@@ -30,6 +30,7 @@ Tokens
     kw_else = 'else';
     kw_elseif = 'elseif';
     kw_while = 'while';
+    kw_new = 'new';
 
     left_curly = '{';
     right_curly = '}';
@@ -177,8 +178,10 @@ Productions
         | {func_call} func_call_name left_round func_call_arg_list right_round
             { -> New expr.func_call(func_call_name, func_call_arg_list) }
         | {var_fetch} var_fetch_name { -> New expr.var_fetch(var_fetch_name)}
+        | {new_var} kw_new identifier { -> New expr.new_var(identifier)}
         | {bracketed_expr} left_round [content]:expr right_round 
-            { ->  content.expr };
+            { ->  content.expr }
+        ;
     
         
     func_call_arg_list {-> func_call_arg_list} =
@@ -205,6 +208,7 @@ Productions
     var_assign_name = identifier;
 
     var_fetch_name = identifier;
+    /*new_var_type = identifier;*/
 
 Abstract Syntax Tree
     program = [functions]:func_decl*;
@@ -258,7 +262,9 @@ Abstract Syntax Tree
         | {string_lit} quoted_string
         | {bool_lit} bool_string
         | {func_call} func_call_name func_call_arg_list
-        | {var_fetch} var_fetch_name;
+        | {var_fetch} var_fetch_name
+        | {new_var} [new_var_type]:identifier
+        ;
 
     func_call_arg_list = func_call_arg*;
     func_call_arg = expr;
@@ -275,3 +281,4 @@ Abstract Syntax Tree
     var_assign_name = identifier;
 
     var_fetch_name = identifier;
+

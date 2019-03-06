@@ -20,6 +20,7 @@ import org.linguate.arboratecompiler.node.*;
  * @author Phil Hutchinson
  */
 public class SemanticAnalyzer extends DepthFirstAdapter {
+    public static final String NODE_CHILDREN_IDENTIFIER = "__children";
     ProgramContext programCtx;
     FunctionContext activeFunctionCtx;
     DeclarationStatementContext declarationStatementCtx;
@@ -166,12 +167,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void inAVarDeclType(AVarDeclType node) {
         String declaredType = node.getIdentifier().getText();
-        if (declaredType.equals("int")) {
+        if (declaredType.equals(BuiltInType.INTEGER.getName())) {
             declarationStatementCtx.arborateType = BuiltInType.INTEGER;
-        } else if (declaredType.equals("string")) {
+        } else if (declaredType.equals(BuiltInType.STRING.getName())) {
             declarationStatementCtx.arborateType = BuiltInType.STRING;
-        } else if (declaredType.equals("boolean")) {
+        } else if (declaredType.equals(BuiltInType.BOOLEAN.getName())) {
             declarationStatementCtx.arborateType = BuiltInType.BOOLEAN;
+        } else if (declaredType.equals(BuiltInType.NODE.getName())) {
+            declarationStatementCtx.arborateType = BuiltInType.NODE;
         } else {
             // TODO ERRORLOCATION
             throw new RuntimeException("Unrecognized variable type: " + declaredType);
@@ -193,6 +196,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
         } else if (declarationStatementCtx.arborateType == BuiltInType.BOOLEAN) {
             addInstruction(InstructionCode.BOOLEAN_TO_STACK, false);
+            addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
+        } else if (declarationStatementCtx.arborateType == BuiltInType.NODE) {
+            addInstruction(InstructionCode.MAP_EMPTY_TO_STACK);
+            addInstruction(InstructionCode.STRING_TO_STACK, NODE_CHILDREN_IDENTIFIER);
+            addInstruction(InstructionCode.LIST_EMPTY_TO_STACK);
+            addInstruction(InstructionCode.MAP_SET);
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
         } else {
             // TODO UNEXPECTED ERROR
@@ -601,6 +610,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         addExpressionContext(node, currCtx);
     }
     
+    public void inANewVarExpr(ANewVarExpr node) {
+        TIdentifier varTypeIdentifier = node.getNewVarType();
+        String varType = varTypeIdentifier.getText();
+        if (varType.equals(BuiltInType.NODE.getName())) {
+            ExpressionContext currCtx = new ExpressionContext(BuiltInType.NODE);
+            addExpressionContext(node, currCtx);
+            addInstruction(InstructionCode.MAP_EMPTY_TO_STACK);
+            addInstruction(InstructionCode.STRING_TO_STACK, NODE_CHILDREN_IDENTIFIER);
+            addInstruction(InstructionCode.LIST_EMPTY_TO_STACK);
+            addInstruction(InstructionCode.MAP_SET);
+        } else {
+            String location = varTypeIdentifier.getLine() + ":" + varTypeIdentifier.getPos();
+            throw new RuntimeException("Type not valid or not recognized in new expression: " + varType + " at " + location);
+        }
+    }
     /**********************  HELPER METHODS  *********************/
     private void pushScope() {
         activeFunctionCtx.pushScope();

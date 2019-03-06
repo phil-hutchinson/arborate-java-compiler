@@ -19,6 +19,7 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.linguate.arborate.vm.ArborateBoolean;
 import org.linguate.arborate.vm.ArborateInteger;
+import org.linguate.arborate.vm.ArborateMap;
 import org.linguate.arborate.vm.ArborateString;
 import org.linguate.arborate.vm.BaseType;
 import org.linguate.arborate.vm.FunctionDefinition;
@@ -1302,5 +1303,30 @@ public class CompilerTest {
         expectedException.expect(Exception.class);
         List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (1) { a = 1;} return a;}");
     }
-    
+
+    @Test
+    public void testSimpleNode() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function node test() { return new node;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateMap result = (ArborateMap) actualValue.get(0);
+        ArborateString childrenIdentifier = new ArborateString(SemanticAnalyzer.NODE_CHILDREN_IDENTIFIER);
+        assertEquals(true, result.has(childrenIdentifier));
+    }
+
+    @Test
+    public void testSimpleNodeAssign() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("function node test() { node abc; node def; abc = new node; def = abc; return def;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateMap result = (ArborateMap) actualValue.get(0);
+        ArborateString childrenIdentifier = new ArborateString(SemanticAnalyzer.NODE_CHILDREN_IDENTIFIER);
+        assertEquals(true, result.has(childrenIdentifier));
+    }
 }
