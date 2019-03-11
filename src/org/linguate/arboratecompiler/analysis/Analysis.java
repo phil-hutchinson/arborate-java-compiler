@@ -13,6 +13,9 @@ public interface Analysis extends Switch
 
     void caseStart(Start node);
     void caseAProgram(AProgram node);
+    void caseATypeDecl(ATypeDecl node);
+    void caseATypeDeclFieldList(ATypeDeclFieldList node);
+    void caseATypeDeclField(ATypeDeclField node);
     void caseAFuncDecl(AFuncDecl node);
     void caseAFuncDeclArgList(AFuncDeclArgList node);
     void caseAFuncDeclArg(AFuncDeclArg node);
@@ -48,6 +51,9 @@ public interface Analysis extends Switch
     void caseANewVarExpr(ANewVarExpr node);
     void caseAFuncCallArgList(AFuncCallArgList node);
     void caseAFuncCallArg(AFuncCallArg node);
+    void caseATypeDeclName(ATypeDeclName node);
+    void caseATypeDeclFieldType(ATypeDeclFieldType node);
+    void caseATypeDeclFieldName(ATypeDeclFieldName node);
     void caseAFuncDeclRetType(AFuncDeclRetType node);
     void caseAFuncDeclName(AFuncDeclName node);
     void caseAFuncDeclArgType(AFuncDeclArgType node);
@@ -65,6 +71,7 @@ public interface Analysis extends Switch
     void caseTKwElseif(TKwElseif node);
     void caseTKwWhile(TKwWhile node);
     void caseTKwNew(TKwNew node);
+    void caseTKwType(TKwType node);
     void caseTLeftCurly(TLeftCurly node);
     void caseTRightCurly(TRightCurly node);
     void caseTLeftRound(TLeftRound node);

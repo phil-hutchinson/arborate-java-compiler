@@ -31,6 +31,7 @@ Tokens
     kw_elseif = 'elseif';
     kw_while = 'while';
     kw_new = 'new';
+    kw_type = 'type';
 
     left_curly = '{';
     right_curly = '}';
@@ -68,7 +69,27 @@ Ignored Tokens
 
 Productions
     program {-> program} =
-        [functions]:func_decl_list { -> New program( [functions.func_decl]) };
+        [custom_types]:type_decl_list? [functions]:func_decl_list { -> New program( [custom_types.type_decl], [functions.func_decl]) };
+
+    type_decl_list {-> type_decl*} =
+        {single} [custom_type]:type_decl { -> [custom_type.type_decl] }
+        | {multiple} [custom_type]:type_decl [rest]:type_decl_list { -> [custom_type.type_decl, rest.type_decl] };
+
+    type_decl {-> type_decl} = 
+        kw_type type_decl_name left_curly type_decl_field_list right_curly
+            { -> New type_decl(type_decl_name, type_decl_field_list) };
+
+    type_decl_field_list {-> type_decl_field_list} =
+        type_decl_field_list_helper { -> New type_decl_field_list([type_decl_field_list_helper.type_decl_field]) };
+
+    type_decl_field_list_helper {-> type_decl_field*} =
+        {single} [type_field_entry]:type_decl_field { -> [type_field_entry.type_decl_field] }
+        | {multiple} [type_field_entry]:type_decl_field [rest]:type_decl_field_list_helper
+            { -> [type_field_entry.type_decl_field, rest.type_decl_field] };
+
+    type_decl_field {-> type_decl_field} =
+        type_decl_field_type type_decl_field_name semicolon
+            { -> New type_decl_field(type_decl_field_type, type_decl_field_name ) };
 
     func_decl_list {-> func_decl*} =
         {single} [function]:func_decl { -> [function.func_decl] }
@@ -196,6 +217,10 @@ Productions
     func_call_arg {-> func_call_arg} =
         expr;
 
+    type_decl_name = identifier;
+    type_decl_field_type = identifier;
+    type_decl_field_name = identifier;
+
     func_decl_ret_type = identifier;
     func_decl_name = identifier;
     func_decl_arg_type = identifier;
@@ -211,7 +236,13 @@ Productions
     /*new_var_type = identifier;*/
 
 Abstract Syntax Tree
-    program = [functions]:func_decl*;
+    program = [custom_types]:type_decl* [functions]:func_decl*;
+
+    type_decl = type_decl_name type_decl_field_list;
+
+    type_decl_field_list = type_decl_field*;
+
+    type_decl_field = type_decl_field_type type_decl_field_name;
 
     func_decl = func_decl_ret_type func_decl_name func_decl_arg_list statement*;
 
@@ -268,6 +299,10 @@ Abstract Syntax Tree
 
     func_call_arg_list = func_call_arg*;
     func_call_arg = expr;
+
+    type_decl_name = identifier;
+    type_decl_field_type = identifier;
+    type_decl_field_name = identifier;
 
     func_decl_ret_type = identifier;
     func_decl_name = identifier;

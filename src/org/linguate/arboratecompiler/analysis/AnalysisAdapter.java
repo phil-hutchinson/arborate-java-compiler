@@ -81,6 +81,24 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseATypeDecl(ATypeDecl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeDeclFieldList(ATypeDeclFieldList node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeDeclField(ATypeDeclField node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFuncDecl(AFuncDecl node)
     {
         defaultCase(node);
@@ -291,6 +309,24 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseATypeDeclName(ATypeDeclName node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeDeclFieldType(ATypeDeclFieldType node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseATypeDeclFieldName(ATypeDeclFieldName node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAFuncDeclRetType(AFuncDeclRetType node)
     {
         defaultCase(node);
@@ -382,6 +418,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTKwNew(TKwNew node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTKwType(TKwType node)
     {
         defaultCase(node);
     }

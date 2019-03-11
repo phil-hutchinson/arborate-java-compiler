@@ -8,6 +8,7 @@ import org.linguate.arboratecompiler.analysis.*;
 @SuppressWarnings("nls")
 public final class AProgram extends PProgram
 {
+    private final LinkedList<PTypeDecl> _customTypes_ = new LinkedList<PTypeDecl>();
     private final LinkedList<PFuncDecl> _functions_ = new LinkedList<PFuncDecl>();
 
     public AProgram()
@@ -16,9 +17,12 @@ public final class AProgram extends PProgram
     }
 
     public AProgram(
+        @SuppressWarnings("hiding") List<?> _customTypes_,
         @SuppressWarnings("hiding") List<?> _functions_)
     {
         // Constructor
+        setCustomTypes(_customTypes_);
+
         setFunctions(_functions_);
 
     }
@@ -27,6 +31,7 @@ public final class AProgram extends PProgram
     public Object clone()
     {
         return new AProgram(
+            cloneList(this._customTypes_),
             cloneList(this._functions_));
     }
 
@@ -34,6 +39,32 @@ public final class AProgram extends PProgram
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAProgram(this);
+    }
+
+    public LinkedList<PTypeDecl> getCustomTypes()
+    {
+        return this._customTypes_;
+    }
+
+    public void setCustomTypes(List<?> list)
+    {
+        for(PTypeDecl e : this._customTypes_)
+        {
+            e.parent(null);
+        }
+        this._customTypes_.clear();
+
+        for(Object obj_e : list)
+        {
+            PTypeDecl e = (PTypeDecl) obj_e;
+            if(e.parent() != null)
+            {
+                e.parent().removeChild(e);
+            }
+
+            e.parent(this);
+            this._customTypes_.add(e);
+        }
     }
 
     public LinkedList<PFuncDecl> getFunctions()
@@ -66,6 +97,7 @@ public final class AProgram extends PProgram
     public String toString()
     {
         return ""
+            + toString(this._customTypes_)
             + toString(this._functions_);
     }
 
@@ -73,6 +105,11 @@ public final class AProgram extends PProgram
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
+        if(this._customTypes_.remove(child))
+        {
+            return;
+        }
+
         if(this._functions_.remove(child))
         {
             return;
@@ -85,6 +122,24 @@ public final class AProgram extends PProgram
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
+        for(ListIterator<PTypeDecl> i = this._customTypes_.listIterator(); i.hasNext();)
+        {
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PTypeDecl) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
+
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
+        }
+
         for(ListIterator<PFuncDecl> i = this._functions_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)

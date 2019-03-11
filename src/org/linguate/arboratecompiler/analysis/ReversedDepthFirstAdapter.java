@@ -58,7 +58,90 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
+        {
+            List<PTypeDecl> copy = new ArrayList<PTypeDecl>(node.getCustomTypes());
+            Collections.reverse(copy);
+            for(PTypeDecl e : copy)
+            {
+                e.apply(this);
+            }
+        }
         outAProgram(node);
+    }
+
+    public void inATypeDecl(ATypeDecl node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeDecl(ATypeDecl node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeDecl(ATypeDecl node)
+    {
+        inATypeDecl(node);
+        if(node.getTypeDeclFieldList() != null)
+        {
+            node.getTypeDeclFieldList().apply(this);
+        }
+        if(node.getTypeDeclName() != null)
+        {
+            node.getTypeDeclName().apply(this);
+        }
+        outATypeDecl(node);
+    }
+
+    public void inATypeDeclFieldList(ATypeDeclFieldList node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeDeclFieldList(ATypeDeclFieldList node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeDeclFieldList(ATypeDeclFieldList node)
+    {
+        inATypeDeclFieldList(node);
+        {
+            List<PTypeDeclField> copy = new ArrayList<PTypeDeclField>(node.getTypeDeclField());
+            Collections.reverse(copy);
+            for(PTypeDeclField e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outATypeDeclFieldList(node);
+    }
+
+    public void inATypeDeclField(ATypeDeclField node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeDeclField(ATypeDeclField node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeDeclField(ATypeDeclField node)
+    {
+        inATypeDeclField(node);
+        if(node.getTypeDeclFieldName() != null)
+        {
+            node.getTypeDeclFieldName().apply(this);
+        }
+        if(node.getTypeDeclFieldType() != null)
+        {
+            node.getTypeDeclFieldType().apply(this);
+        }
+        outATypeDeclField(node);
     }
 
     public void inAFuncDecl(AFuncDecl node)
@@ -914,6 +997,69 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getExpr().apply(this);
         }
         outAFuncCallArg(node);
+    }
+
+    public void inATypeDeclName(ATypeDeclName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeDeclName(ATypeDeclName node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeDeclName(ATypeDeclName node)
+    {
+        inATypeDeclName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outATypeDeclName(node);
+    }
+
+    public void inATypeDeclFieldType(ATypeDeclFieldType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeDeclFieldType(ATypeDeclFieldType node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeDeclFieldType(ATypeDeclFieldType node)
+    {
+        inATypeDeclFieldType(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outATypeDeclFieldType(node);
+    }
+
+    public void inATypeDeclFieldName(ATypeDeclFieldName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATypeDeclFieldName(ATypeDeclFieldName node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATypeDeclFieldName(ATypeDeclFieldName node)
+    {
+        inATypeDeclFieldName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outATypeDeclFieldName(node);
     }
 
     public void inAFuncDeclRetType(AFuncDeclRetType node)

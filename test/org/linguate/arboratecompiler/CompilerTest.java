@@ -1329,4 +1329,16 @@ public class CompilerTest {
         ArborateString childrenIdentifier = new ArborateString(SemanticAnalyzer.NODE_CHILDREN_IDENTIFIER);
         assertEquals(true, result.has(childrenIdentifier));
     }
+    
+    @Test
+    public void testSimpleCustomType() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } function int test() { return 21;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(21, result.getValue());
+    }
 }
