@@ -7,14 +7,7 @@ package org.linguate.arboratecompiler;
 
 import org.linguate.arborate.vm.BaseType;
 import org.linguate.arboratecompiler.analysis.DepthFirstAdapter;
-import org.linguate.arboratecompiler.node.AFuncDecl;
-import org.linguate.arboratecompiler.node.AFuncDeclArgList;
-import org.linguate.arboratecompiler.node.AFuncDeclArgName;
-import org.linguate.arboratecompiler.node.AFuncDeclArgType;
-import org.linguate.arboratecompiler.node.AFuncDeclName;
-import org.linguate.arboratecompiler.node.AFuncDeclRetType;
-import org.linguate.arboratecompiler.node.AProgram;
-import org.linguate.arboratecompiler.node.TIdentifier;
+import org.linguate.arboratecompiler.node.*;
 
 /**
  *
@@ -25,12 +18,48 @@ public class FirstPassAnalyzer extends DepthFirstAdapter {
     private String activeFunctionName;
     private FunctionContext activeFunctionCtx;
     private long activeParamCount;
+    private ArborateStructType currentArborateType;
 
     public FirstPassAnalyzer(ProgramContext programCtx) {
         this.programCtx = programCtx;
     }
     
     public void inAProgram(AProgram node) {
+    }
+    
+    public void inATypeDecl(ATypeDecl node) {
+        currentArborateType = new ArborateStructType();
+    }
+
+    public void inATypeDeclName(ATypeDeclName node) {
+        TIdentifier identifier = node.getIdentifier();
+        String newTypeName = identifier.getText();
+        if (programCtx.getTypeByName(newTypeName) != null) {
+            throw new RuntimeException("Duplicate type name: " + identifier.getText());
+        }
+        currentArborateType.name = newTypeName;
+    }
+    
+    public void outATypeDeclField(ATypeDeclField node) {
+        ATypeDeclFieldType typeNode = (ATypeDeclFieldType)node.getTypeDeclFieldType();
+        ATypeDeclFieldName nameNode = (ATypeDeclFieldName) node.getTypeDeclFieldName();
+        
+        TIdentifier typeIdentifier =  typeNode.getIdentifier();
+        String fieldTypeName = typeIdentifier.getText();
+        ArborateType fieldType = programCtx.getTypeByName(fieldTypeName);
+        if (fieldType == null) {
+            throw new RuntimeException("Unknown type: " + fieldTypeName);
+        }
+        
+        TIdentifier nameIdentifier = nameNode.getIdentifier();
+        String fieldName = nameIdentifier.getText();
+        
+        
+        currentArborateType.AddField(fieldType, fieldName);
+    }
+    
+    public void outATypeDecl(ATypeDecl node) {
+        programCtx.addType(currentArborateType);
     }
     
     public void inAFuncDecl(AFuncDecl node) {

@@ -1341,4 +1341,29 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(21, result.getValue());
     }
+    
+    @Test
+    public void testDuplicateTypeNameThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("type abc { int def; } type abc {int jkl; } function int test() { return 21;}");
+    }
+
+    @Test
+    public void testDuplicateNameInTypeDeclarationThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("type abc { int def; string def; } function int test() { return 21;}");
+    }
+
+    @Test
+    public void testSameFieldNameInDifferentTypes() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } type xyz {string def; } function int test() { return 21;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(21, result.getValue());
+    }
+    
 }

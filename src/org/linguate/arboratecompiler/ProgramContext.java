@@ -18,9 +18,36 @@ import org.linguate.arboratecompiler.node.AFuncDecl;
  * @author Phil Hutchinson
  */
 class ProgramContext {
+    private Map<String, ArborateType> nameToTypeMap = new HashMap<>();
     private Map<String, Long> nameToFunctionMap = new HashMap<>();
     private Map<AFuncDecl, Long> nodeToFunctionMap = new HashMap<>();
     private List<FunctionContext> allFunctionCtx = new ArrayList<>();
+    
+    public ProgramContext() {
+        for(ArborateType arborateType: BuiltInType.GetAll()) {
+            nameToTypeMap.put(arborateType.getName(), arborateType);
+        }
+    }
+
+    public void addType(ArborateType arborateType) {
+        if (arborateType.name == null || arborateType.name == "" ) {
+            throw new RuntimeException("Attempt to create type without a name");
+        }
+        
+        if (nameToTypeMap.containsKey(arborateType.name)) {
+            throw new RuntimeException("Duplicate type name: " + arborateType.name);
+        }
+        
+        nameToTypeMap.put(arborateType.name, arborateType);
+    }
+    
+    public ArborateType getTypeByName(String name) {
+        if (nameToTypeMap.containsKey(name)) {
+            return nameToTypeMap.get(name);
+        } else {
+            return null;
+        }
+    }
     
     private long getFunctionCount() {
         return nameToFunctionMap.size();

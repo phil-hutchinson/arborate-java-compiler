@@ -12,9 +12,12 @@ import org.linguate.arborate.vm.BaseType;
  * @author Phil Hutchinson
  */
 public class ArborateType {
-    private final String name;
-    private final BaseType vmType;
+    protected String name;
+    protected BaseType vmType;
 
+    public ArborateType() {
+    }
+    
     public ArborateType(String name, BaseType vmType) {
         this.name = name;
         this.vmType = vmType;
@@ -26,5 +29,13 @@ public class ArborateType {
 
     public BaseType getVmType() {
         return vmType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setVmType(BaseType vmType) {
+        this.vmType = vmType;
     }
 }
