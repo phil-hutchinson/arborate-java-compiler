@@ -167,14 +167,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     
     public void inAVarDeclType(AVarDeclType node) {
         String declaredType = node.getIdentifier().getText();
-        if (declaredType.equals(BuiltInType.INTEGER.getName())) {
-            declarationStatementCtx.arborateType = BuiltInType.INTEGER;
-        } else if (declaredType.equals(BuiltInType.STRING.getName())) {
-            declarationStatementCtx.arborateType = BuiltInType.STRING;
-        } else if (declaredType.equals(BuiltInType.BOOLEAN.getName())) {
-            declarationStatementCtx.arborateType = BuiltInType.BOOLEAN;
-        } else if (declaredType.equals(BuiltInType.NODE.getName())) {
-            declarationStatementCtx.arborateType = BuiltInType.NODE;
+        
+        ArborateType arborateType = programCtx.getTypeByName(declaredType);
+        
+        if (arborateType != null) {
+            declarationStatementCtx.arborateType = arborateType;
         } else {
             // TODO ERRORLOCATION
             throw new RuntimeException("Unrecognized variable type: " + declaredType);
@@ -202,6 +199,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             addInstruction(InstructionCode.STRING_TO_STACK, NODE_CHILDREN_IDENTIFIER);
             addInstruction(InstructionCode.LIST_EMPTY_TO_STACK);
             addInstruction(InstructionCode.MAP_SET);
+            addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
+        } else if (declarationStatementCtx.arborateType instanceof ArborateStructType){
+            addInstruction(InstructionCode.MAP_EMPTY_TO_STACK);
+            // TODO fields must be added
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
         } else {
             // TODO UNEXPECTED ERROR
