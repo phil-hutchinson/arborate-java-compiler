@@ -195,13 +195,13 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             addInstruction(InstructionCode.BOOLEAN_TO_STACK, false);
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
         } else if (declarationStatementCtx.arborateType == BuiltInType.NODE) {
-            addInstruction(InstructionCode.MAP_EMPTY_TO_STACK);
+            addInstruction(InstructionCode.MAP_TO_STACK, BuiltInConst.EMPTY_MAP);
             addInstruction(InstructionCode.STRING_TO_STACK, NODE_CHILDREN_IDENTIFIER);
             addInstruction(InstructionCode.LIST_EMPTY_TO_STACK);
             addInstruction(InstructionCode.MAP_SET);
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
         } else if (declarationStatementCtx.arborateType instanceof ArborateStructType){
-            addInstruction(InstructionCode.MAP_EMPTY_TO_STACK);
+            addInstruction(InstructionCode.MAP_TO_STACK, BuiltInConst.EMPTY_MAP);
             // TODO fields must be added
             addInstruction(InstructionCode.STACK_TO_VARIABLE, varPos);
         } else {
@@ -617,7 +617,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         if (varType.equals(BuiltInType.NODE.getName())) {
             ExpressionContext currCtx = new ExpressionContext(BuiltInType.NODE);
             addExpressionContext(node, currCtx);
-            addInstruction(InstructionCode.MAP_EMPTY_TO_STACK);
+            addInstruction(InstructionCode.MAP_TO_STACK, BuiltInConst.EMPTY_MAP);
             addInstruction(InstructionCode.STRING_TO_STACK, NODE_CHILDREN_IDENTIFIER);
             addInstruction(InstructionCode.LIST_EMPTY_TO_STACK);
             addInstruction(InstructionCode.MAP_SET);
