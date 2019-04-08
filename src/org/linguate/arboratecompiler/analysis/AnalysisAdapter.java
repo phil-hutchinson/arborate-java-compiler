@@ -381,6 +381,18 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseANewVarInitFieldList(ANewVarInitFieldList node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseANewVarInitField(ANewVarInitField node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTKwFunction(TKwFunction node)
     {
         defaultCase(node);
@@ -526,6 +538,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTSemicolon(TSemicolon node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTColon(TColon node)
     {
         defaultCase(node);
     }

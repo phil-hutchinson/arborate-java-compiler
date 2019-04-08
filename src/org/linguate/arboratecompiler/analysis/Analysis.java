@@ -63,6 +63,8 @@ public interface Analysis extends Switch
     void caseAVarDeclName(AVarDeclName node);
     void caseAVarAssignName(AVarAssignName node);
     void caseAVarFetchName(AVarFetchName node);
+    void caseANewVarInitFieldList(ANewVarInitFieldList node);
+    void caseANewVarInitField(ANewVarInitField node);
 
     void caseTKwFunction(TKwFunction node);
     void caseTKwReturn(TKwReturn node);
@@ -89,6 +91,7 @@ public interface Analysis extends Switch
     void caseTAmpersand(TAmpersand node);
     void caseTComma(TComma node);
     void caseTSemicolon(TSemicolon node);
+    void caseTColon(TColon node);
     void caseTIntString(TIntString node);
     void caseTQuotedString(TQuotedString node);
     void caseTBoolString(TBoolString node);

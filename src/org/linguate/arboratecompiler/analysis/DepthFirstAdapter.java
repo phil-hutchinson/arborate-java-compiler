@@ -1239,4 +1239,53 @@ public class DepthFirstAdapter extends AnalysisAdapter
         }
         outAVarFetchName(node);
     }
+
+    public void inANewVarInitFieldList(ANewVarInitFieldList node)
+    {
+        defaultIn(node);
+    }
+
+    public void outANewVarInitFieldList(ANewVarInitFieldList node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseANewVarInitFieldList(ANewVarInitFieldList node)
+    {
+        inANewVarInitFieldList(node);
+        {
+            List<PNewVarInitField> copy = new ArrayList<PNewVarInitField>(node.getNewVarInitField());
+            for(PNewVarInitField e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        outANewVarInitFieldList(node);
+    }
+
+    public void inANewVarInitField(ANewVarInitField node)
+    {
+        defaultIn(node);
+    }
+
+    public void outANewVarInitField(ANewVarInitField node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseANewVarInitField(ANewVarInitField node)
+    {
+        inANewVarInitField(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        if(node.getExpr() != null)
+        {
+            node.getExpr().apply(this);
+        }
+        outANewVarInitField(node);
+    }
 }

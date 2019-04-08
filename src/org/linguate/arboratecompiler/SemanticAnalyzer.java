@@ -621,6 +621,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             addInstruction(InstructionCode.STRING_TO_STACK, NODE_CHILDREN_IDENTIFIER);
             addInstruction(InstructionCode.LIST_EMPTY_TO_STACK);
             addInstruction(InstructionCode.MAP_SET);
+        } else if (programCtx.getTypeByName(varType) instanceof ArborateStructType) {
+            ArborateStructType arborateStructType = (ArborateStructType) programCtx.getTypeByName(varType);
+            addInstruction(InstructionCode.MAP_TO_STACK, BuiltInConst.EMPTY_MAP);
         } else {
             String location = varTypeIdentifier.getLine() + ":" + varTypeIdentifier.getPos();
             throw new RuntimeException("Type not valid or not recognized in new expression: " + varType + " at " + location);
