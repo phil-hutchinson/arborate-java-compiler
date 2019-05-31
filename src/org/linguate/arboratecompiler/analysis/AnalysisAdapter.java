@@ -429,6 +429,24 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTKwEndwhile(TKwEndwhile node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTKwBlock(TKwBlock node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTKwEndblock(TKwEndblock node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTKwNew(TKwNew node)
     {
         defaultCase(node);

@@ -943,7 +943,7 @@ public class CompilerTest {
     
     @Test
     public void testVariableUsedFromParentScope() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { boolean a; { a = true; } return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { boolean a; block a = true; endblock return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -956,12 +956,12 @@ public class CompilerTest {
     @Test
     public void testVariableUsedOutsideScopeThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function int test() {int a; a = 3; {int b; b = 6;} return a + b;}");
+        Compiler.compile("function int test() {int a; a = 3; block int b; b = 6; endblock return a + b;}");
     }
     
     @Test
     public void testVariableReusedInScopes() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; { int b; b = 3; a = b + b; } { int b; b = 4; a = a + b; } return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; block int b; b = 3; a = b + b; endblock block int b; b = 4; a = a + b; endblock return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1221,7 +1221,7 @@ public class CompilerTest {
     
     @Test
     public void testWhileStatement() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { return factorial(6); } function int factorial(int inVal) { int result; result = 1; int currVal; currVal = 1; while (currVal <= inVal) {result = result * currVal; currVal = currVal + 1; } return result; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { return factorial(6); } function int factorial(int inVal) { int result; result = 1; int currVal; currVal = 1; while (currVal <= inVal) result = result * currVal; currVal = currVal + 1; endwhile return result; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1233,7 +1233,7 @@ public class CompilerTest {
     
     @Test
     public void testWhileStatementZeroRepetitions() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int result; result = 10; while (result < 5) {result = result + 1;} return result; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int result; result = 10; while (result < 5) result = result + 1;endwhile return result; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1255,25 +1255,25 @@ public class CompilerTest {
                 "   int lastPrimeFound;\n" +
                 "   intToCheck = 2;\n" +
                 "   primesFound = 0;\n" +
-                "   while (primesFound < primeToFind) {\n" +
+                "   while (primesFound < primeToFind)\n" +
                 "       boolean factorFound;\n" +
                 "       int factorToCheck;\n" +
                 "       factorFound = false;\n" +
                 "       factorToCheck = 2;\n" +
-                "       while (factorToCheck * factorToCheck <= intToCheck && !factorFound) {\n" +
+                "       while (factorToCheck * factorToCheck <= intToCheck && !factorFound)\n" +
                 "           int quotient;\n" +
                 "           quotient = intToCheck / factorToCheck;\n" +
                 "           if (quotient * factorToCheck == intToCheck) {\n" +
                 "               factorFound = true;\n" +
                 "           }\n" +
                 "           factorToCheck = factorToCheck + 1;\n" +
-                "       }\n" +
+                "       endwhile\n" +
                 "       if (!factorFound) {\n" +
                 "           primesFound = primesFound + 1;\n" +
                 "           lastPrimeFound = intToCheck;\n" +
                 "       }\n" +
                 "       intToCheck = intToCheck + 1;\n" +
-                "   }\n" +
+                "   endwhile\n" +
                 "   return lastPrimeFound;\n" +
                 "}\n";
         List<FunctionDefinition> functions = Compiler.compile(program);
@@ -1288,7 +1288,7 @@ public class CompilerTest {
 
     @Test
     public void testWhileConditionBooleanLiteral() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (false) { a = 1;} return a;}");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (false)  a = 1; endwhile return a;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1301,7 +1301,7 @@ public class CompilerTest {
     @Test
     public void testWhileConditionNotBoolean() throws Exception {
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (1) { a = 1;} return a;}");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (1)  a = 1; endwhile return a;}");
     }
 
     @Test

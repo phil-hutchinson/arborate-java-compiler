@@ -72,6 +72,9 @@ public interface Analysis extends Switch
     void caseTKwElse(TKwElse node);
     void caseTKwElseif(TKwElseif node);
     void caseTKwWhile(TKwWhile node);
+    void caseTKwEndwhile(TKwEndwhile node);
+    void caseTKwBlock(TKwBlock node);
+    void caseTKwEndblock(TKwEndblock node);
     void caseTKwNew(TKwNew node);
     void caseTKwType(TKwType node);
     void caseTLeftCurly(TLeftCurly node);

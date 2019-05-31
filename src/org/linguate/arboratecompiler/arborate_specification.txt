@@ -30,7 +30,13 @@ Tokens
     kw_else = 'else';
     kw_elseif = 'elseif';
     kw_while = 'while';
+    kw_endwhile = 'endwhile';
+
+    kw_block = 'block';
+    kw_endblock = 'endblock';
+
     kw_new = 'new';
+
     kw_type = 'type';
 
     left_curly = '{';
@@ -119,11 +125,11 @@ Productions
             { -> [function_body.statement, rest.statement] };
 
     statement {-> statement} =
-        {code_block} left_curly code_block right_curly
+        {code_block} kw_block code_block kw_endblock
             { -> New statement.code_block([code_block.statement]) }
         | {if_statement} control_if
             { -> New statement.if([control_if.if_segment]) }
-        | {while_statement} kw_while left_round expr right_round left_curly code_block right_curly
+        | {while_statement} kw_while left_round expr right_round code_block kw_endwhile
             { -> New statement.while(New while_condition(expr), [code_block.statement])}
         | {declaration} var_decl_type var_decl_name semicolon
             { -> New statement.declaration(var_decl_type, var_decl_name) }
