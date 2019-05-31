@@ -2242,9 +2242,10 @@ public class Parser
         {
             // Block
         TIdentifier tidentifierNode2;
+        @SuppressWarnings("unused") Object nullNode3 = null;
         tidentifierNode2 = (TIdentifier)nodeArrayList2.get(0);
 
-        pexprNode1 = new ANewVarExpr(tidentifierNode2);
+        pexprNode1 = new ANewVarExpr(tidentifierNode2, null);
         }
 	nodeList.add(pexprNode1);
         return nodeList;
@@ -2264,9 +2265,11 @@ public class Parser
         {
             // Block
         TIdentifier tidentifierNode2;
+        PNewVarInitFieldList pnewvarinitfieldlistNode3;
         tidentifierNode2 = (TIdentifier)nodeArrayList2.get(0);
+        pnewvarinitfieldlistNode3 = (PNewVarInitFieldList)nodeArrayList3.get(0);
 
-        pexprNode1 = new ANewVarExpr(tidentifierNode2);
+        pexprNode1 = new ANewVarExpr(tidentifierNode2, pnewvarinitfieldlistNode3);
         }
 	nodeList.add(pexprNode1);
         return nodeList;
@@ -2653,6 +2656,9 @@ public class Parser
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList3 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList2 = pop();
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
+        PNewVarInitFieldList pnewvarinitfieldlistNode1;
+        pnewvarinitfieldlistNode1 = (PNewVarInitFieldList)nodeArrayList2.get(0);
+	nodeList.add(pnewvarinitfieldlistNode1);
         return nodeList;
     }
 

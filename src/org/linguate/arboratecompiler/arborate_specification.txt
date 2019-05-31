@@ -200,7 +200,7 @@ Productions
         | {func_call} func_call_name left_round func_call_arg_list right_round
             { -> New expr.func_call(func_call_name, func_call_arg_list) }
         | {var_fetch} var_fetch_name { -> New expr.var_fetch(var_fetch_name)}
-        | {new_var} kw_new identifier new_var_init? { -> New expr.new_var(identifier)}
+        | {new_var} kw_new identifier new_var_init? { -> New expr.new_var(identifier, new_var_init.new_var_init_field_list)}
         | {bracketed_expr} left_round [content]:expr right_round 
             { ->  content.expr }
         ;
@@ -236,7 +236,8 @@ Productions
     var_fetch_name = identifier;
     /*new_var_type = identifier;*/
 
-    new_var_init = left_curly new_var_init_field_list right_curly;
+    new_var_init {-> new_var_init_field_list} = left_curly new_var_init_field_list right_curly
+        { -> new_var_init_field_list };
 
     new_var_init_field_list {-> new_var_init_field_list} =
          new_var_init_field_list_helper { -> New new_var_init_field_list([new_var_init_field_list_helper.new_var_init_field]) };
@@ -310,7 +311,7 @@ Abstract Syntax Tree
         | {bool_lit} bool_string
         | {func_call} func_call_name func_call_arg_list
         | {var_fetch} var_fetch_name
-        | {new_var} [new_var_type]:identifier
+        | {new_var} [new_var_type]:identifier new_var_init_field_list?
         ;
 
     func_call_arg_list = func_call_arg*;

@@ -1355,6 +1355,12 @@ public class CompilerTest {
     }
 
     @Test
+    public void testCustomTypeContainingItselfThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        Compiler.compile("type abc { int def; abc abcvar; } function int test() { return 21;}");
+    }
+
+    @Test
     public void testSameFieldNameInDifferentTypes() throws Exception {
         List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } type xyz {string def; } function int test() { return 21;}");
 
@@ -1401,4 +1407,41 @@ public class CompilerTest {
         ArborateInteger result = (ArborateInteger) actualValue.get(0);
         assertEquals(21, result.getValue());
     }
+
+    @Test
+    public void testCustomVariableNewInitializationMultipleFields() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; string xyz; } function int test() { abc abcVariable; abcVariable = new abc { def: 3 + 13, xyz: \"abcdefg\" }; return 331;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(331, result.getValue());
+    }
+
+    @Test
+    public void testDeclareVariableAsCustomTypeWithInvalidFieldNameThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } function int test() { abc abcVariable; abcVariable = new abc { xyz: 3 + 13 }; return 21;}");
+    }
+
+    @Test
+    public void testDeclareVariableAsCustomTypeWithDuplicateFieldNameThrows() throws Exception {
+        expectedException.expect(Exception.class);
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; int ghi; } function int test() { abc abcVariable; abcVariable = new abc { def: 3 + 13, def: 5 * 5 }; return 55;}");
+    }
+
+    @Test
+    public void testCustomTypeContainingCustomType() throws Exception {
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; string xyz; } type foo { int bar; abc abcvar;} function int test() { foo fooVar; fooVar = new foo { bar: 3, abcvar: new abc { def: 3 + 13, xyz: \"abcdefg\" }}; return 333;}");
+
+        VirtualMachine virtualMachine = new VirtualMachine(functions);
+
+        List<Object> actualValue = virtualMachine.execute();
+        assertEquals(1, actualValue.size());
+        ArborateInteger result = (ArborateInteger) actualValue.get(0);
+        assertEquals(333, result.getValue());
+    }
+
 }

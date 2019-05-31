@@ -28,6 +28,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     ReturnStatementContext returnStatementCtx;
     Stack<FunctionCallContext> functionCallCtxStack = new Stack<>();
     Stack<Map<Node,ExpressionContext>> expressionCtxStack = new Stack<>();
+    Stack<VariableInitializationContext> varInitCtxStack = new Stack<>();
     
     public SemanticAnalyzer(ProgramContext programCtx) {
         this.programCtx = programCtx;
@@ -612,6 +613,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     }
     
     public void inANewVarExpr(ANewVarExpr node) {
+        ArborateType newVarType = null;
         TIdentifier varTypeIdentifier = node.getNewVarType();
         String varType = varTypeIdentifier.getText();
         if (varType.equals(BuiltInType.NODE.getName())) {
@@ -621,13 +623,50 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
             addInstruction(InstructionCode.STRING_TO_STACK, NODE_CHILDREN_IDENTIFIER);
             addInstruction(InstructionCode.LIST_EMPTY_TO_STACK);
             addInstruction(InstructionCode.MAP_SET);
+            newVarType = BuiltInType.NODE;
         } else if (programCtx.getTypeByName(varType) instanceof ArborateStructType) {
-            ArborateStructType arborateStructType = (ArborateStructType) programCtx.getTypeByName(varType);
+            newVarType = (ArborateStructType) programCtx.getTypeByName(varType);
             addInstruction(InstructionCode.MAP_TO_STACK, BuiltInConst.EMPTY_MAP);
         } else {
             String location = varTypeIdentifier.getLine() + ":" + varTypeIdentifier.getPos();
             throw new RuntimeException("Type not valid or not recognized in new expression: " + varType + " at " + location);
         }
+        varInitCtxStack.push(new VariableInitializationContext(newVarType));
+    }
+    
+    public void inANewVarInitField(ANewVarInitField node) {
+    }
+    
+    public void outANewVarInitField(ANewVarInitField node) {
+        String fieldName = node.getIdentifier().getText();
+        ExpressionContext exprCtx = getExpressionContext(node.getExpr());
+        
+        VariableInitializationContext varInitCtx = varInitCtxStack.peek();
+        
+        if (varInitCtx.getArborateType() instanceof ArborateStructType) {
+            ArborateStructType newType = (ArborateStructType)varInitCtx.getArborateType();
+            ArborateType currField = newType.GetFieldByName(fieldName);
+            if (currField == null) {
+                throw new RuntimeException("Field name not recognized.");
+            } else if (varInitCtx.IsFieldAdded(fieldName)) {
+                throw new RuntimeException("Field cannot be added twice.");
+            } else if (exprCtx.arborateType != currField) {
+                throw new RuntimeException("Field is not of the correct type.");
+            } else {
+                varInitCtx.SetFieldAdded(fieldName);
+                addInstruction(InstructionCode.STRING_TO_STACK, fieldName);
+            }
+        } else {
+            throw new RuntimeException("Type not compatible with initialization");
+        }
+        addInstruction(InstructionCode.MAP_SET);
+    }
+    
+    public void outANewVarExpr(ANewVarExpr node) {
+        VariableInitializationContext varInitCtx = varInitCtxStack.pop();
+
+        ExpressionContext currCtx = new ExpressionContext(varInitCtx.getArborateType());
+        addExpressionContext(node, currCtx);
     }
     /**********************  HELPER METHODS  *********************/
     private void pushScope() {

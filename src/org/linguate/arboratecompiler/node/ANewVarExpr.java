@@ -8,6 +8,7 @@ import org.linguate.arboratecompiler.analysis.*;
 public final class ANewVarExpr extends PExpr
 {
     private TIdentifier _newVarType_;
+    private PNewVarInitFieldList _newVarInitFieldList_;
 
     public ANewVarExpr()
     {
@@ -15,10 +16,13 @@ public final class ANewVarExpr extends PExpr
     }
 
     public ANewVarExpr(
-        @SuppressWarnings("hiding") TIdentifier _newVarType_)
+        @SuppressWarnings("hiding") TIdentifier _newVarType_,
+        @SuppressWarnings("hiding") PNewVarInitFieldList _newVarInitFieldList_)
     {
         // Constructor
         setNewVarType(_newVarType_);
+
+        setNewVarInitFieldList(_newVarInitFieldList_);
 
     }
 
@@ -26,7 +30,8 @@ public final class ANewVarExpr extends PExpr
     public Object clone()
     {
         return new ANewVarExpr(
-            cloneNode(this._newVarType_));
+            cloneNode(this._newVarType_),
+            cloneNode(this._newVarInitFieldList_));
     }
 
     @Override
@@ -60,11 +65,37 @@ public final class ANewVarExpr extends PExpr
         this._newVarType_ = node;
     }
 
+    public PNewVarInitFieldList getNewVarInitFieldList()
+    {
+        return this._newVarInitFieldList_;
+    }
+
+    public void setNewVarInitFieldList(PNewVarInitFieldList node)
+    {
+        if(this._newVarInitFieldList_ != null)
+        {
+            this._newVarInitFieldList_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._newVarInitFieldList_ = node;
+    }
+
     @Override
     public String toString()
     {
         return ""
-            + toString(this._newVarType_);
+            + toString(this._newVarType_)
+            + toString(this._newVarInitFieldList_);
     }
 
     @Override
@@ -74,6 +105,12 @@ public final class ANewVarExpr extends PExpr
         if(this._newVarType_ == child)
         {
             this._newVarType_ = null;
+            return;
+        }
+
+        if(this._newVarInitFieldList_ == child)
+        {
+            this._newVarInitFieldList_ = null;
             return;
         }
 
@@ -87,6 +124,12 @@ public final class ANewVarExpr extends PExpr
         if(this._newVarType_ == oldChild)
         {
             setNewVarType((TIdentifier) newChild);
+            return;
+        }
+
+        if(this._newVarInitFieldList_ == oldChild)
+        {
+            setNewVarInitFieldList((PNewVarInitFieldList) newChild);
             return;
         }
 

@@ -946,6 +946,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseANewVarExpr(ANewVarExpr node)
     {
         inANewVarExpr(node);
+        if(node.getNewVarInitFieldList() != null)
+        {
+            node.getNewVarInitFieldList().apply(this);
+        }
         if(node.getNewVarType() != null)
         {
             node.getNewVarType().apply(this);

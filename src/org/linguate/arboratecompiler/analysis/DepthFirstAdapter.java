@@ -940,6 +940,10 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getNewVarType().apply(this);
         }
+        if(node.getNewVarInitFieldList() != null)
+        {
+            node.getNewVarInitFieldList().apply(this);
+        }
         outANewVarExpr(node);
     }
 

@@ -29,7 +29,7 @@ public class ArborateStructType extends ArborateType {
     
     public ArborateType GetFieldByName(String fieldName) {
         if (!fieldMap.containsKey(fieldName)) {
-            throw new RuntimeException("Could not locate field '" + fieldName + "' in custom type '" + name + "'");
+            return null;
         }
         return fieldMap.get(fieldName);
     }
