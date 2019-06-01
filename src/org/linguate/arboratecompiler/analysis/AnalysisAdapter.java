@@ -423,6 +423,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTKwEndif(TKwEndif node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTKwWhile(TKwWhile node)
     {
         defaultCase(node);

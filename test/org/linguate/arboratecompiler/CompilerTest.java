@@ -973,7 +973,7 @@ public class CompilerTest {
 
     @Test
     public void testIfStatementExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) { a = a + 10;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) a = a + 10; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -985,7 +985,7 @@ public class CompilerTest {
 
     @Test
     public void testIfStatementBypassed() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 2; if (a > 2) { a = a + 10;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 2; if (a > 2) a = a + 10; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -997,7 +997,7 @@ public class CompilerTest {
     
     @Test
     public void testIfStatementReuseVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 5; if (a > 3) {int b; b = a; a = 10 + b;} if (a > 3) {int b; b = a; a = 20 + b;} return a;}");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 5; if (a > 3) int b; b = a; a = 10 + b; endif if (a > 3) int b; b = a; a = 20 + b; endif return a;}");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1010,12 +1010,12 @@ public class CompilerTest {
     @Test
     public void testVariableUsedIfScopeThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function int test() {int a; a = 3; if (a > 2){int b; b = 6;} return a + b;}");
+        Compiler.compile("function int test() {int a; a = 3; if (a > 2)int b; b = 6; endif return a + b;}");
     }
     
     @Test
     public void testSimpleIfElseWithIfExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) { a = a + 10;} else {a = a * 100;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2)  a = a + 10; else a = a * 100; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1027,7 +1027,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseWithElseExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4) { a = a + 10;} else {a = a * 100;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4) a = a + 10; else a = a * 100; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1039,7 +1039,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseReusedVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 100; if (a > 50) { int b; b = a / 5; a = a + b; } else {int b; b = a / 2; a = a + b;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 100; if (a > 50) int b; b = a / 5; a = a + b; else int b; b = a / 2; a = a + b; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1051,7 +1051,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithIfExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) { a = a * 10;} elseif (a > 5) {a = a + 100;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2)  a = a * 10; elseif (a > 5) a = a + 100; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1063,7 +1063,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithElseifExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4) { a = a + 10;} elseif (a < 4) {a = a * 1000;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4)  a = a + 10; elseif (a < 4) a = a * 1000; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1075,7 +1075,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithNeitherExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 4) { a = a + 10;} elseif (a < 4) {a = a * 1000;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 4)  a = a + 10; elseif (a < 4) a = a * 1000; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1087,7 +1087,7 @@ public class CompilerTest {
 
     @Test
     public void testIfRepeatedElseif() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 23; if (a > 50) { a = a * 50; } elseif (a > 40) {a = a * 40;} elseif (a > 30) {a = a * 30;} elseif (a > 20) {a = a * 20;} elseif (a > 10) {a = a * 10;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 23; if (a > 50)  a = a * 50;  elseif (a > 40) a = a * 40; elseif (a > 30) a = a * 30; elseif (a > 20) a = a * 20; elseif (a > 10) a = a * 10; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1099,7 +1099,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifReusedVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 20; if (a > 50) { int b; b = a / 5; a = a + b; } elseif (a > 5) {int b; b = a / 2; a = a + b;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 20; if (a > 50) int b; b = a / 5; a = a + b; elseif (a > 5) int b; b = a / 2; a = a + b; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1111,7 +1111,7 @@ public class CompilerTest {
 
     @Test
     public void testIfElseifElseWithIfExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 200; if (a > 100) { a = 1000 - a;} elseif (a > 10) {a = 100 - a;} else { a = 10 - a;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 200; if (a > 100) a = 1000 - a;elseif (a > 10)a = 100 - a; else  a = 10 - a; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1123,7 +1123,7 @@ public class CompilerTest {
 
     @Test
     public void testIfElseifElseWithElseifExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 40; if (a > 100) { a = 1000 - a;} elseif (a > 10) {a = 100 - a;} else { a = 10 - a;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 40; if (a > 100) a = 1000 - a; elseif (a > 10) a = 100 - a; else  a = 10 - a; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1135,7 +1135,7 @@ public class CompilerTest {
 
     @Test
     public void testIfElseifElseWithElseExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 100) { a = 1000 - a;} elseif (a > 10) {a = 100 - a;} else { a = 10 - a;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 100) a = 1000 - a; elseif (a > 10) a = 100 - a; else a = 10 - a; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1147,7 +1147,7 @@ public class CompilerTest {
 
     @Test
     public void testIfRepeatedElseifElse() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 5; if (a > 50) { a = a * 50; } elseif (a > 40) {a = a * 40;} elseif (a > 30) {a = a * 30;} elseif (a > 20) {a = a * 20;} elseif (a > 10) {a = a * 10;} else {a = 0;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 5; if (a > 50) a = a * 50; elseif (a > 40) a = a * 40; elseif (a > 30) a = a * 30; elseif (a > 20) a = a * 20; elseif (a > 10) a = a * 10; else a = 0; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1159,7 +1159,7 @@ public class CompilerTest {
 
     @Test
     public void testIfElseifElseReusedVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a > 50) { int b; b = a / 5; a = a + b; } elseif (a > 30) {int b; b = a / 3; a = a + b;} else {int b; b = a / 2; a = a + b;} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a > 50) int b; b = a / 5; a = a + b; elseif (a > 30) int b; b = a / 3; a = a + b; else int b; b = a / 2; a = a + b; endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1171,7 +1171,7 @@ public class CompilerTest {
     
     @Test
     public void testIfWithinIf() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a < 50) { a = a + 10; if (a < 50) { a = a + 15; }} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a < 50) a = a + 10; if (a < 50) a = a + 15; endif endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1184,7 +1184,7 @@ public class CompilerTest {
     
     @Test
     public void testIfWithinElseIf() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a < 5) { a = a + 10; } elseif (a < 50) { a = a + 15; if (a > 5) { a = a * 20; }} return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a < 5) a = a + 10; elseif (a < 50) a = a + 15; if (a > 5) a = a * 20; endif endif return a; }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1209,7 +1209,7 @@ public class CompilerTest {
     
     @Test
     public void testRecursiveFunction() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { return power(3, 4); } function int power(int base, int exponent) { if (exponent < 0) { return 0; } elseif (exponent == 0) { return 1; } else {return power(base, exponent - 1) * base;} }");
+        List<FunctionDefinition> functions = Compiler.compile("function int test() { return power(3, 4); } function int power(int base, int exponent) { if (exponent < 0) return 0; elseif (exponent == 0) return 1; else return power(base, exponent - 1) * base; endif }");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1263,15 +1263,15 @@ public class CompilerTest {
                 "       while (factorToCheck * factorToCheck <= intToCheck && !factorFound)\n" +
                 "           int quotient;\n" +
                 "           quotient = intToCheck / factorToCheck;\n" +
-                "           if (quotient * factorToCheck == intToCheck) {\n" +
+                "           if (quotient * factorToCheck == intToCheck)\n" +
                 "               factorFound = true;\n" +
-                "           }\n" +
+                "           endif\n" +
                 "           factorToCheck = factorToCheck + 1;\n" +
                 "       endwhile\n" +
-                "       if (!factorFound) {\n" +
+                "       if (!factorFound)\n" +
                 "           primesFound = primesFound + 1;\n" +
                 "           lastPrimeFound = intToCheck;\n" +
-                "       }\n" +
+                "       endif\n" +
                 "       intToCheck = intToCheck + 1;\n" +
                 "   endwhile\n" +
                 "   return lastPrimeFound;\n" +

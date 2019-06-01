@@ -26,9 +26,12 @@ States
 Tokens
     kw_function = 'function';
     kw_return = 'return';
+
     kw_if = 'if';
     kw_else = 'else';
     kw_elseif = 'elseif';
+    kw_endif = 'endif';
+
     kw_while = 'while';
     kw_endwhile = 'endwhile';
 
@@ -139,13 +142,13 @@ Productions
             { -> New statement.return(expr) };
 
     control_if {-> if_segment*} =
-        {if_else} kw_if left_round expr right_round left_curly code_block right_curly control_else
+        {if_else} kw_if left_round expr right_round code_block control_else kw_endif
             { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement]), control_else.if_segment] }
-        | {if_elseif_else} kw_if left_round expr right_round left_curly code_block right_curly control_elseif_list control_else
+        | {if_elseif_else} kw_if left_round expr right_round code_block control_elseif_list control_else kw_endif
             { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement]), control_elseif_list.if_segment, control_else.if_segment] };
     
     control_else {-> if_segment} =
-        {else} kw_else left_curly code_block right_curly
+        {else} kw_else code_block
             { -> New if_segment.otherwise([code_block.statement])}
         |{no_else} /* empty expression */
             { -> New if_segment.otherwise([])};
@@ -155,7 +158,7 @@ Productions
         | {multiple} control_elseif [rest]:control_elseif_list { -> [control_elseif.if_segment, rest.if_segment] };
     
     control_elseif { -> if_segment} =
-        kw_elseif left_round expr right_round left_curly code_block right_curly
+        kw_elseif left_round expr right_round code_block
             { -> New if_segment.conditional(New if_condition(expr), [code_block.statement]) };
 
     expr {-> expr } = 
