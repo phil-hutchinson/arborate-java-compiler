@@ -5,6 +5,9 @@
  */
 package org.linguate.arboratecompiler;
 
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -55,9 +58,19 @@ public class CompilerTest {
     public void tearDown() {
     }
 
+    private String getTestSource(String subpath) throws Exception {
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        URL testUrl = classLoader.getResource("org/linguate/arboratecompiler/testsrc/" + subpath);
+        File file  = new File(testUrl.getFile());
+        
+        return  new String(Files.readAllBytes(file.toPath()));
+    }
+    
     @Test
     public void testCompileSimpleAdd() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int addTest() {return 125 + 1000;}");
+        String testSrc = getTestSource("mathoperations/testCompileSimpleAdd.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -69,7 +82,8 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleSubtract() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("  function int subtractTest(){   return   35 -   85  ;}");
+        String testSrc = getTestSource("mathoperations/testCompileSimpleSubtract.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
