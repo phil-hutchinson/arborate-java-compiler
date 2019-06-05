@@ -1,0 +1,3 @@
+function int simpleTest() {
+    return something() / 10;  
+}

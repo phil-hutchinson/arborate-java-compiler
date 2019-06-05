@@ -95,7 +95,8 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleMultiply() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int multiplyTest(){return 50*100;}");
+        String testSrc = getTestSource("mathoperations/testCompileSimpleMultiply.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -107,7 +108,8 @@ public class CompilerTest {
     
     @Test
     public void testCompileSimpleDivide() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int divideTest() {return 87 / 8 ; }");
+        String testSrc = getTestSource("mathoperations/testCompileSimpleDivide.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -119,7 +121,8 @@ public class CompilerTest {
 
     @Test
     public void testCompileSimpleTwoFunctions() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int divideTest() {return 500 / 10;  } function int dummy() {return 7 + 15;}");
+        String testSrc = getTestSource("functions/testCompileSimpleTwoFunctions.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -131,7 +134,8 @@ public class CompilerTest {
 
     @Test
     public void testCompileSimpleFunctionCall() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int divideTest() {return 300 / 10;  } function int funcCallTest() {return divideTest() + 100;}");
+        String testSrc = getTestSource("functions/testCompileSimpleFunctionCall.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -143,14 +147,16 @@ public class CompilerTest {
 
     @Test
     public void testCompileDuplicateFunctionNameThrows() throws Exception {
+        String testSrc = getTestSource("functions/testCompileDuplicateFunctionNameThrows.rb8");
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int duplicateName() {return 300 / 10;  } function int duplicateName() {return 6 + 100;}");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
     }
     
     @Test
     public void testCompileUnknownFunctionNameThrows() throws Exception {
+        String testSrc = getTestSource("functions/testCompileUnknownFunctionNameThrows.rb8");
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int simpleTest() {return something() / 10;  }");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
     }
     
     @Test
