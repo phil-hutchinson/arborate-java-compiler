@@ -1,0 +1,9 @@
+function int subTest(int val) {
+    int val; 
+    val = 1 * 1; 
+    return val * 1;  
+} 
+
+function int test() {
+    return subTest(1) * 1;
+}

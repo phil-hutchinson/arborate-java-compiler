@@ -1,0 +1,9 @@
+function int volume(int length, int width, int height) {
+    int lw; 
+    lw = length * width; 
+    return lw * height;  
+} 
+
+function int roomVolume() {
+    return volume(14, 13, 8) + volume(6, 10, 8);
+}

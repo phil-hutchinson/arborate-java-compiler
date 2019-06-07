@@ -254,7 +254,8 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionDummyParameter() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int divideTest(int a) {return 6 / 3;  } function int funcCallTest() {return divideTest(7) * 5;}");
+        String testSrc = getTestSource("functions/testCompileNoReturnThrows.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -266,7 +267,8 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionTwoDummyParameters() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int divideTest(int a, int b) {return 9 / 3;  } function int funcCallTest() {return divideTest(9, 3) + 5;}");
+        String testSrc = getTestSource("functions/testFunctionTwoDummyParameters.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -278,7 +280,8 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionCallDummyParameter() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int divideTest(int zz) {return 8 / 2;  } function int funcCallTest() {return divideTest(14) * 5;}");
+        String testSrc = getTestSource("functions/testFunctionCallDummyParameter.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -290,7 +293,8 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionCallTwoDummyParameters() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int divideTest(int dummy1, int dummy2) {return 100 / 5;  } function int funcCallTest() {int a; a = 3 + 9; return divideTest(a, 22) + 9;}");
+        String testSrc = getTestSource("functions/testFunctionCallTwoDummyParameters.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -302,7 +306,8 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionCallDummyParameterMulti() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int divideTest(int dummy) {return 10 / 2;  } function int funcCallTest() {return divideTest(divideTest(12)) + 99;}");
+        String testSrc = getTestSource("functions/testFunctionCallDummyParameterMulti.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -314,7 +319,8 @@ public class CompilerTest {
     
     @Test 
     public void testFunctionCallParameter() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int square(int val) {return val * val;  } function int funcCallTest() {return square(20) * 1;}");
+        String testSrc = getTestSource("functions/testFunctionCallParameter.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -326,7 +332,8 @@ public class CompilerTest {
     
     @Test 
     public void testFunctionCallMultiParameter() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int volume(int length, int width, int height) {int lw; lw = length * width; return lw * height;  } function int roomVolume() {return volume(14, 13, 8) + volume(6, 10, 8);}");
+        String testSrc = getTestSource("functions/testFunctionCallMultiParameter.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -338,7 +345,8 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionCallOrderSensitiveMultiParameter() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int subAndDivide(int a, int b, int c) {int diff; diff = a - b; return diff / c;  } function int test() {return subAndDivide(100, 40, 5) * 1;}");
+        String testSrc = getTestSource("functions/testFunctionCallOrderSensitiveMultiParameter.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -350,7 +358,8 @@ public class CompilerTest {
 
     @Test 
     public void testTwoFunctionsSameParameterName() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int times2(int val) {return val * 2;  } function int divideBy2(int val) {return val / 2;} function int test() {return times2(10) + divideBy2(10); }");
+        String testSrc = getTestSource("functions/testTwoFunctionsSameParameterName.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -362,14 +371,16 @@ public class CompilerTest {
 
     @Test 
     public void testFunctionCallSameParameterNameThrows() throws Exception {
+        String testSrc = getTestSource("functions/testFunctionCallSameParameterNameThrows.rb8");
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int areaOfSquare(int length, int length) {return length * length;  } function int test() {return areaOfSquare(5, 5) * 1;}");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
     }
 
     @Test 
     public void testFunctionCallSameParameterNameAsVarNameThrows() throws Exception {
+        String testSrc = getTestSource("functions/testFunctionCallSameParameterNameAsVarNameThrows.rb8");
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int subTest(int val) {int val; val = 1 * 1; return val * 1;  } function int test() {return subTest(1) * 1;}");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
     }
 
     @Test 
