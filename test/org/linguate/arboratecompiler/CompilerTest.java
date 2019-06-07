@@ -161,7 +161,8 @@ public class CompilerTest {
     
     @Test
     public void testDummyVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int dummyVariableTest() {int a; return 8 / 2;  }");
+        String testSrc = getTestSource("variables/testDummyVariable.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -173,7 +174,8 @@ public class CompilerTest {
 
     @Test
     public void testDummyVariableWithAssignment() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int dummyAssignmentTest() {int a; a = 6 * 5; return 12 / 6;}");
+        String testSrc = getTestSource("variables/testDummyVariableWithAssignment.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -185,7 +187,8 @@ public class CompilerTest {
     
     @Test
     public void testVariableAssignment() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int assignmentTest() {int a; a = 7 / 2; return 10 * a;}");
+        String testSrc = getTestSource("variables/testVariableAssignment.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -197,7 +200,8 @@ public class CompilerTest {
     
     @Test
     public void testSameVariableMultipleFunctions() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int subFunction() {int a; a = 2 + 2; return 2 * a;} function int mainFunction() {int a; a = 2 * subFunction(); return a + 1;}");
+        String testSrc = getTestSource("variables/testSameVariableMultipleFunctions.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -209,7 +213,8 @@ public class CompilerTest {
 
     @Test
     public void testStatementsAfterReturnBypassed() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int returnTest() {return 3 + 2; int a; a = 1000 + 100; return a * 50;}");
+        String testSrc = getTestSource("returnvalues/testStatementsAfterReturnBypassed.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -221,26 +226,30 @@ public class CompilerTest {
     
     @Test
     public void testCompileDuplicateVariableNameInFunctionThrows() throws Exception {
+        String testSrc = getTestSource("variables/testCompileDuplicateVariableNameInFunctionThrows.rb8");
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int duplicateVariableName() {var a; var a; return 300 / 10;}");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
     }
     
     @Test
     public void testCompileUnknownVariableNameAssignmentThrows() throws Exception {
+        String testSrc = getTestSource("variables/testCompileUnknownVariableNameAssignmentThrows.rb8");
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int unknownVariableAssignment() {a = 6 + 6; return 30 / 10;  }");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
     }
     
     @Test
     public void testCompileUnknownVariableNameFetchThrows() throws Exception {
+        String testSrc = getTestSource("variables/testCompileUnknownVariableNameFetchThrows.rb8");
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int unknownVariableFetch() {return a / 10;  }");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
     }
     
     @Test
     public void testCompileNoReturnThrows() throws Exception {
+        String testSrc = getTestSource("returnvalues/testCompileNoReturnThrows.rb8");
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int unknownVariableFetch() {int a; a = 3 / 10;}");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
     }
 
     @Test 
