@@ -1,0 +1,9 @@
+function int addSimple(int a) {
+    return a + 5;
+} 
+
+function int test() { 
+    string a; 
+    a = "something"; 
+    return addSimple(a); 
+}

@@ -385,7 +385,8 @@ public class CompilerTest {
 
     @Test 
     public void testZeroIntLiteral() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int zeroLiteral() {return 8 + 0;  }");
+        String testSrc = getTestSource("expressions/testZeroIntLiteral.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -397,7 +398,8 @@ public class CompilerTest {
     
     @Test
     public void testExpressionTermFactor() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int etfTest() {int a; int b; int c; a = 3; b = 6 / 3 * 2; c = 7 + 5 * 5; return a * (b + c);  }");
+        String testSrc = getTestSource("expressions/testExpressionTermFactor.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -409,7 +411,8 @@ public class CompilerTest {
 
     @Test
     public void testFunctionCallWithExpressionTermFactor() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int double(int a) {return a * 2;  } function int test() {int a; int b; a = double(2 + 5); b = double((1 + 3) / (2 * 2)); b = b + a; return double(b);}");
+        String testSrc = getTestSource("expressions/testFunctionCallWithExpressionTermFactor.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -421,7 +424,8 @@ public class CompilerTest {
 
     @Test
     public void testRepeatedOperationsWithExpressionTermFactor() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int etfRepeatedOperationsTest() {int a; int b; int c; a = 3 + 2 + 5 + 1; b = 20 - 5 - 5 - 5 + 3; c = a * b * 2 * 6 * 3 * 5; return c / 9 / 10 / 4;  }");
+        String testSrc = getTestSource("expressions/testRepeatedOperationsWithExpressionTermFactor.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -433,7 +437,8 @@ public class CompilerTest {
 
     @Test
     public void testNestedBrackets() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int etfRepeatedOperationsTest() {int a; int b; a = 3 - (12 - (25 - (9 - 4))); b = 36 / (32 / (40 / (15 / 3))); return a * b;  }");
+        String testSrc = getTestSource("expressions/testNestedBrackets.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -445,8 +450,8 @@ public class CompilerTest {
     
     @Test
     public void testAddStrings() throws Exception {
-        // can't return a string yet, so just test that it compiles/executes
-        List<FunctionDefinition> functions = Compiler.compile("function string stringAdd() {string a; string b; string c; a = \"some\"; b = \"thing\"; c = a + b; return c;} ");
+        String testSrc = getTestSource("expressions/testAddStrings.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -458,32 +463,36 @@ public class CompilerTest {
 
     @Test
     public void testStringSubtractThrows() throws Exception {
+        String testSrc = getTestSource("expressions/testStringSubtractThrows.rb8");
         expectedException.expect(Exception.class);
-        Compiler.compile("function int stringSubtract() {string a; string b; string c; c = a - b; return 14;} ");
+        Compiler.compile(testSrc);
     }
     
     @Test
     public void testStringMultiplyThrows() throws Exception {
+        String testSrc = getTestSource("expressions/testStringMultiplyThrows.rb8");
         expectedException.expect(Exception.class);
-        Compiler.compile("function int stringSubtract() {string a; string b; string c; c = a * b; return 14;} ");
+        Compiler.compile(testSrc);
     }
 
     @Test
     public void testStringDivideThrows() throws Exception {
+        String testSrc = getTestSource("expressions/testStringDivideThrows.rb8");
         expectedException.expect(Exception.class);
-        Compiler.compile("function int stringSubtract() {string a; string b; string c; c = a / b; return 14;} ");
+        Compiler.compile(testSrc);
     }
 
     @Test
     public void testStringPlusIntegerThrows() throws Exception {
+        String testSrc = getTestSource("expressions/testStringPlusIntegerThrows.rb8");
         expectedException.expect(Exception.class);
-        Compiler.compile("function int stringSubtract() {string a; int b; string c; c = a + b; return 14;} ");
+        Compiler.compile(testSrc);
     }
 
     @Test
     public void testSimpleStringFunction() throws Exception {
-        // can't return a string yet, so just test that it compiles/executes
-        List<FunctionDefinition> functions = Compiler.compile("function string simpleString() { return \"stringy\"; } ");
+        String testSrc = getTestSource("functions/testSimpleStringFunction.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -495,13 +504,15 @@ public class CompilerTest {
 
     @Test
     public void testNonMatchingReturnTypeThrows() throws Exception {
+        String testSrc = getTestSource("returnvalues/testNonMatchingReturnTypeThrows.rb8");
         expectedException.expect(Exception.class);
-        Compiler.compile("function int stringSubtract() {return \"abc\";} ");
+        Compiler.compile(testSrc);
     }
     
     @Test
     public void testFunctionCallWithStringReturn() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function string test() {return \"test\";  } function string testCall() {return \"simple\" + test();}");
+        String testSrc = getTestSource("returnvalues/testFunctionCallWithStringReturn.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -513,7 +524,8 @@ public class CompilerTest {
 
     @Test
     public void testStringArguments() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function string test(string abc) {return \"test\" + abc;  } function string testCall() {return test(\"stuff\");}");
+        String testSrc = getTestSource("functions/testStringArguments.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -525,20 +537,23 @@ public class CompilerTest {
 
     @Test
     public void testIncorrectArgCountThrows() throws Exception {
+        String testSrc = getTestSource("functions/testIncorrectArgCountThrows.rb8");
         expectedException.expect(Exception.class);
-        Compiler.compile("function int addSimple(int a, int b) {return a + b;} function int test() { return addSimple(2); }");
+        Compiler.compile(testSrc);
     }
 
     @Test
     public void testIncorrectArgTypeThrows() throws Exception {
+        String testSrc = getTestSource("functions/testIncorrectArgTypeThrows.rb8");
         expectedException.expect(Exception.class);
-        Compiler.compile("function int addSimple(int a) {return a + 5;} function int test() { string a; a = \"something\"; return addSimple(a); }");
+        Compiler.compile(testSrc);
     }
 
     @Test
     public void testIncorrectArgTypeOrderThrows() throws Exception {
+        String testSrc = getTestSource("functions/testIncorrectArgTypeOrderThrows.rb8");
         expectedException.expect(Exception.class);
-        Compiler.compile("function int addSimple(int a, string b) {return a + 2;} function int test() { string str; int num; str = \"something\"; num = 3; return addSimple(str, num); }");
+        Compiler.compile(testSrc);
     }
 
     @Test
