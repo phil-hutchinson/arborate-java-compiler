@@ -558,7 +558,8 @@ public class CompilerTest {
 
     @Test
     public void testSimpleBooleanTrue() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() {return true; }");
+        String testSrc = getTestSource("booleans/testSimpleBooleanTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -570,7 +571,8 @@ public class CompilerTest {
 
     @Test
     public void testSimpleBooleanFalse() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() {return false; }");
+        String testSrc = getTestSource("booleans/testSimpleBooleanFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -582,7 +584,8 @@ public class CompilerTest {
     
     @Test
     public void testBooleanVar() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() {boolean a; a = false; return a; }");
+        String testSrc = getTestSource("booleans/testBooleanVar.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -594,7 +597,8 @@ public class CompilerTest {
 
     @Test
     public void testBooleanParameter() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean testParam(boolean a) {return a; } function boolean test() { boolean a; a = 3 > 3 - 1; return testParam(a);}");
+        String testSrc = getTestSource("booleans/testBooleanParameter.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -606,7 +610,8 @@ public class CompilerTest {
 
     @Test
     public void testIntEqualsTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { int a; a = 3; return a == (7 - 4);} ");
+        String testSrc = getTestSource("integers/testIntEqualsTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -618,7 +623,8 @@ public class CompilerTest {
 
     @Test
     public void testIntEqualsFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { int a; a = 3; return a == 2;} ");
+        String testSrc = getTestSource("integers/testIntEqualsFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -630,7 +636,8 @@ public class CompilerTest {
 
     @Test
     public void testStringEqualsTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { string a; a = \"how\"; return a + \"dy\" == \"howdy\";} ");
+        String testSrc = getTestSource("strings/testStringEqualsTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -642,7 +649,8 @@ public class CompilerTest {
 
     @Test
     public void testStringEqualsFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return \"Hey\" == \"hey\";} ");
+        String testSrc = getTestSource("strings/testStringEqualsFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -654,7 +662,8 @@ public class CompilerTest {
 
     @Test
     public void testBooleanEqualsTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { boolean a; a = 3 == 3; return a == true;} ");
+        String testSrc = getTestSource("booleans/testBooleanEqualsTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -666,7 +675,8 @@ public class CompilerTest {
 
     @Test
     public void testBooleanEqualsFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return false == true;} ");
+        String testSrc = getTestSource("booleans/testBooleanEqualsFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -678,7 +688,8 @@ public class CompilerTest {
 
     @Test
     public void testIntNotEqualsTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { int a; a = 3; return a != (7 - 3);} ");
+        String testSrc = getTestSource("integers/testIntNotEqualsTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -690,7 +701,8 @@ public class CompilerTest {
 
     @Test
     public void testIntNotEqualsFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { int a; a = 3; return a != 3;} ");
+        String testSrc = getTestSource("integers/testIntNotEqualsFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -702,7 +714,8 @@ public class CompilerTest {
 
     @Test
     public void testStringNotEqualsTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { string a; a = \"how\"; return a + \"die\" != \"howdy\";} ");
+        String testSrc = getTestSource("strings/testStringNotEqualsTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -714,7 +727,8 @@ public class CompilerTest {
 
     @Test
     public void testStringNotEqualsFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return \"hay\" != \"hay\";} ");
+        String testSrc = getTestSource("strings/testStringNotEqualsFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -726,7 +740,8 @@ public class CompilerTest {
 
     @Test
     public void testBooleanNotEqualsTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { boolean a; a = 3 == 3; return a != false;} ");
+        String testSrc = getTestSource("booleans/testBooleanNotEqualsTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -738,7 +753,8 @@ public class CompilerTest {
 
     @Test
     public void testBooleanNotEqualsFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return false != false;} ");
+        String testSrc = getTestSource("booleans/testBooleanNotEqualsFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 

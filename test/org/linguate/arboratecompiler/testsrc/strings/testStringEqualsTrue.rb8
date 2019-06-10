@@ -1,0 +1,5 @@
+function boolean test() { 
+    string a; 
+    a = "how"; 
+    return a + "dy" == "howdy";
+} 

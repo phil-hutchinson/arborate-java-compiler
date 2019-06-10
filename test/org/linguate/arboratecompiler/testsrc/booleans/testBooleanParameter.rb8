@@ -1,0 +1,9 @@
+function boolean testParam(boolean a) {
+    return a; 
+} 
+
+function boolean test() { 
+    boolean a; 
+    a = 3 > 3 - 1; 
+    return testParam(a);
+}
