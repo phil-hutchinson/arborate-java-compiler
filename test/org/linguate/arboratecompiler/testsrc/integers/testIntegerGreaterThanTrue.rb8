@@ -1,0 +1,3 @@
+function boolean test() { 
+    return 4 > 2;
+} 

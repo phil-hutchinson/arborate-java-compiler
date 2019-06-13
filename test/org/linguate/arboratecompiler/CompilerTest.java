@@ -766,7 +766,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerLessThanTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 < 8;} ");
+        String testSrc = getTestSource("integers/testIntegerLessThanTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -778,7 +779,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerLessEqualTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 <= 8;} ");
+        String testSrc = getTestSource("integers/testIntegerLessEqualTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -790,7 +792,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerGreaterThanTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 > 2;} ");
+        String testSrc = getTestSource("integers/testIntegerGreaterThanTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -802,7 +805,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerGreaterEqualTrue () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 >= 2;} ");
+        String testSrc = getTestSource("integers/testIntegerGreaterEqualTrue.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -814,7 +818,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerLessThanFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 < 2;} ");
+        String testSrc = getTestSource("integers/testIntegerLessThanFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -826,7 +831,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerLessEqualFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 <= 2;} ");
+        String testSrc = getTestSource("integers/testIntegerLessEqualFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -838,7 +844,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerGreaterThanFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 > 12;} ");
+        String testSrc = getTestSource("integers/testIntegerGreaterThanFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -850,7 +857,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerGreaterEqualFalse () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 >= 12;} ");
+        String testSrc = getTestSource("integers/testIntegerGreaterEqualFalse.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -862,7 +870,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerLessThanFalseWhenEqual () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 < 4;} ");
+        String testSrc = getTestSource("integers/testIntegerLessThanFalseWhenEqual.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -874,7 +883,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerLessEqualTrueWhenEqual () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 <= 4;} ");
+        String testSrc = getTestSource("integers/testIntegerLessEqualTrueWhenEqual.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -886,7 +896,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerGreaterThanFalseWhenEqual () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 > 4;} ");
+        String testSrc = getTestSource("integers/testIntegerGreaterThanFalseWhenEqual.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -898,7 +909,8 @@ public class CompilerTest {
 
     @Test
     public void testIntegerGreaterEqualTrueWhenEqual () throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return 4 >= 4;} ");
+        String testSrc = getTestSource("integers/testIntegerGreaterEqualTrueWhenEqual.rb8");
+        List<FunctionDefinition> functions = Compiler.compile(testSrc);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
