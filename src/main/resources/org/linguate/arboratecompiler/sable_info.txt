@@ -1,1 +1,16 @@
-// ...existing content from original file...
+This file contains information about using SableCC for code generation.
+
+The grammar specification is now located at:
+  src/main/resources/org/linguate/arboratecompiler/arborate_specification.txt
+
+To regenerate the lexer/parser and supporting code, run:
+  ./regenerate_sable.sh
+
+This will:
+- Delete the generated folders (analysis, lexer, node, parser)
+- Delete old lexer.dat and parser.dat from resources
+- Run SableCC to regenerate code
+- Move the new .dat files to the correct resource locations
+
+SableCC JAR should be placed in:
+  lib/sablecc.jar

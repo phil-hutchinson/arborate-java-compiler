@@ -1,1 +1,348 @@
-// ...existing content from original file...
+/* This grammar defines the SableCC 2.x input language. */
+
+Package org.linguate.arboratecompiler; // Root Java package for generated files.
+
+Helpers
+
+/* These are character sets and regular expressions used in the definition of tokens. */
+
+    digit = ['0' .. '9'];
+    zero = '0';
+    non_zero_digit = [digit - '0'];
+
+    alpha = [['a' .. 'z'] + ['A' .. 'Z']];
+    alphanumeric = [alpha + digit];
+    tab = 9;
+    cr = 13;
+    lf = 10;
+    eol = cr lf | cr | lf;        // This takes care of different platforms
+
+    doublequote = '"';
+    blank = (' ' | tab | eol)+;
+
+States
+    normal;
+
+Tokens
+    kw_function = 'function';
+    kw_return = 'return';
+
+    kw_if = 'if';
+    kw_else = 'else';
+    kw_elseif = 'elseif';
+    kw_endif = 'endif';
+
+    kw_while = 'while';
+    kw_endwhile = 'endwhile';
+
+    kw_block = 'block';
+    kw_endblock = 'endblock';
+
+    kw_new = 'new';
+
+    kw_type = 'type';
+
+    left_curly = '{';
+    right_curly = '}';
+    left_round = '(';
+    right_round = ')';
+
+    plus = '+';
+    minus = '-';
+    star = '*';
+    slash = '/';
+
+    less = '<';
+    greater = '>';
+    equals = '=';
+    exclamation = '!';
+
+    bar = '|';
+    caret = '^';
+    ampersand = '&';
+
+    comma = ',';
+    semicolon = ';';
+    colon = ':';
+
+    int_string = non_zero_digit digit* | zero;
+    quoted_string = doublequote (' ' | alphanumeric)* doublequote;
+    bool_string = 'true' | 'false';
+
+    identifier = alpha alphanumeric*;
+
+    blank = blank;
+
+Ignored Tokens 
+
+    blank;
+
+Productions
+    program {-> program} =
+        [custom_types]:type_decl_list? [functions]:func_decl_list { -> New program( [custom_types.type_decl], [functions.func_decl]) };
+
+    type_decl_list {-> type_decl*} =
+        {single} [custom_type]:type_decl { -> [custom_type.type_decl] }
+        | {multiple} [custom_type]:type_decl [rest]:type_decl_list { -> [custom_type.type_decl, rest.type_decl] };
+
+    type_decl {-> type_decl} = 
+        kw_type type_decl_name left_curly type_decl_field_list right_curly
+            { -> New type_decl(type_decl_name, type_decl_field_list) };
+
+    type_decl_field_list {-> type_decl_field_list} =
+        type_decl_field_list_helper { -> New type_decl_field_list([type_decl_field_list_helper.type_decl_field]) };
+
+    type_decl_field_list_helper {-> type_decl_field*} =
+        {single} [type_field_entry]:type_decl_field { -> [type_field_entry.type_decl_field] }
+        | {multiple} [type_field_entry]:type_decl_field [rest]:type_decl_field_list_helper
+            { -> [type_field_entry.type_decl_field, rest.type_decl_field] };
+
+    type_decl_field {-> type_decl_field} =
+        type_decl_field_type type_decl_field_name semicolon
+            { -> New type_decl_field(type_decl_field_type, type_decl_field_name ) };
+
+    func_decl_list {-> func_decl*} =
+        {single} [function]:func_decl { -> [function.func_decl] }
+        | {multiple} [function]:func_decl [rest]:func_decl_list { -> [function.func_decl, rest.func_decl] };
+
+    func_decl {-> func_decl} = 
+        kw_function func_decl_ret_type func_decl_name left_round func_decl_arg_list right_round left_curly code_block right_curly 
+            { -> New func_decl(func_decl_ret_type, func_decl_name, func_decl_arg_list, [code_block.statement]) };
+
+    func_decl_arg_list {-> func_decl_arg_list} =
+         func_decl_arg_list_helper { -> New func_decl_arg_list([func_decl_arg_list_helper.func_decl_arg]) };
+
+    func_decl_arg_list_helper {->  func_decl_arg*} =
+        {none} { -> [] }
+        | {single} [func_arg]:func_decl_arg { -> [func_arg.func_decl_arg] }
+        | {multiple} [func_arg]:func_decl_arg comma [rest]:func_decl_arg_list_helper 
+            { -> [func_arg.func_decl_arg, rest.func_decl_arg] };
+
+    func_decl_arg {-> func_decl_arg} =
+        func_decl_arg_type func_decl_arg_name 
+            { -> New func_decl_arg(func_decl_arg_type, func_decl_arg_name) };
+
+    code_block {-> statement*} = 
+        {single} [function_body]:statement { -> [function_body.statement] }
+        | {multiple} [function_body]:statement [rest]:code_block 
+            { -> [function_body.statement, rest.statement] };
+
+    statement {-> statement} =
+        {code_block} kw_block code_block kw_endblock
+            { -> New statement.code_block([code_block.statement]) }
+        | {if_statement} control_if
+            { -> New statement.if([control_if.if_segment]) }
+        | {while_statement} kw_while left_round expr right_round code_block kw_endwhile
+            { -> New statement.while(New while_condition(expr), [code_block.statement])}
+        | {declaration} var_decl_type var_decl_name semicolon
+            { -> New statement.declaration(var_decl_type, var_decl_name) }
+        | {assignment} var_assign_name equals expr semicolon
+            { -> New statement.assignment(var_assign_name, expr) }
+        | {return} kw_return expr semicolon
+            { -> New statement.return(expr) };
+
+    control_if {-> if_segment*} =
+        {if_else} kw_if left_round expr right_round code_block control_else kw_endif
+            { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement]), control_else.if_segment] }
+        | {if_elseif_else} kw_if left_round expr right_round code_block control_elseif_list control_else kw_endif
+            { -> [New if_segment.conditional(New if_condition(expr), [code_block.statement]), control_elseif_list.if_segment, control_else.if_segment] };
+    
+    control_else {-> if_segment} =
+        {else} kw_else code_block
+            { -> New if_segment.otherwise([code_block.statement])}
+        |{no_else} /* empty expression */
+            { -> New if_segment.otherwise([])};
+
+    control_elseif_list {-> if_segment*} =
+        {single} control_elseif { -> [control_elseif.if_segment] }
+        | {multiple} control_elseif [rest]:control_elseif_list { -> [control_elseif.if_segment, rest.if_segment] };
+    
+    control_elseif { -> if_segment} =
+        kw_elseif left_round expr right_round code_block
+            { -> New if_segment.conditional(New if_condition(expr), [code_block.statement]) };
+
+    expr {-> expr } = 
+        precedence_logor { -> precedence_logor.expr };
+
+    precedence_logor { -> expr } =
+        {logor} [left]:precedence_logor [a]:bar [b]:bar [right]:precedence_logxor { -> New expr.logical_or(left.expr, right.expr) }
+        | {fall_through} precedence_logxor { -> precedence_logxor.expr };
+
+    precedence_logxor { -> expr } =
+        {logxor} [left]:precedence_logxor [a]:caret [b]:caret [right]:precedence_logand { -> New expr.logical_xor(left.expr, right.expr) }
+        | {fall_through} precedence_logand { -> precedence_logand.expr };
+
+    precedence_logand { -> expr } =
+        {logand} [left]:precedence_logand [a]:ampersand [b]:ampersand [right]:precedence_equal { -> New expr.logical_and(left.expr, right.expr) }
+        | {fall_through} precedence_equal { -> precedence_equal.expr };
+
+    precedence_equal { -> expr } =
+        {equal} [left]:precedence_equal [a]:equals [b]:equals [right]:precedence_comp { -> New expr.equal(left.expr, right.expr) }
+        | {not_equal} [left]:precedence_equal exclamation equals [right]:precedence_comp { -> New expr.not_equal(left.expr, right.expr) }
+        | {fall_through} precedence_comp { -> precedence_comp.expr };
+
+    precedence_comp {-> expr} =
+        {less_than} [left]:precedence_comp less [right]:precedence_add { -> New expr.less_than(left.expr, right.expr) }
+        | {greater_than} [left]:precedence_comp greater [right]:precedence_add { -> New expr.greater_than(left.expr, right.expr) }
+        | {less_equal} [left]:precedence_comp less equals [right]:precedence_add { -> New expr.less_equal(left.expr, right.expr) }
+        | {greater_equal} [left]:precedence_comp greater equals [right]:precedence_add { -> New expr.greater_equal(left.expr, right.expr) }
+        | {fall_through} precedence_add { -> precedence_add.expr };
+
+    precedence_add {-> expr} =
+        {add} [left]:precedence_add plus [right]:precedence_mult { -> New expr.add(left.expr, right.expr) }
+        | {subtract} [left]:precedence_add minus [right]:precedence_mult { -> New expr.subtract(left.expr, right.expr) }
+        | {fall_through} precedence_mult { -> precedence_mult.expr };
+
+    precedence_mult {-> expr} = 
+        {multiply} [left]:precedence_mult star [right]:precedence_unary { -> New expr.multiply(left.expr, right.expr) }
+        | {divide} [left]:precedence_mult slash [right]:precedence_unary { -> New expr.divide(left.expr, right.expr) }
+        | {fall_through} precedence_unary { -> precedence_unary.expr };
+
+    precedence_unary {-> expr} =
+        {logical_not} exclamation [operand]:precedence_unary { -> New expr.logical_not(operand.expr) }
+        | {fall_through} element { -> element.expr };
+
+    element {-> expr} =
+        {int_lit} int_string { -> New expr.int_lit(int_string) }
+        | {string_lit} quoted_string { -> New expr.string_lit(quoted_string) }
+        | {bool_lit} bool_string { -> New expr.bool_lit(bool_string) }
+        | {func_call} func_call_name left_round func_call_arg_list right_round
+            { -> New expr.func_call(func_call_name, func_call_arg_list) }
+        | {var_fetch} var_fetch_name { -> New expr.var_fetch(var_fetch_name)}
+        | {new_var} kw_new identifier new_var_init? { -> New expr.new_var(identifier, new_var_init.new_var_init_field_list)}
+        | {bracketed_expr} left_round [content]:expr right_round 
+            { ->  content.expr }
+        ;
+    
+        
+    func_call_arg_list {-> func_call_arg_list} =
+        func_call_arg_list_helper { -> New func_call_arg_list([func_call_arg_list_helper.func_call_arg]) };
+
+    func_call_arg_list_helper {-> func_call_arg*} =
+        {none} { -> [] }
+        | {single} [func_arg]:func_call_arg { -> [func_arg.func_call_arg] }
+        | {multiple} [func_arg]:func_call_arg comma [rest]:func_call_arg_list_helper
+            { -> [func_arg.func_call_arg, rest.func_call_arg] };
+
+    func_call_arg {-> func_call_arg} =
+        expr;
+
+    type_decl_name = identifier;
+    type_decl_field_type = identifier;
+    type_decl_field_name = identifier;
+
+    func_decl_ret_type = identifier;
+    func_decl_name = identifier;
+    func_decl_arg_type = identifier;
+    func_decl_arg_name = identifier;
+
+    func_call_name = identifier;
+
+    var_decl_type = identifier;
+    var_decl_name = identifier;
+    var_assign_name = identifier;
+
+    var_fetch_name = identifier;
+    /*new_var_type = identifier;*/
+
+    new_var_init {-> new_var_init_field_list} = left_curly new_var_init_field_list right_curly
+        { -> new_var_init_field_list };
+
+    new_var_init_field_list {-> new_var_init_field_list} =
+         new_var_init_field_list_helper { -> New new_var_init_field_list([new_var_init_field_list_helper.new_var_init_field]) };
+
+    new_var_init_field_list_helper {->  new_var_init_field*} =
+        {none} { -> [] }
+        | {single} [new_var_field]:new_var_init_field { -> [new_var_field.new_var_init_field] }
+        | {multiple} [new_var_field]:new_var_init_field comma [rest]:new_var_init_field_list_helper 
+            { -> [new_var_field.new_var_init_field, rest.new_var_init_field] };
+
+    new_var_init_field {-> new_var_init_field} =
+        [new_var_init_field_name]:identifier colon expr
+            { -> New new_var_init_field(new_var_init_field_name, expr) };
+
+Abstract Syntax Tree
+    program = [custom_types]:type_decl* [functions]:func_decl*;
+
+    type_decl = type_decl_name type_decl_field_list;
+
+    type_decl_field_list = type_decl_field*;
+
+    type_decl_field = type_decl_field_type type_decl_field_name;
+
+    func_decl = func_decl_ret_type func_decl_name func_decl_arg_list statement*;
+
+    func_decl_arg_list = func_decl_arg*;
+
+    func_decl_arg = func_decl_arg_type func_decl_arg_name;
+
+    statement =
+        {code_block} statement*
+        | {if} if_segment*
+        | {while} while_condition statement*
+        | {declaration} var_decl_type var_decl_name
+        | {assignment} var_assign_name expr
+        | {return} expr;
+
+    if_segment =
+        {conditional} if_condition statement*
+        | {otherwise} statement*;
+
+    if_condition = expr;
+
+    while_condition = expr;
+
+    expr =
+        {logical_or} [left]:expr [right]:expr
+
+        | {logical_xor} [left]:expr [right]:expr
+
+        | {logical_and} [left]:expr [right]:expr
+
+        | {equal} [left]:expr [right]:expr
+        | {not_equal} [left]:expr [right]:expr
+
+        | {less_than} [left]:expr [right]:expr
+        | {greater_than} [left]:expr [right]:expr
+        | {less_equal} [left]:expr [right]:expr
+        | {greater_equal} [left]:expr [right]:expr
+        
+        | {add} [left]:expr [right]:expr
+        | {subtract} [left]:expr [right]:expr
+
+        | {multiply} [left]:expr [right]:expr
+        | {divide} [left]:expr [right]:expr
+
+        | {logical_not} [operand]:expr
+
+        | {int_lit} int_string
+        | {string_lit} quoted_string
+        | {bool_lit} bool_string
+        | {func_call} func_call_name func_call_arg_list
+        | {var_fetch} var_fetch_name
+        | {new_var} [new_var_type]:identifier new_var_init_field_list?
+        ;
+
+    func_call_arg_list = func_call_arg*;
+    func_call_arg = expr;
+
+    type_decl_name = identifier;
+    type_decl_field_type = identifier;
+    type_decl_field_name = identifier;
+
+    func_decl_ret_type = identifier;
+    func_decl_name = identifier;
+    func_decl_arg_type = identifier; 
+    func_decl_arg_name = identifier;
+
+    func_call_name = identifier;
+
+    var_decl_type = identifier;
+    var_decl_name = identifier;
+    var_assign_name = identifier;
+
+    var_fetch_name = identifier;
+
+    new_var_init_field_list = new_var_init_field*;
+
+    new_var_init_field = identifier expr;
