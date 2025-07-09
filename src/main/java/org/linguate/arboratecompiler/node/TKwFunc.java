@@ -5,16 +5,16 @@ package org.linguate.arboratecompiler.node;
 import org.linguate.arboratecompiler.analysis.*;
 
 @SuppressWarnings("nls")
-public final class TKwFunction extends Token
+public final class TKwFunc extends Token
 {
-    public TKwFunction()
+    public TKwFunc()
     {
-        super.setText("function");
+        super.setText("func");
     }
 
-    public TKwFunction(int line, int pos)
+    public TKwFunc(int line, int pos)
     {
-        super.setText("function");
+        super.setText("func");
         setLine(line);
         setPos(pos);
     }
@@ -22,18 +22,18 @@ public final class TKwFunction extends Token
     @Override
     public Object clone()
     {
-      return new TKwFunction(getLine(), getPos());
+      return new TKwFunc(getLine(), getPos());
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseTKwFunction(this);
+        ((Analysis) sw).caseTKwFunc(this);
     }
 
     @Override
     public void setText(@SuppressWarnings("unused") String text)
     {
-        throw new RuntimeException("Cannot change TKwFunction text.");
+        throw new RuntimeException("Cannot change TKwFunc text.");
     }
 }

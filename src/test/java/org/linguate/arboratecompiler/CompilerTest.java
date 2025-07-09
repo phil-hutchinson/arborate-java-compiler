@@ -923,36 +923,36 @@ public class CompilerTest {
     @Test
     public void testEqualsNotMatchingTypesThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function boolean test() {return 3 == true;}");
+        Compiler.compile("func boolean test() return 3 == true; endfunc");
     }
 
     @Test
     public void testNotEqualsNotMatchingTypesThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function boolean test() {return false == \"false\";}");
+        Compiler.compile("func boolean test() return false == \"false\"; endfunc");
     }
 
     @Test
     public void testComparisonNotMatchingTypesThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function boolean test() {return false < 12;}");
+        Compiler.compile("func boolean test() return false < 12; endfunc");
     }
 
     @Test
     public void testComparisonStringThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function boolean test() {return \"a\" < \"b\";}");
+        Compiler.compile("func boolean test() return \"a\" < \"b\"; endfunc");
     }
 
     @Test
     public void testComparisonBooleanThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function boolean test() {return true >= false;}");
+        Compiler.compile("func boolean test() return true >= false; endfunc");
     }
     
     @Test
     public void testNotTrue() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return !true;} ");
+        List<FunctionDefinition> functions = Compiler.compile("func boolean test() return !true; endfunc ");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -964,7 +964,7 @@ public class CompilerTest {
 
     @Test
     public void testNotFalse() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { return !true;} ");
+        List<FunctionDefinition> functions = Compiler.compile("func boolean test() return !true; endfunc ");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -976,10 +976,10 @@ public class CompilerTest {
     
     private void testTruthTable(String initialFunction, boolean ffResult, boolean ftResult, boolean tfResult, boolean ttResult) throws Exception {
         String program = initialFunction + 
-                "function boolean ffTest() { return test(false, false); }" +
-                "function boolean ftTest() { return test(false, true); }" +
-                "function boolean tfTest() { return test(true, false); }" +
-                "function boolean ttTest() { return test(true, true); }";
+                "func boolean ffTest() return test(false, false); endfunc" +
+                "func boolean ftTest() return test(false, true); endfunc" +
+                "func boolean tfTest() return test(true, false); endfunc" +
+                "func boolean ttTest() return test(true, true); endfunc";
         List<FunctionDefinition> functions = Compiler.compile(program);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
@@ -997,25 +997,25 @@ public class CompilerTest {
 
     @Test
     public void testOr() throws Exception {
-        String orFunction = "function boolean test(boolean a, boolean b) { return a || b; }";
+        String orFunction = "func boolean test(boolean a, boolean b) return a || b; endfunc";
         testTruthTable(orFunction, false, true, true, true);
     }
 
     @Test
     public void testAnd() throws Exception {
-        String andFunction = "function boolean test(boolean a, boolean b) { return a && b; }";
+        String andFunction = "func boolean test(boolean a, boolean b) return a && b; endfunc";
         testTruthTable(andFunction, false, false, false, true);
     }
 
     @Test
     public void testXor() throws Exception {
-        String xorFunction = "function boolean test(boolean a, boolean b) { return a ^^ b; }";
+        String xorFunction = "func boolean test(boolean a, boolean b) return a ^^ b; endfunc";
         testTruthTable(xorFunction, false, true, true, false);
     }
 
     @Test
     public void testCompoundLogical() throws Exception {
-        String xorFunction = "function boolean test(boolean a, boolean b) { return (a && a ^^ b) && (!a || a && b) ^^ !a; }";
+        String xorFunction = "func boolean test(boolean a, boolean b) return (a && a ^^ b) && (!a || a && b) ^^ !a; endfunc";
         // part 1: a && a ^^ b reduces to a ^^ b ---> (f t t f)
         // part 2: !a || a && b ---> (t t f f) || (f f f t) ----> (t t f t)
         // part 1 && part 2: (f t f f)
@@ -1026,7 +1026,7 @@ public class CompilerTest {
     
     @Test
     public void testVariableUsedFromParentScope() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function boolean test() { boolean a; block a = true; endblock return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func boolean test() boolean a; block a = true; endblock return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1039,12 +1039,12 @@ public class CompilerTest {
     @Test
     public void testVariableUsedOutsideScopeThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function int test() {int a; a = 3; block int b; b = 6; endblock return a + b;}");
+        Compiler.compile("func int test() int a; a = 3; block int b; b = 6; endblock return a + b; endfunc");
     }
     
     @Test
     public void testVariableReusedInScopes() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; block int b; b = 3; a = b + b; endblock block int b; b = 4; a = a + b; endblock return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; block int b; b = 3; a = b + b; endblock block int b; b = 4; a = a + b; endblock return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1056,7 +1056,7 @@ public class CompilerTest {
 
     @Test
     public void testIfStatementExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2) a = a + 10; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 3; if (a > 2) a = a + 10; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1068,7 +1068,7 @@ public class CompilerTest {
 
     @Test
     public void testIfStatementBypassed() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 2; if (a > 2) a = a + 10; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 2; if (a > 2) a = a + 10; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1080,7 +1080,7 @@ public class CompilerTest {
     
     @Test
     public void testIfStatementReuseVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 5; if (a > 3) int b; b = a; a = 10 + b; endif if (a > 3) int b; b = a; a = 20 + b; endif return a;}");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 5; if (a > 3) int b; b = a; a = 10 + b; endif if (a > 3) int b; b = a; a = 20 + b; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1093,12 +1093,12 @@ public class CompilerTest {
     @Test
     public void testVariableUsedIfScopeThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("function int test() {int a; a = 3; if (a > 2)int b; b = 6; endif return a + b;}");
+        Compiler.compile("func int test() int a; a = 3; if (a > 2)int b; b = 6; endif return a + b; endfunc");
     }
     
     @Test
     public void testSimpleIfElseWithIfExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2)  a = a + 10; else a = a * 100; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 3; if (a > 2)  a = a + 10; else a = a * 100; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1110,7 +1110,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseWithElseExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4) a = a + 10; else a = a * 100; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 3; if (a > 4) a = a + 10; else a = a * 100; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1122,7 +1122,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseReusedVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 100; if (a > 50) int b; b = a / 5; a = a + b; else int b; b = a / 2; a = a + b; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 100; if (a > 50) int b; b = a / 5; a = a + b; else int b; b = a / 2; a = a + b; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1134,7 +1134,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithIfExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 2)  a = a * 10; elseif (a > 5) a = a + 100; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 3; if (a > 2)  a = a * 10; elseif (a > 5) a = a + 100; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1146,7 +1146,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithElseifExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 3; if (a > 4)  a = a + 10; elseif (a < 4) a = a * 1000; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 3; if (a > 4)  a = a + 10; elseif (a < 4) a = a * 1000; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1158,7 +1158,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifWithNeitherExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 4)  a = a + 10; elseif (a < 4) a = a * 1000; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 4; if (a > 4)  a = a + 10; elseif (a < 4) a = a * 1000; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1170,7 +1170,7 @@ public class CompilerTest {
 
     @Test
     public void testIfRepeatedElseif() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 23; if (a > 50)  a = a * 50;  elseif (a > 40) a = a * 40; elseif (a > 30) a = a * 30; elseif (a > 20) a = a * 20; elseif (a > 10) a = a * 10; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 23; if (a > 50)  a = a * 50;  elseif (a > 40) a = a * 40; elseif (a > 30) a = a * 30; elseif (a > 20) a = a * 20; elseif (a > 10) a = a * 10; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1182,7 +1182,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleIfElseifReusedVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 20; if (a > 50) int b; b = a / 5; a = a + b; elseif (a > 5) int b; b = a / 2; a = a + b; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 20; if (a > 50) int b; b = a / 5; a = a + b; elseif (a > 5) int b; b = a / 2; a = a + b; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1194,7 +1194,7 @@ public class CompilerTest {
 
     @Test
     public void testIfElseifElseWithIfExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 200; if (a > 100) a = 1000 - a;elseif (a > 10)a = 100 - a; else  a = 10 - a; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 200; if (a > 100) a = 1000 - a;elseif (a > 10)a = 100 - a; else  a = 10 - a; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1206,7 +1206,7 @@ public class CompilerTest {
 
     @Test
     public void testIfElseifElseWithElseifExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 40; if (a > 100) a = 1000 - a; elseif (a > 10) a = 100 - a; else  a = 10 - a; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 40; if (a > 100) a = 1000 - a; elseif (a > 10) a = 100 - a; else  a = 10 - a; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1218,7 +1218,7 @@ public class CompilerTest {
 
     @Test
     public void testIfElseifElseWithElseExecuted() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 4; if (a > 100) a = 1000 - a; elseif (a > 10) a = 100 - a; else a = 10 - a; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 4; if (a > 100) a = 1000 - a; elseif (a > 10) a = 100 - a; else a = 10 - a; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1230,7 +1230,7 @@ public class CompilerTest {
 
     @Test
     public void testIfRepeatedElseifElse() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 5; if (a > 50) a = a * 50; elseif (a > 40) a = a * 40; elseif (a > 30) a = a * 30; elseif (a > 20) a = a * 20; elseif (a > 10) a = a * 10; else a = 0; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test()  int a; a = 5; if (a > 50) a = a * 50; elseif (a > 40) a = a * 40; elseif (a > 30) a = a * 30; elseif (a > 20) a = a * 20; elseif (a > 10) a = a * 10; else a = 0; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1242,7 +1242,7 @@ public class CompilerTest {
 
     @Test
     public void testIfElseifElseReusedVariable() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a > 50) int b; b = a / 5; a = a + b; elseif (a > 30) int b; b = a / 3; a = a + b; else int b; b = a / 2; a = a + b; endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 9; if (a > 50) int b; b = a / 5; a = a + b; elseif (a > 30) int b; b = a / 3; a = a + b; else int b; b = a / 2; a = a + b; endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1254,7 +1254,7 @@ public class CompilerTest {
     
     @Test
     public void testIfWithinIf() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a < 50) a = a + 10; if (a < 50) a = a + 15; endif endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 9; if (a < 50) a = a + 10; if (a < 50) a = a + 15; endif endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1267,7 +1267,7 @@ public class CompilerTest {
     
     @Test
     public void testIfWithinElseIf() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 9; if (a < 5) a = a + 10; elseif (a < 50) a = a + 15; if (a > 5) a = a * 20; endif endif return a; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 9; if (a < 5) a = a + 10; elseif (a < 50) a = a + 15; if (a > 5) a = a * 20; endif endif return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1280,7 +1280,7 @@ public class CompilerTest {
     
     @Test
     public void testForwardReferenceFunction() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = square(5); return a; } function int square(int inVal) { return inVal * inVal; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = square(5); return a; } func int square(int inVal) { return inVal * inVal; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1292,7 +1292,7 @@ public class CompilerTest {
     
     @Test
     public void testRecursiveFunction() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { return power(3, 4); } function int power(int base, int exponent) { if (exponent < 0) return 0; elseif (exponent == 0) return 1; else return power(base, exponent - 1) * base; endif }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() return power(3, 4); endfunc func int power(int base, int exponent) if (exponent < 0) return 0; elseif (exponent == 0) return 1; else return power(base, exponent - 1) * base; endif endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1304,7 +1304,7 @@ public class CompilerTest {
     
     @Test
     public void testWhileStatement() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { return factorial(6); } function int factorial(int inVal) { int result; result = 1; int currVal; currVal = 1; while (currVal <= inVal) result = result * currVal; currVal = currVal + 1; endwhile return result; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() return factorial(6); endfunc func int factorial(int inVal) int result; result = 1; int currVal; currVal = 1; while (currVal <= inVal) result = result * currVal; currVal = currVal + 1; endwhile return result; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1316,7 +1316,7 @@ public class CompilerTest {
     
     @Test
     public void testWhileStatementZeroRepetitions() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int result; result = 10; while (result < 5) result = result + 1;endwhile return result; }");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int result; result = 10; while (result < 5) result = result + 1;endwhile return result; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1329,10 +1329,10 @@ public class CompilerTest {
     @Test
     public void testNestedWhileStatement() throws Exception {
         String program = 
-                "function int test() { \n" +
+                "func int test() \n" +
                 "   return findPrime(9); \n" +
-                "}\n" +
-                "function int findPrime(int primeToFind) {\n" +
+                "endfunc\n" +
+                "func int findPrime(int primeToFind)\n" +
                 "   int intToCheck;\n" +
                 "   int primesFound;\n" +
                 "   int lastPrimeFound;\n" +
@@ -1358,7 +1358,7 @@ public class CompilerTest {
                 "       intToCheck = intToCheck + 1;\n" +
                 "   endwhile\n" +
                 "   return lastPrimeFound;\n" +
-                "}\n";
+                "endfunc\n";
         List<FunctionDefinition> functions = Compiler.compile(program);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
@@ -1371,7 +1371,7 @@ public class CompilerTest {
 
     @Test
     public void testWhileConditionBooleanLiteral() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (false)  a = 1; endwhile return a;}");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 0; while (false)  a = 1; endwhile return a; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1384,12 +1384,12 @@ public class CompilerTest {
     @Test
     public void testWhileConditionNotBoolean() throws Exception {
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("function int test() { int a; a = 0; while (1)  a = 1; endwhile return a;}");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = 0; while (1)  a = 1; endwhile return a; endfunc");
     }
 
     @Test
     public void testSimpleNode() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function node test() { return new node;}");
+        List<FunctionDefinition> functions = Compiler.compile("func node test()  return new node; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1402,7 +1402,7 @@ public class CompilerTest {
 
     @Test
     public void testSimpleNodeAssign() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("function node test() { node abc; node def; abc = new node; def = abc; return def;}");
+        List<FunctionDefinition> functions = Compiler.compile("func node test() node abc; node def; abc = new node; def = abc; return def; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1415,7 +1415,7 @@ public class CompilerTest {
     
     @Test
     public void testSimpleCustomType() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } function int test() { return 21;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } func int test() return 21; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1428,24 +1428,24 @@ public class CompilerTest {
     @Test
     public void testDuplicateTypeNameThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("type abc { int def; } type abc {int jkl; } function int test() { return 21;}");
+        Compiler.compile("type abc { int def; } type abc {int jkl; } func int test() return 21; endfunc");
     }
 
     @Test
     public void testDuplicateNameInTypeDeclarationThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("type abc { int def; string def; } function int test() { return 21;}");
+        Compiler.compile("type abc { int def; string def; } func int test() return 21; endfunc");
     }
 
     @Test
     public void testCustomTypeContainingItselfThrows() throws Exception {
         expectedException.expect(Exception.class);
-        Compiler.compile("type abc { int def; abc abcvar; } function int test() { return 21;}");
+        Compiler.compile("type abc { int def; abc abcvar; } func int test()  return 21; endfunc");
     }
 
     @Test
     public void testSameFieldNameInDifferentTypes() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } type xyz {string def; } function int test() { return 21;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } type xyz {string def; } func int test()  return 21; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1457,7 +1457,7 @@ public class CompilerTest {
     
     @Test
     public void testDeclareVariableAsCustomType() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } function int test() { abc abcVariable; return 21;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } func int test() abc abcVariable; return 21; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1469,7 +1469,7 @@ public class CompilerTest {
 
     @Test
     public void testDeclareVariableAsCustomTypeWithNew() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } function int test() { abc abcVariable; abcVariable = new abc; return 21;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } func int test()  abc abcVariable; abcVariable = new abc; return 21; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1481,7 +1481,7 @@ public class CompilerTest {
 
     @Test
     public void testDeclareVariableAsCustomTypeWithNewInitialization() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } function int test() { abc abcVariable; abcVariable = new abc { def: 3 + 13 }; return 21;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } func int test() abc abcVariable; abcVariable = new abc { def: 3 + 13 }; return 21; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1493,7 +1493,7 @@ public class CompilerTest {
 
     @Test
     public void testCustomVariableNewInitializationMultipleFields() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; string xyz; } function int test() { abc abcVariable; abcVariable = new abc { def: 3 + 13, xyz: \"abcdefg\" }; return 331;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; string xyz; } func int test() abc abcVariable; abcVariable = new abc { def: 3 + 13, xyz: \"abcdefg\" }; return 331; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 
@@ -1506,18 +1506,18 @@ public class CompilerTest {
     @Test
     public void testDeclareVariableAsCustomTypeWithInvalidFieldNameThrows() throws Exception {
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } function int test() { abc abcVariable; abcVariable = new abc { xyz: 3 + 13 }; return 21;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; } func int test() abc abcVariable; abcVariable = new abc { xyz: 3 + 13 }; return 21; endfunc");
     }
 
     @Test
     public void testDeclareVariableAsCustomTypeWithDuplicateFieldNameThrows() throws Exception {
         expectedException.expect(Exception.class);
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; int ghi; } function int test() { abc abcVariable; abcVariable = new abc { def: 3 + 13, def: 5 * 5 }; return 55;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; int ghi; } func int test() abc abcVariable; abcVariable = new abc { def: 3 + 13, def: 5 * 5 }; return 55; endfunc");
     }
 
     @Test
     public void testCustomTypeContainingCustomType() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; string xyz; } type foo { int bar; abc abcvar;} function int test() { foo fooVar; fooVar = new foo { bar: 3, abcvar: new abc { def: 3 + 13, xyz: \"abcdefg\" }}; return 333;}");
+        List<FunctionDefinition> functions = Compiler.compile("type abc { int def; string xyz; } type foo { int bar; abc abcvar;} func int test() foo fooVar; fooVar = new foo { bar: 3, abcvar: new abc { def: 3 + 13, xyz: \"abcdefg\" }}; return 333; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 

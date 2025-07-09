@@ -24,7 +24,8 @@ States
     normal;
 
 Tokens
-    kw_function = 'function';
+    kw_func = 'func';
+    kw_endfunc = 'endfunc';
     kw_return = 'return';
 
     kw_if = 'if';
@@ -106,7 +107,7 @@ Productions
         | {multiple} [function]:func_decl [rest]:func_decl_list { -> [function.func_decl, rest.func_decl] };
 
     func_decl {-> func_decl} = 
-        kw_function func_decl_ret_type func_decl_name left_round func_decl_arg_list right_round left_curly code_block right_curly 
+        kw_func func_decl_ret_type func_decl_name left_round func_decl_arg_list right_round code_block kw_endfunc
             { -> New func_decl(func_decl_ret_type, func_decl_name, func_decl_arg_list, [code_block.statement]) };
 
     func_decl_arg_list {-> func_decl_arg_list} =
