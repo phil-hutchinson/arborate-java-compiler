@@ -1,0 +1,7 @@
+func int divideTest(int zz)
+    return 8 / 2;
+endfunc
+
+func int funcCallTest()
+    return divideTest(14) * 5;
+endfunc

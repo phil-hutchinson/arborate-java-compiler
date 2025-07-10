@@ -1,0 +1,7 @@
+func int divideTest(int dummy)
+    return 10 / 2;
+endfunc
+
+func int funcCallTest()
+    return divideTest(divideTest(12)) + 99;
+endfunc

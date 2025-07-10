@@ -1,0 +1,7 @@
+func string test(string abc)
+    return "test" + abc;
+endfunc
+
+func string testCall()
+    return test("stuff");
+endfunc

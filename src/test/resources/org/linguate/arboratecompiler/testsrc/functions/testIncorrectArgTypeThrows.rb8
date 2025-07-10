@@ -1,0 +1,9 @@
+func int addSimple(int a)
+    return a + 5;
+endfunc
+
+func int test()
+    string a;
+    a = "something";
+    return addSimple(a);
+endfunc

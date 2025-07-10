@@ -1,0 +1,3 @@
+func int subtractTest()
+    return 35 - 85;
+endfunc

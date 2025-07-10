@@ -1,0 +1,4 @@
+func int dummyVariableTest()
+    int a;
+    return 8 / 2;
+endfunc

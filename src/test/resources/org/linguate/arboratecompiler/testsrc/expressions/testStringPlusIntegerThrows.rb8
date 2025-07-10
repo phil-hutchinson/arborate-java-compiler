@@ -1,0 +1,7 @@
+func int operatorMismatch()
+    string a;
+    int b;
+    string c;
+    c = a + b;
+    return 14;
+endfunc
