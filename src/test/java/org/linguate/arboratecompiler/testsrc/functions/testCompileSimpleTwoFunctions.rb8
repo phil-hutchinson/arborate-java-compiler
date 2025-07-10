@@ -1,7 +1,7 @@
-function int divideTest() {
-    return 500 / 10;  
-} 
+func int divideTest()
+    return 500 / 10;
+endfunc
 
-function int dummy() {
+func int dummy()
     return 7 + 15;
-}
+endfunc

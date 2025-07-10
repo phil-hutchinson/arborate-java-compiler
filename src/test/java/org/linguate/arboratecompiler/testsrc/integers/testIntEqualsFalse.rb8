@@ -1,5 +1,5 @@
-function boolean test() { 
-    int a; 
-    a = 3; 
+func boolean test()
+    int a;
+    a = 3;
     return a == 2;
-}
+endfunc

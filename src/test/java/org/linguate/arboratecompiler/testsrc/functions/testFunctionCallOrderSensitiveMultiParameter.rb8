@@ -1,9 +1,9 @@
-function int subAndDivide(int a, int b, int c) {
-    int diff; 
-    diff = a - b; 
-    return diff / c;  
-} 
+func int subAndDivide(int a, int b, int c)
+    int diff;
+    diff = a - b;
+    return diff / c;
+endfunc
 
-function int test() {
+func int test()
     return subAndDivide(100, 40, 5) * 1;
-}
+endfunc

@@ -1,7 +1,7 @@
-function int addSimple(int a, int b) {
+func int addSimple(int a, int b)
     return a + b;
-} 
+endfunc
 
-function int test() { 
-    return addSimple(2); 
-}
+func int test()
+    return addSimple(2);
+endfunc

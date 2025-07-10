@@ -1,11 +1,11 @@
-function int addSimple(int a, string b) {
+func int addSimple(int a, string b)
     return a + 2;
-} 
+endfunc
 
-function int test() { 
-    string str; 
-    int num; 
-    str = "something"; 
-    num = 3; 
-    return addSimple(str, num); 
-}
+func int test()
+    string str;
+    int num;
+    str = "something";
+    num = 3;
+    return addSimple(str, num);
+endfunc

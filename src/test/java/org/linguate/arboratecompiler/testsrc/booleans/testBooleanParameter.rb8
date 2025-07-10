@@ -1,9 +1,9 @@
-function boolean testParam(boolean a) {
-    return a; 
-} 
+func boolean testParam(boolean a)
+    return a;
+endfunc
 
-function boolean test() { 
-    boolean a; 
-    a = 3 > 3 - 1; 
+func boolean test()
+    boolean a;
+    a = 3 > 3 - 1;
     return testParam(a);
-}
+endfunc

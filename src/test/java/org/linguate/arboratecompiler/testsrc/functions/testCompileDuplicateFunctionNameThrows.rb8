@@ -1,7 +1,7 @@
-function int duplicateName() {
-    return 300 / 10;  
-} 
+func int duplicateName()
+    return 300 / 10;
+endfunc
 
-function int duplicateName() {
+func int duplicateName()
     return 6 + 100;
-}
+endfunc

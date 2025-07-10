@@ -1,3 +1,3 @@
-function int stringSubtract() {
+func int stringSubtract()
     return "abc";
-}
+endfunc

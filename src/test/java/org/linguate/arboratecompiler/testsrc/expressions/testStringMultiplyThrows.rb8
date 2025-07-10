@@ -1,7 +1,7 @@
-function int stringMultiply() {
-    string a; 
-    string b; 
-    string c; 
-    c = a * b; 
+func int stringMultiply()
+    string a;
+    string b;
+    string c;
+    c = a * b;
     return 14;
-} 
+endfunc

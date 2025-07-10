@@ -1,7 +1,7 @@
-function int divideTest(int dummy) {
-    return 10 / 2;  
-} 
+func int divideTest(int dummy)
+    return 10 / 2;
+endfunc
 
-function int funcCallTest() {
+func int funcCallTest()
     return divideTest(divideTest(12)) + 99;
-}
+endfunc

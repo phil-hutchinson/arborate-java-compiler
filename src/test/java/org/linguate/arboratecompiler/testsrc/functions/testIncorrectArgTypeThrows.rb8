@@ -1,9 +1,9 @@
-function int addSimple(int a) {
+func int addSimple(int a)
     return a + 5;
-} 
+endfunc
 
-function int test() { 
-    string a; 
-    a = "something"; 
-    return addSimple(a); 
-}
+func int test()
+    string a;
+    a = "something";
+    return addSimple(a);
+endfunc

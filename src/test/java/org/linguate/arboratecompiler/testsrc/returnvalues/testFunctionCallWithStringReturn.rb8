@@ -1,7 +1,7 @@
-function string test() {
-    return "test";  
-} 
+func string test()
+    return "test";
+endfunc
 
-function string testCall() {
+func string testCall()
     return "simple" + test();
-}
+endfunc

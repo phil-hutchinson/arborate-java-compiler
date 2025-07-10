@@ -1,9 +1,9 @@
-function int subTest(int val) {
-    int val; 
-    val = 1 * 1; 
-    return val * 1;  
-} 
+func int subTest(int val)
+    int val;
+    val = 1 * 1;
+    return val * 1;
+endfunc
 
-function int test() {
+func int test()
     return subTest(1) * 1;
-}
+endfunc
