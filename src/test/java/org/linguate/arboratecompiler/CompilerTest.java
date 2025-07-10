@@ -1280,7 +1280,7 @@ public class CompilerTest {
     
     @Test
     public void testForwardReferenceFunction() throws Exception {
-        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = square(5); return a; } func int square(int inVal) { return inVal * inVal; endfunc");
+        List<FunctionDefinition> functions = Compiler.compile("func int test() int a; a = square(5); return a; endfunc func int square(int inVal) return inVal * inVal; endfunc");
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
 

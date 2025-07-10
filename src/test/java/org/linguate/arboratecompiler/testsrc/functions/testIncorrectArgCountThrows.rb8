@@ -1,7 +1,0 @@
-func int addSimple(int a, int b)
-    return a + b;
-endfunc
-
-func int test()
-    return addSimple(2);
-endfunc

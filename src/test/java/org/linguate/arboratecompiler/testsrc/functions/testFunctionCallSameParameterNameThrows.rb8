@@ -1,7 +1,0 @@
-func int areaOfSquare(int length, int length)
-    return length * length;
-endfunc
-
-func int test()
-    return areaOfSquare(5, 5) * 1;
-endfunc

@@ -1,5 +1,0 @@
-func boolean test()
-    int a;
-    a = 3;
-    return a == 2;
-endfunc

@@ -1,3 +1,0 @@
-func int multiplyTest()
-    return 50 * 100;
-endfunc

@@ -1,4 +1,0 @@
-func int unknownVariableFetch()
-    int a;
-    a = 3 / 10;
-endfunc

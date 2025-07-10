@@ -1,7 +1,0 @@
-func string test()
-    return "test";
-endfunc
-
-func string testCall()
-    return "simple" + test();
-endfunc

@@ -1,3 +1,0 @@
-func string simpleString()
-    return "stringy";
-endfunc

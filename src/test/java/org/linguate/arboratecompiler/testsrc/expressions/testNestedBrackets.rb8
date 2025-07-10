@@ -1,7 +1,0 @@
-func int etfRepeatedOperationsTest()
-    int a;
-    int b;
-    a = 3 - (12 - (25 - (9 - 4)));
-    b = 36 / (32 / (40 / (15 / 3)));
-    return a * b;
-endfunc

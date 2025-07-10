@@ -1,3 +1,0 @@
-func boolean test()
-    return "Hey" == "hey";
-endfunc

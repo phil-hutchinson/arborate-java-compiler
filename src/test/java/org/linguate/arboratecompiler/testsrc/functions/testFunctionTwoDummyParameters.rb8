@@ -1,7 +1,0 @@
-func int divideTest(int a, int b)
-    return 9 / 3;
-endfunc
-
-func int funcCallTest()
-    return divideTest(9, 3) + 5;
-endfunc

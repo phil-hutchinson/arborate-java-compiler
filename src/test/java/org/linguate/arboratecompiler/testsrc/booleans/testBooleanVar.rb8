@@ -1,5 +1,0 @@
-func boolean test()
-    boolean a;
-    a = false;
-    return a;
-endfunc

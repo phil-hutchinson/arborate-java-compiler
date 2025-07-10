@@ -1,3 +1,0 @@
-func int addTest()
-    return 125 + 1000;
-endfunc

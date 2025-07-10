@@ -1,7 +1,0 @@
-func int divideTest()
-    return 500 / 10;
-endfunc
-
-func int dummy()
-    return 7 + 15;
-endfunc

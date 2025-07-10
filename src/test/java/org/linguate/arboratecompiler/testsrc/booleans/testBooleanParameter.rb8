@@ -1,9 +1,0 @@
-func boolean testParam(boolean a)
-    return a;
-endfunc
-
-func boolean test()
-    boolean a;
-    a = 3 > 3 - 1;
-    return testParam(a);
-endfunc

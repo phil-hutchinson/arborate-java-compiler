@@ -1,7 +1,0 @@
-func int duplicateName()
-    return 300 / 10;
-endfunc
-
-func int duplicateName()
-    return 6 + 100;
-endfunc

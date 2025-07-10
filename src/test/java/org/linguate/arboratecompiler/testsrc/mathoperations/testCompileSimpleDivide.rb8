@@ -1,3 +1,0 @@
-func int divideTest()
-    return 87 / 8;
-endfunc

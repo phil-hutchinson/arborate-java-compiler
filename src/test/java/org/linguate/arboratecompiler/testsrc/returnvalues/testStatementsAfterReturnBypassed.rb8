@@ -1,6 +1,0 @@
-func int returnTest()
-    return 3 + 2;
-    int a;
-    a = 1000 + 100;
-    return a * 50;
-endfunc
