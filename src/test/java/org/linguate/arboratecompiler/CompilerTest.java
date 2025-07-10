@@ -976,10 +976,10 @@ public class CompilerTest {
     
     private void testTruthTable(String initialFunction, boolean ffResult, boolean ftResult, boolean tfResult, boolean ttResult) throws Exception {
         String program = initialFunction + 
-                "func boolean ffTest() return test(false, false); endfunc" +
-                "func boolean ftTest() return test(false, true); endfunc" +
-                "func boolean tfTest() return test(true, false); endfunc" +
-                "func boolean ttTest() return test(true, true); endfunc";
+                "func boolean ffTest() return test(false, false); endfunc\n" +
+                "func boolean ftTest() return test(false, true); endfunc\n" +
+                "func boolean tfTest() return test(true, false); endfunc\n" +
+                "func boolean ttTest() return test(true, true); endfunc\n";
         List<FunctionDefinition> functions = Compiler.compile(program);
 
         VirtualMachine virtualMachine = new VirtualMachine(functions);
@@ -997,25 +997,25 @@ public class CompilerTest {
 
     @Test
     public void testOr() throws Exception {
-        String orFunction = "func boolean test(boolean a, boolean b) return a || b; endfunc";
+        String orFunction = "func boolean test(boolean a, boolean b) return a || b; endfunc\n";
         testTruthTable(orFunction, false, true, true, true);
     }
 
     @Test
     public void testAnd() throws Exception {
-        String andFunction = "func boolean test(boolean a, boolean b) return a && b; endfunc";
+        String andFunction = "func boolean test(boolean a, boolean b) return a && b; endfunc\n";
         testTruthTable(andFunction, false, false, false, true);
     }
 
     @Test
     public void testXor() throws Exception {
-        String xorFunction = "func boolean test(boolean a, boolean b) return a ^^ b; endfunc";
+        String xorFunction = "func boolean test(boolean a, boolean b) return a ^^ b; endfunc\n";
         testTruthTable(xorFunction, false, true, true, false);
     }
 
     @Test
     public void testCompoundLogical() throws Exception {
-        String xorFunction = "func boolean test(boolean a, boolean b) return (a && a ^^ b) && (!a || a && b) ^^ !a; endfunc";
+        String xorFunction = "func boolean test(boolean a, boolean b) return (a && a ^^ b) && (!a || a && b) ^^ !a; endfunc\n";
         // part 1: a && a ^^ b reduces to a ^^ b ---> (f t t f)
         // part 2: !a || a && b ---> (t t f f) || (f f f t) ----> (t t f t)
         // part 1 && part 2: (f t f f)
