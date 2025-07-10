@@ -1,0 +1,7 @@
+function int stringSubtract() {
+    string a; 
+    string b; 
+    string c; 
+    c = a - b; 
+    return 14;
+}

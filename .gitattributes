@@ -1,0 +1,4 @@
+src/main/java/org/linguate/arboratecompiler/analysis/* text=false
+src/main/java/org/linguate/arboratecompiler/lexer/* text=false
+src/main/java/org/linguate/arboratecompiler/node/* text=false
+src/main/java/org/linguate/arboratecompiler/parser/* text=false

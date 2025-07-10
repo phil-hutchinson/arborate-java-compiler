@@ -1,5 +1,0 @@
-function int duplicateVariableName() {
-    int a; 
-    int a; 
-    return 300 / 10;
-}

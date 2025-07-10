@@ -1,9 +1,0 @@
-function int subAndDivide(int a, int b, int c) {
-    int diff; 
-    diff = a - b; 
-    return diff / c;  
-} 
-
-function int test() {
-    return subAndDivide(100, 40, 5) * 1;
-}

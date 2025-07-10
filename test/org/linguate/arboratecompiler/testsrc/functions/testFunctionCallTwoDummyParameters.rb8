@@ -1,9 +1,0 @@
-function int divideTest(int dummy1, int dummy2) {
-    return 100 / 5;  
-} 
-
-function int funcCallTest() {
-    int a; 
-    a = 3 + 9; 
-    return divideTest(a, 22) + 9;
-}

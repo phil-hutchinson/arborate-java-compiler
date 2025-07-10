@@ -1,0 +1,9 @@
+function int etfRepeatedOperationsTest() {
+    int a; 
+    int b; 
+    int c; 
+    a = 3 + 2 + 5 + 1; 
+    b = 20 - 5 - 5 - 5 + 3; 
+    c = a * b * 2 * 6 * 3 * 5; 
+    return c / 9 / 10 / 4;  
+}

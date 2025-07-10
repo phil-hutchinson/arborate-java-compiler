@@ -1,0 +1,21 @@
+This project uses SableCC 3.7 for code generation.
+
+Before running the regeneration script, you must download SableCC 3.7:
+- Download from: https://sourceforge.net/projects/sablecc/files/sablecc/3.7/
+- Place the JAR file as:
+    lib/sablecc.jar
+
+If you have just cloned the repository, you may need to make the script executable:
+  chmod +x regenerate_sable.sh
+
+The grammar specification is located at:
+  src/main/resources/org/linguate/arboratecompiler/arborate_specification.txt
+
+To regenerate the lexer/parser and supporting code, run:
+  ./regenerate_sable.sh
+
+This will:
+- Delete the generated folders (analysis, lexer, node, parser)
+- Delete old lexer.dat and parser.dat from resources
+- Run SableCC to regenerate code
+- Move the new .dat files to the correct resource locations

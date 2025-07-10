@@ -1,7 +1,0 @@
-function int divideTest(int a) {
-    return 6 / 3;  
-}
-
-function int funcCallTest() {
-    return divideTest(7) * 5;
-}

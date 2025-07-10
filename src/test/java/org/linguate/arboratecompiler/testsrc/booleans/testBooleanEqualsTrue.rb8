@@ -1,0 +1,5 @@
+function boolean test() { 
+    boolean a; 
+    a = 3 == 3; 
+    return a == true;
+} 

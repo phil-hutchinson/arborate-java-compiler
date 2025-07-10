@@ -1,0 +1,7 @@
+function string test(string abc) {
+    return "test" + abc;  
+} 
+
+function string testCall() {
+    return test("stuff");
+}
