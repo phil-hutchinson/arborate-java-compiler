@@ -1,0 +1,7 @@
+func int square(int val)
+    return val * val;
+endfunc
+
+func int funcCallTest()
+    return square(20) * 1;
+endfunc

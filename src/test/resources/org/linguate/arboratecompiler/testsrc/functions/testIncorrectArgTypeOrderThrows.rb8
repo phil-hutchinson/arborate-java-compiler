@@ -1,0 +1,11 @@
+func int addSimple(int a, string b)
+    return a + 2;
+endfunc
+
+func int test()
+    string str;
+    int num;
+    str = "something";
+    num = 3;
+    return addSimple(str, num);
+endfunc

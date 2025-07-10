@@ -66,7 +66,8 @@ public interface Analysis extends Switch
     void caseANewVarInitFieldList(ANewVarInitFieldList node);
     void caseANewVarInitField(ANewVarInitField node);
 
-    void caseTKwFunction(TKwFunction node);
+    void caseTKwFunc(TKwFunc node);
+    void caseTKwEndfunc(TKwEndfunc node);
     void caseTKwReturn(TKwReturn node);
     void caseTKwIf(TKwIf node);
     void caseTKwElse(TKwElse node);

@@ -1,0 +1,4 @@
+func int unknownVariableAssignment()
+    a = 6 + 6;
+    return 30 / 10;
+endfunc

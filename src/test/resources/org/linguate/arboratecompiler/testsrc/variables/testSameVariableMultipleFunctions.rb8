@@ -1,0 +1,11 @@
+func int subFunction()
+    int a;
+    a = 2 + 2;
+    return 2 * a;
+endfunc
+
+func int mainFunction()
+    int a;
+    a = 2 * subFunction();
+    return a + 1;
+endfunc

@@ -1,7 +1,0 @@
-function int square(int val) {
-    return val * val;  
-} 
-
-function int funcCallTest() {
-    return square(20) * 1;
-}

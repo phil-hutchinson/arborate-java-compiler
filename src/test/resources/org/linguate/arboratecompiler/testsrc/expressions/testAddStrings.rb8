@@ -1,0 +1,9 @@
+func string stringAdd()
+    string a;
+    string b;
+    string c;
+    a = "some";
+    b = "thing";
+    c = a + b;
+    return c;
+endfunc

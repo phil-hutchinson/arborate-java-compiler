@@ -393,7 +393,13 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseTKwFunction(TKwFunction node)
+    public void caseTKwFunc(TKwFunc node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTKwEndfunc(TKwEndfunc node)
     {
         defaultCase(node);
     }

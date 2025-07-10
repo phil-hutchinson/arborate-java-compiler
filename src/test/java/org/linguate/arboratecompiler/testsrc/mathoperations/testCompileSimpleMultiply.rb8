@@ -1,3 +1,0 @@
-function int multiplyTest(){
-    return 50*100;
-}

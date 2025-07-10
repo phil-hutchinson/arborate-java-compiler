@@ -1,7 +1,0 @@
-function int duplicateName() {
-    return 300 / 10;  
-} 
-
-function int duplicateName() {
-    return 6 + 100;
-}

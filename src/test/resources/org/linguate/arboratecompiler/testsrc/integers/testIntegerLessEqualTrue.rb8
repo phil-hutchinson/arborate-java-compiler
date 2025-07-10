@@ -1,0 +1,3 @@
+func boolean test()
+    return 4 <= 8;
+endfunc

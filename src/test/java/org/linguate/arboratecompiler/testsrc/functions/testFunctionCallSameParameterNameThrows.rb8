@@ -1,7 +1,0 @@
-function int areaOfSquare(int length, int length) {
-    return length * length;  
-} 
-
-function int test() {
-    return areaOfSquare(5, 5) * 1;
-}

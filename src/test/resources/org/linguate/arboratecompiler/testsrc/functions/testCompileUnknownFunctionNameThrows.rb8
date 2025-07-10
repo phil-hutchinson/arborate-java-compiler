@@ -1,0 +1,3 @@
+func int simpleTest()
+    return something() / 10;
+endfunc

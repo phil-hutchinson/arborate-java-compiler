@@ -1,5 +1,0 @@
-function int dummyAssignmentTest() {
-    int a; 
-    a = 6 * 5; 
-    return 12 / 6;
-}

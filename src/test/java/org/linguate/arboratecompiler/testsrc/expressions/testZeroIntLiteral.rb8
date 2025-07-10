@@ -1,3 +1,0 @@
-function int zeroLiteral() {
-    return 8 + 0;  
-}

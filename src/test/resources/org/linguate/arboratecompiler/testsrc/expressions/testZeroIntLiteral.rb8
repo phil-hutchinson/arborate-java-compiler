@@ -1,0 +1,3 @@
+func int zeroLiteral()
+    return 8 + 0;
+endfunc
